@@ -42,6 +42,8 @@ namespace semloam{
 		_pubroad = node.advertise<sensor_msgs::PointCloud2>("/road",2);
 		_pubcar = node.advertise<sensor_msgs::PointCloud2>("/car",2);
 
+        _pub_test_image = node.advertise<sensor_msgs::Image>("test_image", 1);
+
 		_sub_odometry = node.subscribe<nav_msgs::Odometry>
 			("/odom_pose", 1, &PcToMesh::odometry_callback, this);
 
@@ -138,6 +140,8 @@ namespace semloam{
 			ros::spinOnce();//catch pose data
 
 			change_camera_data(viewer);
+
+            test_publish_image_data(viewer);
 
 			viewer.spinOnce();
 
@@ -508,5 +512,22 @@ namespace semloam{
 
 
 	}
+
+    void PcToMesh::test_publish_image_data(pcl::visualization::PCLVisualizer& viewer){
+
+        vtkSmartPointer<vtkRenderWindow> render = viewer.getRenderWindow();
+
+        std::unique_ptr<uchar> pixels( render->GetRGBACharPixelData( 0, 0, render->GetSize()[0] - 1, render->GetSize()[1] - 1, 1 ) );
+
+        cv::Mat cvimage = cv::Mat(render->GetSize()[1], render->GetSize()[0], CV_8UC4, &pixels.get()[0] );
+        cv::cvtColor( cvimage , cvimage , cv::COLOR_RGBA2BGRA);
+
+        sensor_msgs::ImagePtr ros_image = cv_bridge::CvImage(std_msgs::Header(), "bgr8", cvimage).toImageMsg();
+
+        ros_image->header.stamp = ros::Time::now();
+
+        _pub_test_image.publish( ros_image );
+
+    }
 
 }

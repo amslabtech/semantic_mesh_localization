@@ -20,6 +20,15 @@
 #include "tf_conversions/tf_eigen.h"
 #include"tf/transform_broadcaster.h"
 #include"tf/transform_listener.h"
+#include <vtkRenderWindow.h>
+#include <opencv2/opencv.hpp>
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/image_encodings.h>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <image_transport/image_transport.h>
+#include <image_transport/image_transport.h>
+
 
 
 namespace semloam{
@@ -57,6 +66,8 @@ namespace semloam{
 
 			void change_camera_data(pcl::visualization::PCLVisualizer& viewer);
 
+            void test_publish_image_data(pcl::visualization::PCLVisualizer& viewer);
+
 		private:
 			std::string file_path = "/home/amsl/catkin_ws/src/semantic_mesh_loam/PCD_data/";
 			std::string file_name = "semantic_mesh_loam";
@@ -72,6 +83,8 @@ namespace semloam{
 
 			ros::Publisher _pubroad;
 			ros::Publisher _pubcar;
+
+            ros::Publisher _pub_test_image;
 
 			ros::Subscriber _sub_odometry;//試験用
 			nav_msgs::Odometry odom_data;//試験用

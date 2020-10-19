@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 2.8)
 project(semantic_mesh_localization)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -11,15 +11,20 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   pcl_conversions
   pcl_ros
+  cv_bridge
 )
 
 find_package(Eigen3 REQUIRED)
 find_package(PCL REQUIRED)
+find_package(VTK REQUIRED)
+find_package(OpenCV REQUIRED)
 
 include_directories(
 	include
 	${catkin_INCLUDE_DIRS}
 	${PCL_INCLUDE_DIRS}
+    ${VTK_USE_FILE}
+    ${OpenCV_INCLUDE_DIRS}
 )
 
 catkin_package(
@@ -35,7 +40,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_subdirectory(src/lib)
 
 add_executable(pointcloud_to_mesh src/pointcloud_to_mesh.cpp)
-target_link_libraries(pointcloud_to_mesh ${catkin_LIBRARIES} ${PCL_LIBRARIES} semloam)
+target_link_libraries(pointcloud_to_mesh ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${VTK_LIBRARIES} ${OpenCV_LIBRARIES} semloam)
 
 
 
