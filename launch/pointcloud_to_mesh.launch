@@ -1,0 +1,6 @@
+<launch>
+
+	<node pkg="semantic_mesh_localization" type="pointcloud_to_mesh" name="pointcloud_to_mesh" output="screen">
+
+	</node>
+</launch>
