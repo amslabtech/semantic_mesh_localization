@@ -16,6 +16,11 @@
 #include <pcl/surface/gp3.h>
 #include"sensor_msgs/PointCloud2.h"
 #include"pcl_conversions/pcl_conversions.h"
+#include"nav_msgs/Odometry.h"
+#include "tf_conversions/tf_eigen.h"
+#include"tf/transform_broadcaster.h"
+#include"tf/transform_listener.h"
+
 
 namespace semloam{
 	
@@ -48,6 +53,10 @@ namespace semloam{
 
 			void publish_rosmsg();
 
+			void odometry_callback(const nav_msgs::OdometryConstPtr& odom);
+
+			void change_camera_data(pcl::visualization::PCLVisualizer& viewer);
+
 		private:
 			std::string file_path = "/home/amsl/catkin_ws/src/semantic_mesh_loam/PCD_data/";
 			std::string file_name = "semantic_mesh_loam";
@@ -63,6 +72,9 @@ namespace semloam{
 
 			ros::Publisher _pubroad;
 			ros::Publisher _pubcar;
+
+			ros::Subscriber _sub_odometry;//試験用
+			nav_msgs::Odometry odom_data;//試験用
 
 			pcl::PointCloud<pcl::PointXYZRGB> cloud_tmp;
 

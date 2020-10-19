@@ -8,6 +8,29 @@ namespace semloam{
 
 	}
 
+	void PcToMesh::odometry_callback(const nav_msgs::OdometryConstPtr& odom){
+
+		odom_data = *odom;
+
+        double qx = odom_data.pose.pose.orientation.x;
+        double qy = odom_data.pose.pose.orientation.y;
+        double qz = odom_data.pose.pose.orientation.z;
+        double qw = odom_data.pose.pose.orientation.w;
+
+        double ql = sqrt(qx*qx + qy*qy + qz*qz + qw*qw);
+
+        qx = qx/ql;
+        qy = qy/ql;
+        qz = qz/ql;
+        qw = qw/ql;
+
+        odom_data.pose.pose.orientation.x = qx;
+        odom_data.pose.pose.orientation.y = qy;
+        odom_data.pose.pose.orientation.z = qz;
+        odom_data.pose.pose.orientation.w = qw;
+
+	}
+
 	bool PcToMesh::setup(ros::NodeHandle& node, ros::NodeHandle& privateNode){
 
 		float fparam;
@@ -18,6 +41,9 @@ namespace semloam{
 
 		_pubroad = node.advertise<sensor_msgs::PointCloud2>("/road",2);
 		_pubcar = node.advertise<sensor_msgs::PointCloud2>("/car",2);
+
+		_sub_odometry = node.subscribe<nav_msgs::Odometry>
+			("/odom_pose", 1, &PcToMesh::odometry_callback, this);
 
 
 		if( privateNode.getParam("NormalSearchRadius", dparam) ){
@@ -104,12 +130,18 @@ namespace semloam{
 		generate_mesh(viewer);
 
 		config_tmp_viewer_parameter(viewer);
+		
+		ros::Rate rate(10);
 
 		while( ros::ok() ){
 
-			viewer.spin();
-			//publishing to ros msg is succeed
-			//publish_rosmsg();
+			ros::spinOnce();//catch pose data
+
+			change_camera_data(viewer);
+
+			viewer.spinOnce();
+
+			rate.sleep();
 
 		}
 
@@ -454,7 +486,27 @@ namespace semloam{
 
 	}
 
+	void PcToMesh::change_camera_data(pcl::visualization::PCLVisualizer& viewer){
+
+		viewer.resetCameraViewpoint();
+
+		double roll, pitch, yaw;
+
+		tf::Quaternion quat_tf;
+
+		quaternionMsgToTF( odom_data.pose.pose.orientation , quat_tf );
+        quat_tf.normalize();
+        tf::Matrix3x3( quat_tf ).getRPY( roll, pitch, yaw);
+
+		viewer.setCameraPosition(
+				odom_data.pose.pose.position.x,
+				odom_data.pose.pose.position.y,
+				odom_data.pose.pose.position.z,
+				roll,
+				pitch,
+				yaw   );
 
 
+	}
 
 }
