@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.3)
 project(semantic_mesh_localization)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   pcl_conversions
   pcl_ros
   cv_bridge
+  image_transport
 )
 
 find_package(Eigen3 REQUIRED)

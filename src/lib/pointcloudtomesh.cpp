@@ -2,11 +2,15 @@
 
 namespace semloam{
 
-	PcToMesh::PcToMesh(void){
+	PcToMesh::PcToMesh(ros::NodeHandle& node)
+        :nn(node), it(node)
+    {
 
 		std::cout << "Set up PcToMesh class" << std::endl;
 
 	}
+
+    PcToMesh::~PcToMesh(){}
 
 	void PcToMesh::odometry_callback(const nav_msgs::OdometryConstPtr& odom){
 
@@ -31,7 +35,7 @@ namespace semloam{
 
 	}
 
-	bool PcToMesh::setup(ros::NodeHandle& node, ros::NodeHandle& privateNode){
+	bool PcToMesh::setup(ros::NodeHandle& node,ros::NodeHandle& privateNode){
 
 		float fparam;
 		double dparam;
@@ -42,6 +46,7 @@ namespace semloam{
 		_pubroad = node.advertise<sensor_msgs::PointCloud2>("/road",2);
 		_pubcar = node.advertise<sensor_msgs::PointCloud2>("/car",2);
 
+		//Image Transformerをこれから使う
         _pub_test_image = node.advertise<sensor_msgs::Image>("test_image", 1);
 
 		_sub_odometry = node.subscribe<nav_msgs::Odometry>
@@ -527,6 +532,7 @@ namespace semloam{
         ros_image->header.stamp = ros::Time::now();
 
         _pub_test_image.publish( ros_image );
+		//cv::imshow("image", cvimage);
 
     }
 

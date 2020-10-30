@@ -36,9 +36,11 @@ namespace semloam{
 	class PcToMesh{
 		
 		public:
-			PcToMesh();
+			PcToMesh(ros::NodeHandle& node);
 
-			bool setup(ros::NodeHandle& node, ros::NodeHandle& privateNode);
+            virtual ~PcToMesh();
+
+			bool setup(ros::NodeHandle& node,ros::NodeHandle& privateNode);
 
 			void spin();
 
@@ -69,6 +71,7 @@ namespace semloam{
             void test_publish_image_data(pcl::visualization::PCLVisualizer& viewer);
 
 		private:
+
 			std::string file_path = "/home/amsl/catkin_ws/src/semantic_mesh_loam/PCD_data/";
 			std::string file_name = "semantic_mesh_loam";
 			std::string file_type = "ascii"; //ascii or binary
@@ -85,6 +88,9 @@ namespace semloam{
 			ros::Publisher _pubcar;
 
             ros::Publisher _pub_test_image;
+			//image_transport::Publisher _pub_test_image;
+            image_transport::ImageTransport it;
+            ros::NodeHandle nn;
 
 			ros::Subscriber _sub_odometry;//試験用
 			nav_msgs::Odometry odom_data;//試験用
