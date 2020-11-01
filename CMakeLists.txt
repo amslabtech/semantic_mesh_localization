@@ -42,22 +42,12 @@ find_package(PCL REQUIRED)
 find_package(VTK REQUIRED)
 find_package(OpenCV REQUIRED)
 
-include_directories(
-	include
-	${catkin_INCLUDE_DIRS}
-	${PCL_INCLUDE_DIRS}
-    ${VTK_USE_FILE}
-    ${OpenCV_INCLUDE_DIRS}
-    ${bonnet_node_INCLUDES}
-    ${bonnet_core_INCLUDE_DIRS}
-    ${YAML_CPP_INCLUDE_DIRS}
-)
 
 catkin_package(
 	CATKIN_DEPENDS geometry_msgs nav_msgs roscpp rospy std_msgs tf pcl_conversions sensor_msgs
-	DEPENDS EIGEN3 PCL
-	INCLUDE_DIRS include
-	LIBRARIES semloam bonnet_core
+    DEPENDS EIGEN3 PCL OpenCV
+    INCLUDE_DIRS include
+	LIBRARIES semloam bonnet_core bonnet
 )
 
 ## Find libraries
@@ -77,7 +67,7 @@ endif()
 message("TF_AVAIL ${TF_AVAIL}\n")
 
 # try to find CUDA
-find_package(CUDA)
+find_package(CUDA REQUIRED)
 if (CUDA_FOUND)
   message("CUDA Libs: ${CUDA_LIBRARIES}")
   message("CUDA Headers: ${CUDA_INCLUDE_DIRS}")
@@ -104,7 +94,7 @@ endif()
 message("TRT_AVAIL ${TRT_AVAIL}\n")
 
 # get opencv
-find_package(OpenCV)
+find_package(OpenCV REQUIRED)
 if(OpenCV_FOUND)
   message("OpenCV Libs: ${OpenCV_LIBRARIES}")
   message("OpenCV Headers: ${OpenCV_INCLUDE_DIRS}\n")
@@ -136,7 +126,9 @@ endif()
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-list(APPEND bonnet_node_INCLUDES include)
+set(bonnet_node_INCLUDES include ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} ${YAML_CPP_INCLUDE_DIR})
+set(bonnet_node_LIBRARIES ${OpenCV_LIBS} ${YAML_CPP_LIBRARIES})
+
 if(TF_AVAIL)
   list(APPEND bonnet_node_INCLUDES ${TF_INCLUDE_DIRS})
   list(APPEND bonnet_node_LIBRARIES ${TF_LIBS})
@@ -148,6 +140,13 @@ if(TRT_AVAIL AND CUDA_AVAIL)
                                     nvparsers)
 endif()
 
+include_directories(
+    ${PCL_INCLUDE_DIRS}
+    ${VTK_USE_FILE}
+    ${bonnet_node_INCLUDES}
+    ${bonnet_core_INCLUDE_DIRS}
+)
+  
 
 
 
@@ -155,6 +154,7 @@ endif()
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(src/lib)
+
 
 add_executable(pointcloud_to_mesh src/pointcloud_to_mesh.cpp)
 target_link_libraries(pointcloud_to_mesh 
@@ -166,10 +166,12 @@ target_link_libraries(pointcloud_to_mesh
 
 add_executable(bonnet_node src/bonnet_node.cpp)
 target_link_libraries(bonnet_node
-  ${bonnet_node_LIBRARIES}
-  ${bonnet_core_LIBRARIES}
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBS}
+    ${bonnet_node_LIBRARIES}
+    ${bonnet_core_LIBRARIES}
+    ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
+    semloam
+    #bonnet -> semloam de compile dekita
 )
 
 
