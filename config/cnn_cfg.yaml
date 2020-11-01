@@ -1,0 +1,4 @@
+model_path: "/home/amsl/data_bonnet/city_1024_freeze"
+device: "/gpu:0"
+verbose: true
+backend: "trt" # tf (tensorflow, cpu or gpu mode) or trt (TensorRT nvidia gpu)
