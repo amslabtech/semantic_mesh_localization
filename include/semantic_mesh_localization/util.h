@@ -21,6 +21,8 @@ namespace semloam
   };
 
   struct pos_trans{
+      double dt;
+
 	  double dx;
 	  double dy;
 	  double dz;

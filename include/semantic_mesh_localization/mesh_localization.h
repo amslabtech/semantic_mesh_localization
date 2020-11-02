@@ -20,14 +20,34 @@ namespace semloam{
 
             void segmented_image_callback(const sensor_msgs::ImageConstPtr& msg);
 
+            void odometry_callback(const nav_msgs::OdometryConstPtr& msg);
+
+            pos_trans get_relative_trans(nav_msgs::Odometry odom, nav_msgs::Odometry last_odom);
+
             bool setup_mesh_localization(ros::NodeHandle& node, ros::NodeHandle& privateNode);
 
+            void build_mesh_map();
+
             void spin_mesh_localization();
+
+            void wait_for_bag_data();
 
         private:
             image_transport::ImageTransport it_;
             image_transport::Subscriber image_sub;
 
+            ros::Subscriber sub_odometry;
+
+            cv_bridge::CvImagePtr segimage;
+
+            nav_msgs::Odometry odom_data;
+            nav_msgs::Odometry last_odom_data;
+            pos_trans odom_trans;
+            bool first_odom_checker = false;
+
+            pcl::visualization::PCLVisualizer viewer;
+
+            int particlenumber = 50;//launch particlenumber
     };
 
 }

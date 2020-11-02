@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="semantic_mesh_localization" type="mesh_localization" name="mesh_localization" output="screen">
+    </node>
+</launch>
+
