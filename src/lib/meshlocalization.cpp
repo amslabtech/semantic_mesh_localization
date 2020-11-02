@@ -124,6 +124,24 @@ namespace semloam{
         return true;
     }
 
+    void MeshLocalization::init_odometry_process(){
+
+        likelihood.reserve(particlenumber); //Match number of particle and vector size
+
+        estimated_pose.header.frame_id = odom_data.header.frame_id;
+        estimated_pose.header.stamp = odom_data.header.stamp;
+        estimated_pose.pose = odom_data.pose.pose;
+
+        particle.header.frame_id = odom_data.header.frame_id;
+        particle.header.stamp = odom_data.header.stamp;
+
+        for(int i=0; i<particlenumber; i++){
+            particle.poses.push_back( odom_data.pose.pose );
+        }
+
+        std::cout << "Init odometry process has done" << std::endl;
+    }
+
     void MeshLocalization::wait_for_bag_data(){
 
         ros::Rate message_rate(1.0);
@@ -131,6 +149,8 @@ namespace semloam{
             ros::spinOnce();
             if(first_odom_checker == true){
                 //最初の処理をここで行う
+
+                init_odometry_process();
 
                 break;
             }

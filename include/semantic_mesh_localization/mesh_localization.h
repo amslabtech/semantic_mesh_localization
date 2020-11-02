@@ -5,6 +5,8 @@
 
 #include"semantic_mesh_localization/pointcloud_to_mesh.h"
 
+#include"geometry_msgs/PoseArray.h"
+#include"geometry_msgs/PoseStamped.h"
 
 
 
@@ -32,6 +34,8 @@ namespace semloam{
 
             void wait_for_bag_data();
 
+            void init_odometry_process();
+
         private:
             image_transport::ImageTransport it_;
             image_transport::Subscriber image_sub;
@@ -48,6 +52,10 @@ namespace semloam{
             pcl::visualization::PCLVisualizer viewer;
 
             int particlenumber = 50;//launch particlenumber
+
+            geometry_msgs::PoseStamped estimated_pose; //estimated vehicle pose
+            geometry_msgs::PoseArray particle; // particle
+            std::vector<double> likelihood;
     };
 
 }
