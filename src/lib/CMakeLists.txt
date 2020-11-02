@@ -48,6 +48,7 @@ endif()
 add_library(
     semloam
     pointcloudtomesh.cpp
+    meshlocalization.cpp
 
     bonnet
     ${bonnet_under_SOURCES}

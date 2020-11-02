@@ -1,9 +1,8 @@
 #include"semantic_mesh_localization/pointcloud_to_mesh.h"
 
 namespace semloam{
-
-	PcToMesh::PcToMesh(ros::NodeHandle& node)
-        :nn(node), it(node)
+/*
+	PcToMesh::PcToMesh(ros::NodeHandle& node, ros::NodeHandle& privateNode)
     {
 
 		std::cout << "Set up PcToMesh class" << std::endl;
@@ -11,7 +10,7 @@ namespace semloam{
 	}
 
     PcToMesh::~PcToMesh(){}
-
+*/
 	void PcToMesh::odometry_callback(const nav_msgs::OdometryConstPtr& odom){
 
 		odom_data = *odom;

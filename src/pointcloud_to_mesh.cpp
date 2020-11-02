@@ -7,7 +7,7 @@ int main(int argc, char** argv){
 	ros::NodeHandle node;
 	ros::NodeHandle privateNode("~");
 
-	semloam::PcToMesh pctomesh(node);
+	semloam::PcToMesh pctomesh;
 
 	if( pctomesh.setup(node, privateNode) ){
 
