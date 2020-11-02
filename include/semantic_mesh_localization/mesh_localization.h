@@ -36,6 +36,18 @@ namespace semloam{
 
             void init_odometry_process();
 
+            void particle_filter();
+
+            void motion_update();
+
+            void update_likelihood();
+
+            void estimate_current_pose();
+
+            void resampling_particle();
+
+            void publish_result();
+
         private:
             image_transport::ImageTransport it_;
             image_transport::Subscriber image_sub;

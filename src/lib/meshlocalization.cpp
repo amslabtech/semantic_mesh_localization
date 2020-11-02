@@ -165,6 +165,47 @@ namespace semloam{
 
         wait_for_bag_data();
 
+        particle_filter();
+
+    }
+
+    void MeshLocalization::particle_filter(){
+
+        ros::Rate loop_rate(1.0);
+        while( ros::ok() ){
+
+            motion_update();
+
+            update_likelihood();
+
+            estimate_current_pose();
+
+            resampling_particle();
+
+            publish_result();
+
+            loop_rate.sleep();
+        }
+    }
+
+    void MeshLocalization::motion_update(){
+        //
+    }
+
+    void MeshLocalization::update_likelihood(){
+        //
+    }
+
+    void MeshLocalization::estimate_current_pose(){
+        //
+    }
+
+    void MeshLocalization::resampling_particle(){
+        //
+    }
+
+    void MeshLocalization::publish_result(){
+        //
     }
 
 }
