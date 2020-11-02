@@ -1,4 +1,4 @@
-model_path: "/home/amsl/data_bonnet/city_1024_freeze"
+model_path: "/home/amsl/catkin_ws/src/semantic_mesh_localization/Cityscape_model"
 device: "/gpu:0"
 verbose: true
 backend: "trt" # tf (tensorflow, cpu or gpu mode) or trt (TensorRT nvidia gpu)
