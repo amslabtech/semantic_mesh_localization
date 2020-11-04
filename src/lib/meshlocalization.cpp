@@ -11,7 +11,7 @@ namespace semloam{
             sub_odometry = node.subscribe<nav_msgs::Odometry>
                 ("/odom_pose", 1, &MeshLocalization::odometry_callback, this);
 
-            pub_pose = node.advertise<geometry_msgs::Pose>("/estimated_pose", 1);
+            pub_pose = node.advertise<geometry_msgs::PoseStamped>("/estimated_pose", 1);
             pub_particle = node.advertise<geometry_msgs::PoseArray>("/particle", 1);
 
             estimated_pose.header.frame_id = "map";
@@ -31,6 +31,16 @@ namespace semloam{
     }
 
     pos_trans MeshLocalization::get_relative_trans(nav_msgs::Odometry odom, nav_msgs::Odometry last_odom){
+
+        if(
+                   last_odom.pose.pose.orientation.x == 0.0
+                && last_odom.pose.pose.orientation.y == 0.0
+                && last_odom.pose.pose.orientation.z == 0.0
+                && last_odom.pose.pose.orientation.w == 0.0
+          ){
+            last_odom.pose.pose.orientation.w = 1.0;
+        }
+
         pos_trans trans;
 
         trans.dx = odom.pose.pose.position.x - last_odom.pose.pose.position.x;
@@ -52,7 +62,17 @@ namespace semloam{
         trans.droll = nroll - lroll;
         trans.dpitch = npitch - lpitch;
         trans.dyaw = nyaw - lyaw;
+/*
+        std::cout << "odom" << std::endl << odom << std::endl << "last_odom" << std::endl << last_odom << std::endl;
 
+        std::cout << "trans dx dy dz droll dpitch dyaw" << std::endl;
+        std::cout << trans.dx << std::endl;
+        std::cout << trans.dy << std::endl;
+        std::cout << trans.dz << std::endl;
+        std::cout << trans.droll << std::endl;
+        std::cout << trans.dpitch << std::endl;
+        std::cout << trans.dyaw << std::endl;
+*/
         return trans;
     }
 
@@ -205,8 +225,10 @@ namespace semloam{
         particle.header.frame_id = odom_data.header.frame_id;
         particle.header.stamp = odom_data.header.stamp;
 
+        double tmp_zero = 0.00;
         for(int i=0; i<particlenumber; i++){
             particle.poses.push_back( odom_data.pose.pose );
+            likelihood.push_back(tmp_zero);
         }
 
         std::cout << "Init odometry process has done" << std::endl;
@@ -240,42 +262,57 @@ namespace semloam{
     }
 
     void MeshLocalization::particle_filter(){
-
+        std::cout << "Do Particle fileter" << std::endl;
         ros::Rate loop_rate(1.0);
         while( ros::ok() ){
 
+            //std::cout << "Catch ROS data" << std::endl;
             ros::spinOnce();//catch odometry and image data
 
-            motion_update();
+            //std::cout << "Motion update" << std::endl;
+            motion_update();//Create prior distribution
 
-            update_likelihood();
+            //std::cout << "Update likelihood" << std::endl;
+            update_likelihood();//Observe and create posterior distribution
 
-            estimate_current_pose();
+            //std::cout << "Estimate current pose" << std::endl;
+            estimate_current_pose();//estimate current pose
 
-            resampling_particle();
+            //std::cout << "Resampling particle" << std::endl;
+            resampling_particle();//resampling
 
-            publish_result();
+            //std::cout << "Publish result" << std::endl;
+            publish_result();//publish as ros data EXCEPT POINTCLOUD MAP
 
             loop_rate.sleep();
         }
     }
 
     double MeshLocalization::rand_delta(double ave, double dev){
-        double number = 0.0;
 
         std::random_device seed_gen;
         std::default_random_engine engine( seed_gen() );
 
-        std::normal_distribution<> dist(ave,dev);
+        std::normal_distribution<double> dist(ave,dev);
 
-        number = dist(engine);
+        double number = dist(engine);
+/*
+        std::cout << "AVE" << std::endl;
+        std::cout << ave << std::endl;
 
+        std::cout << "DEV" << std::endl;
+        std::cout << dev << std::endl;
+
+        std::cout << "Number" << std::endl;
+        std::cout << number << std::endl;
+*/
         return number;
     }
 
     void MeshLocalization::motion_update(){
 
-        for(int i=0; i < particle.poses.size(); i++){
+        for(size_t i=0; i < particle.poses.size(); i++){
+
             //Get XYZ
             particle.poses[i].position.x = 
                 particle.poses[i].position.x + rand_delta(odom_trans.dx, dx_dev);
@@ -284,20 +321,48 @@ namespace semloam{
             particle.poses[i].position.z = 
                 particle.poses[i].position.z + rand_delta(odom_trans.dz, dz_dev);
 
+            //std::cout << "poses" << std::endl;
+            //std::cout << particle.poses[i] << std::endl;
+
             //get Quaternion from RPY trans
             tf::Quaternion quat;
             quaternionMsgToTF( particle.poses[i].orientation , quat );
+            quat.normalize();
+
+            //std::cout << "Before TF" << std::endl;
+            //std::cout << quat << std::endl;
 
             double roll, pitch, yaw;
             tf::Matrix3x3( quat ).getRPY( roll , pitch , yaw );
+
+            //std::cout << "RPY before" << std::endl;
+            //std::cout << roll << std::endl;
+            //std::cout << pitch << std::endl;
+            //std::cout << yaw << std::endl;
 
             roll = roll + rand_delta( odom_trans.droll , droll_dev );
             pitch = pitch + rand_delta( odom_trans.dpitch , dpitch_dev );
             yaw = yaw + rand_delta( odom_trans.dyaw , dyaw_dev );
 
+            /*
+            std::cout << "RPY after" << std::endl;
+            std::cout << roll << std::endl;
+            std::cout << pitch << std::endl;
+            std::cout << yaw << std::endl;
+            */
+
             tf::Quaternion new_quat = tf::createQuaternionFromRPY( roll , pitch , yaw );
+            new_quat.normalize();
+/*
+            std::cout << "TF quaternion" << std::endl;
+            std::cout << new_quat << std::endl;
+*/
             geometry_msgs::Quaternion geo_quat;
             quaternionTFToMsg( new_quat , geo_quat );
+/*
+            std::cout << "Geometry_msgs quaternion" << std::endl;
+            std::cout << geo_quat << std::endl;
+*/
             particle.poses[i].orientation = geo_quat;
 
         }
@@ -307,22 +372,31 @@ namespace semloam{
         //
     }
 
-    void MeshLocalization::estimate_current_pose(){
-        //
-    }
+    geometry_msgs::PoseStamped MeshLocalization::max_likelihood_approach(){
+        geometry_msgs::PoseStamped estimated_pose;
 
-    void MeshLocalization::resampling_particle(){
-        //
-    }
-
-    void MeshLocalization::publish_result(){
-        
+        estimated_pose.header.frame_id = "map";
         estimated_pose.header.stamp = odom_data.header.stamp;
-        particle.header.stamp = odom_data.header.stamp;
 
-        pub_pose.publish(estimated_pose);
-        pub_particle.publish(particle);
+        double tmp_likelihood = -0.000001;
+        for(size_t i=0; i<particle.poses.size(); i++){
 
+            if( likelihood[i] > tmp_likelihood ){
+                tmp_likelihood = likelihood[i];
+
+                estimated_pose.pose.position = particle.poses[i].position;
+                estimated_pose.pose.orientation = particle.poses[i].orientation;
+            }
+        }
+
+        return estimated_pose;
+    }
+
+    void MeshLocalization::estimate_current_pose(){
+        //最も尤度の高いパーティクルを現在位置として推定する
+        estimated_pose = max_likelihood_approach();
+
+        //TF broadcast
         car_state.header.stamp = odom_data.header.stamp;
         car_state.transform.translation.x = estimated_pose.pose.position.x;
         car_state.transform.translation.y = estimated_pose.pose.position.y;
@@ -330,8 +404,97 @@ namespace semloam{
         car_state.transform.rotation = estimated_pose.pose.orientation;
 
         br.sendTransform( car_state );
+    }
 
+    void MeshLocalization::resampling_particle(){
+        
+        //std::cout << "Resampling first" << std::endl;
 
+        std::vector<double> acc_weight;
+        double acc=0.0;
+        double step_width=0.0;
+        double choose_init=0.0;
+
+        for(size_t i=0; i<particle.poses.size(); i++){
+            acc += likelihood[i];
+            acc_weight.push_back(acc);
+        }
+
+        if(acc < 0.00001){
+            for(size_t i=0; i<particle.poses.size(); i++){
+                acc += 0.01;
+                acc_weight[i] = acc;
+            }
+        }
+
+        //std::cout << "Resaampling second" << std::endl;
+
+        step_width = acc / double( particle.poses.size() );
+        
+        //一様分布の中から値を抽出する
+        
+        choose_init = ( (double)rand() / ((double)RAND_MAX + 1) ) * acc;
+
+        /*
+        std::random_device rnd;
+        std::mt19937 mt( rnd() );
+        std::uniform_int_distribution<> rand_weight( 0.0, acc);
+        choose_init = rand_weight( mt );
+        */
+
+        int index = 0;
+        double t = choose_init;
+
+        std::vector<double> new_likelihood;
+
+        geometry_msgs::PoseArray new_particle;
+        //new_particle.header.frame_id = "map";
+        //new_particle.header.stamp = odom_data.header.stamp;
+        /*
+        std::cout << "choose_init" << std::endl;
+        std::cout << t << std::endl;
+
+        std::cout << "Step_width" << std::endl;
+        std::cout << step_width << std::endl;
+        */
+
+        //std::cout << "Resampling third" << std::endl;
+
+        while( new_likelihood.size() < likelihood.size() ){
+            if(t < acc_weight[index]){
+                new_particle.poses.push_back( particle.poses[index] );
+                new_likelihood.push_back( likelihood[index] );
+
+                t += step_width;
+                if( t > acc ){
+                    t = t - acc;
+                }
+            }
+            else{
+                index += 1;
+                if(index >= int( acc_weight.size() )  ){
+                    index = 0;
+                }
+                //std::cout << index << std::endl;
+            }
+        }
+
+        //std::cout << "Particle resampling done" << std::endl;
+        
+        particle = new_particle;
+        likelihood = new_likelihood;
+    }
+
+    void MeshLocalization::publish_result(){
+        
+        estimated_pose.header.frame_id = "map";
+        particle.header.frame_id = "map";
+
+        estimated_pose.header.stamp = odom_data.header.stamp;
+        particle.header.stamp = odom_data.header.stamp;
+
+        pub_pose.publish(estimated_pose);
+        pub_particle.publish(particle);
     }
 
 }

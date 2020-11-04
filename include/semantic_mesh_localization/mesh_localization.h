@@ -5,6 +5,10 @@
 
 #include"semantic_mesh_localization/pointcloud_to_mesh.h"
 
+#include<random>
+#include<fstream>
+#include<stdlib.h>
+
 #include"geometry_msgs/PoseArray.h"
 #include"geometry_msgs/PoseStamped.h"
 
@@ -40,9 +44,13 @@ namespace semloam{
 
             void motion_update();
 
+            double rand_delta(double ave, double dev);
+
             void update_likelihood();
 
             void estimate_current_pose();
+
+            geometry_msgs::PoseStamped max_likelihood_approach();
 
             void resampling_particle();
 
@@ -53,6 +61,12 @@ namespace semloam{
             image_transport::Subscriber image_sub;
 
             ros::Subscriber sub_odometry;
+            ros::Publisher pub_particle;
+            ros::Publisher pub_pose;
+
+            tf::TransformListener listener;
+            tf::TransformBroadcaster br;
+            geometry_msgs::TransformStamped car_state;
 
             cv_bridge::CvImagePtr segimage;
 
@@ -68,6 +82,17 @@ namespace semloam{
             geometry_msgs::PoseStamped estimated_pose; //estimated vehicle pose
             geometry_msgs::PoseArray particle; // particle
             std::vector<double> likelihood;
+
+            //for motion_update() function
+            double dx_dev = 0.1; //launch xdev
+            double dy_dev = 0.1; //launch ydev
+            double dz_dev = 0.1; //launch zdev
+
+            double droll_dev = 0.01; //launch rolldev
+            double dpitch_dev = 0.01; //launch pitchdev
+            double dyaw_dev = 0.01; //launch yawdev
+
+
     };
 
 }
