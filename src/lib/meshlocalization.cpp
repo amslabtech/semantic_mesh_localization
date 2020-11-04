@@ -11,6 +11,15 @@ namespace semloam{
             sub_odometry = node.subscribe<nav_msgs::Odometry>
                 ("/odom_pose", 1, &MeshLocalization::odometry_callback, this);
 
+            pub_pose = node.advertise<geometry_msgs::Pose>("/estimated_pose", 1);
+            pub_particle = node.advertise<geometry_msgs::PoseArray>("/particle", 1);
+
+            estimated_pose.header.frame_id = "map";
+            particle.header.frame_id = "map";
+
+            car_state.header.frame_id = "map";
+            car_state.child_frame_id = "estimated_pose";
+
         }
 
     MeshLocalization::~MeshLocalization(){}
@@ -89,6 +98,7 @@ namespace semloam{
         }
 
         int iparam;
+        double dparam;
 
         if( privateNode.getParam("particlenumber", iparam )){
                 if(iparam < 1){
@@ -103,6 +113,66 @@ namespace semloam{
                     ROS_INFO("Set number of particle: %d", iparam);
                     particlenumber = iparam;
                 }
+        }
+
+        if( privateNode.getParam("xdev", dparam) ){
+            if(dparam <= 0.0 ){
+                ROS_ERROR("Invalid delta x diviation");
+                return false;
+            }
+            else{
+                dx_dev = dparam;
+            }
+        }
+
+        if( privateNode.getParam("ydev" , dparam ) ){
+            if(dparam <= 0.0){
+                ROS_ERROR("Invalid delta y diviation");
+                return false;
+            }
+            else{
+                dy_dev = dparam;
+            }
+        }
+
+        if( privateNode.getParam("zdev" , dparam) ){
+            if(dparam <= 0.0 ){
+                ROS_ERROR("Invalid delta z diviation");
+                return false;
+            }
+            else{
+                dz_dev = dparam;
+            }
+        }
+
+        if( privateNode.getParam("rolldev" , dparam )){
+            if(dparam <= 0.0 ){
+                ROS_ERROR("Invalid delta roll diviation");
+                return false;
+            }
+            else{
+                droll_dev = dparam;
+            }
+        }
+
+        if( privateNode.getParam("pitchdev", dparam) ){
+            if(dparam <= 0.0){
+                ROS_ERROR("Invalid delta pitch diviation");
+                return false;
+            }
+            else{
+                dpitch_dev = dparam;
+            }
+        }
+
+        if( privateNode.getParam("yawdev", dparam) ){
+            if(dparam <= 0.0){
+                ROS_ERROR("Invalid delta yaw diviation");
+                return false;
+            }
+            else{
+                dyaw_dev = dparam;
+            }
         }
 
         std::cout << "Mesh map setup is done..." << std::endl;
@@ -174,6 +244,8 @@ namespace semloam{
         ros::Rate loop_rate(1.0);
         while( ros::ok() ){
 
+            ros::spinOnce();//catch odometry and image data
+
             motion_update();
 
             update_likelihood();
@@ -188,8 +260,47 @@ namespace semloam{
         }
     }
 
+    double MeshLocalization::rand_delta(double ave, double dev){
+        double number = 0.0;
+
+        std::random_device seed_gen;
+        std::default_random_engine engine( seed_gen() );
+
+        std::normal_distribution<> dist(ave,dev);
+
+        number = dist(engine);
+
+        return number;
+    }
+
     void MeshLocalization::motion_update(){
-        //
+
+        for(int i=0; i < particle.poses.size(); i++){
+            //Get XYZ
+            particle.poses[i].position.x = 
+                particle.poses[i].position.x + rand_delta(odom_trans.dx, dx_dev);
+            particle.poses[i].position.y = 
+                particle.poses[i].position.y + rand_delta(odom_trans.dy, dy_dev);
+            particle.poses[i].position.z = 
+                particle.poses[i].position.z + rand_delta(odom_trans.dz, dz_dev);
+
+            //get Quaternion from RPY trans
+            tf::Quaternion quat;
+            quaternionMsgToTF( particle.poses[i].orientation , quat );
+
+            double roll, pitch, yaw;
+            tf::Matrix3x3( quat ).getRPY( roll , pitch , yaw );
+
+            roll = roll + rand_delta( odom_trans.droll , droll_dev );
+            pitch = pitch + rand_delta( odom_trans.dpitch , dpitch_dev );
+            yaw = yaw + rand_delta( odom_trans.dyaw , dyaw_dev );
+
+            tf::Quaternion new_quat = tf::createQuaternionFromRPY( roll , pitch , yaw );
+            geometry_msgs::Quaternion geo_quat;
+            quaternionTFToMsg( new_quat , geo_quat );
+            particle.poses[i].orientation = geo_quat;
+
+        }
     }
 
     void MeshLocalization::update_likelihood(){
@@ -205,7 +316,22 @@ namespace semloam{
     }
 
     void MeshLocalization::publish_result(){
-        //
+        
+        estimated_pose.header.stamp = odom_data.header.stamp;
+        particle.header.stamp = odom_data.header.stamp;
+
+        pub_pose.publish(estimated_pose);
+        pub_particle.publish(particle);
+
+        car_state.header.stamp = odom_data.header.stamp;
+        car_state.transform.translation.x = estimated_pose.pose.position.x;
+        car_state.transform.translation.y = estimated_pose.pose.position.y;
+        car_state.transform.translation.z = estimated_pose.pose.position.z;
+        car_state.transform.rotation = estimated_pose.pose.orientation;
+
+        br.sendTransform( car_state );
+
+
     }
 
 }
