@@ -26,7 +26,12 @@ namespace semloam{
 
     void MeshLocalization::segmented_image_callback(const sensor_msgs::ImageConstPtr& msg){
         
-        segimage = cv_bridge::toCvCopy( msg, sensor_msgs::image_encodings::BGR8);
+        cv_bridge::CvImagePtr seg_ptr=cv_bridge::toCvCopy(msg,sensor_msgs::image_encodings::BGR8);
+
+        cv::cvtColor( seg_ptr->image , segimage , cv::COLOR_RGB2BGRA );
+
+        cv::resize(segimage, segimage , cv::Size() , 0.5 , 0.5 );
+
         std::cout << "catch odom data" << std::endl;
     }
 
@@ -62,7 +67,10 @@ namespace semloam{
         trans.droll = nroll - lroll;
         trans.dpitch = npitch - lpitch;
         trans.dyaw = nyaw - lyaw;
-/*
+
+
+
+        /*
         std::cout << "odom" << std::endl << odom << std::endl << "last_odom" << std::endl << last_odom << std::endl;
 
         std::cout << "trans dx dy dz droll dpitch dyaw" << std::endl;
@@ -72,7 +80,8 @@ namespace semloam{
         std::cout << trans.droll << std::endl;
         std::cout << trans.dpitch << std::endl;
         std::cout << trans.dyaw << std::endl;
-*/
+        */
+
         return trans;
     }
 
@@ -85,7 +94,6 @@ namespace semloam{
                 && msg -> pose.pose.orientation.y == 0.0
                 && msg -> pose.pose.orientation.z == 0.0
                 && msg -> pose.pose.orientation.w == 0.0
-                && first_odom_checker == false
           ){//If odometry data is not broadcasted, all data of odometry will be 0.0
             //Do nothing
         }
@@ -120,19 +128,39 @@ namespace semloam{
         int iparam;
         double dparam;
 
+        if( privateNode.getParam("imageheight", iparam) ){
+            if(iparam < 1){
+                ROS_ERROR("Invalid Image height parameter");
+                return false;
+            }
+            else{
+                image_height = iparam;
+            }
+        }
+
+        if( privateNode.getParam("imagewidth", iparam ) ){
+            if(iparam < 1){
+                ROS_ERROR("Invalid Image width parameter");
+                return false;
+            }
+            else{
+                image_width = iparam;
+            }
+        }
+
         if( privateNode.getParam("particlenumber", iparam )){
-                if(iparam < 1){
-                    ROS_ERROR("Invalid particle number, program abort");
-                    return false;
-                }
-                else if(iparam > 0 && iparam <15){
-                    ROS_ERROR("Number of particle is valid, but too littele for localization");
-                    particlenumber = iparam;
-                }
-                else{
-                    ROS_INFO("Set number of particle: %d", iparam);
-                    particlenumber = iparam;
-                }
+            if(iparam < 1){
+                ROS_ERROR("Invalid particle number, program abort");
+                return false;
+            }
+            else if(iparam > 0 && iparam <15){
+                ROS_ERROR("Number of particle is valid, but too littele for localization");
+                particlenumber = iparam;
+            }
+            else{
+                ROS_INFO("Set number of particle: %d", iparam);
+                particlenumber = iparam;
+            }
         }
 
         if( privateNode.getParam("xdev", dparam) ){
@@ -266,23 +294,24 @@ namespace semloam{
         ros::Rate loop_rate(1.0);
         while( ros::ok() ){
 
-            //std::cout << "Catch ROS data" << std::endl;
+            std::cout << "Catch ROS data" << std::endl;
             ros::spinOnce();//catch odometry and image data
 
-            //std::cout << "Motion update" << std::endl;
+            std::cout << "Motion update" << std::endl;
             motion_update();//Create prior distribution
 
-            //std::cout << "Update likelihood" << std::endl;
+            std::cout << "Update likelihood" << std::endl;
             update_likelihood();//Observe and create posterior distribution
 
-            //std::cout << "Estimate current pose" << std::endl;
+            std::cout << "Estimate current pose" << std::endl;
             estimate_current_pose();//estimate current pose
 
-            //std::cout << "Resampling particle" << std::endl;
+            std::cout << "Publish result" << std::endl;
+            publish_result();//publish as ros data EXCEPT POINTCLOUD MAP
+
+            std::cout << "Resampling particle" << std::endl;
             resampling_particle();//resampling
 
-            //std::cout << "Publish result" << std::endl;
-            publish_result();//publish as ros data EXCEPT POINTCLOUD MAP
 
             loop_rate.sleep();
         }
@@ -296,7 +325,8 @@ namespace semloam{
         std::normal_distribution<double> dist(ave,dev);
 
         double number = dist(engine);
-/*
+
+        /*
         std::cout << "AVE" << std::endl;
         std::cout << ave << std::endl;
 
@@ -305,7 +335,8 @@ namespace semloam{
 
         std::cout << "Number" << std::endl;
         std::cout << number << std::endl;
-*/
+        */
+
         return number;
     }
 
@@ -321,8 +352,10 @@ namespace semloam{
             particle.poses[i].position.z = 
                 particle.poses[i].position.z + rand_delta(odom_trans.dz, dz_dev);
 
-            //std::cout << "poses" << std::endl;
-            //std::cout << particle.poses[i] << std::endl;
+            /*
+            std::cout << "poses" << std::endl;
+            std::cout << particle.poses[i] << std::endl;
+            */
 
             //get Quaternion from RPY trans
             tf::Quaternion quat;
@@ -359,17 +392,70 @@ namespace semloam{
 */
             geometry_msgs::Quaternion geo_quat;
             quaternionTFToMsg( new_quat , geo_quat );
-/*
+
+            /*
             std::cout << "Geometry_msgs quaternion" << std::endl;
             std::cout << geo_quat << std::endl;
-*/
+            */
+
             particle.poses[i].orientation = geo_quat;
 
         }
     }
 
+    double MeshLocalization::get_likelihood(geometry_msgs::Pose pose){
+
+        double score = 0.0;
+
+        if(     pose.orientation.x == 0.0 &&
+                pose.orientation.y == 0.0 &&
+                pose.orientation.z == 0.0 &&
+                pose.orientation.w == 0.0   ){
+
+            score =  0.0;
+        
+        }
+        else{
+            double roll, pitch, yaw;
+            tf::Quaternion quat_tf;
+            quaternionMsgToTF( pose.orientation , quat_tf );
+            tf::Matrix3x3( quat_tf ).getRPY( roll , pitch , yaw );
+            
+            tf::Vector3 axis = quat_tf.getAxis();
+            /*
+            viewer.setCameraPosition(
+                    pose.position.x,
+                    pose.position.y,
+                    pose.position.z,
+                    0.0,
+                    0.0,
+                    1.0  );
+                    */
+
+
+        }
+
+
+
+
+        score = ( (double)rand() / ((double)RAND_MAX + 1) );
+        return score;
+    }
+
     void MeshLocalization::update_likelihood(){
-        //
+        
+        double total_likelihood = 0.0;
+
+        for(size_t i=0; i<likelihood.size(); i++){
+            likelihood[i] = get_likelihood( particle.poses[i] );
+            total_likelihood += likelihood[i];
+        }
+
+        //Normalize likelihood
+        for(size_t i=0; i<likelihood.size(); i++){
+            likelihood[i] = likelihood[i] / total_likelihood;
+        }
+
     }
 
     geometry_msgs::PoseStamped MeshLocalization::max_likelihood_approach(){
@@ -378,7 +464,7 @@ namespace semloam{
         estimated_pose.header.frame_id = "map";
         estimated_pose.header.stamp = odom_data.header.stamp;
 
-        double tmp_likelihood = -0.000001;
+        double tmp_likelihood = -0.1;
         for(size_t i=0; i<particle.poses.size(); i++){
 
             if( likelihood[i] > tmp_likelihood ){
@@ -388,6 +474,11 @@ namespace semloam{
                 estimated_pose.pose.orientation = particle.poses[i].orientation;
             }
         }
+
+        /*
+        std::cout << "estimated pose" << std::endl;
+        std::cout << estimated_pose << std::endl;
+        */
 
         return estimated_pose;
     }
@@ -403,6 +494,10 @@ namespace semloam{
         car_state.transform.translation.z = estimated_pose.pose.position.z;
         car_state.transform.rotation = estimated_pose.pose.orientation;
 
+        /*
+        std::cout << "Car state" << std::endl;
+        std::cout << car_state << std::endl;
+        */
         br.sendTransform( car_state );
     }
 

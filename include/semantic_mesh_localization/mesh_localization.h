@@ -48,6 +48,8 @@ namespace semloam{
 
             void update_likelihood();
 
+            double get_likelihood(geometry_msgs::Pose pose);
+
             void estimate_current_pose();
 
             geometry_msgs::PoseStamped max_likelihood_approach();
@@ -68,7 +70,8 @@ namespace semloam{
             tf::TransformBroadcaster br;
             geometry_msgs::TransformStamped car_state;
 
-            cv_bridge::CvImagePtr segimage;
+            //cv_bridge::CvImagePtr segimage;
+            cv::Mat segimage;
 
             nav_msgs::Odometry odom_data;
             nav_msgs::Odometry last_odom_data;
@@ -91,6 +94,10 @@ namespace semloam{
             double droll_dev = 0.01; //launch rolldev
             double dpitch_dev = 0.01; //launch pitchdev
             double dyaw_dev = 0.01; //launch yawdev
+
+            //Image size data
+            int image_height = 376;
+            int image_width = 1241;
 
 
     };
