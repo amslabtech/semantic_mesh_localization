@@ -430,7 +430,7 @@ namespace semloam{
                             rota[2][0], rota[2][1] , rota[2][2], place[2],
                                    0.0,        0.0 ,        0.0,      1.0;
 
-            Eigen::Vector4f slide(1.0 , 0.0, 0.0, 1.0);
+            Eigen::Vector4f slide(0.2 , 0.0, 0.0, 1.0);
 
             Eigen::Vector4f new_pos = particle_pos * slide;
 
