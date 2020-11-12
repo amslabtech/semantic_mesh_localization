@@ -403,6 +403,39 @@ namespace semloam{
         }
     }
 
+    void MeshLocalization::change_camera_position_for_particle(pcl::visualization::PCLVisualizer& viewer , geometry_msgs::Pose pose){
+        //a
+        tf::Quaternion quat_tf;
+        quaternionMsgToTF( pose.orientation , quat_tf );
+
+        tf::Matrix3x3 rota;
+        rota.setRotation( quat_tf );
+        tf::Vector3 place;
+        place.setValue( pose.position.x , pose.position.y , pose.position.z );
+
+        Eigen::Matrix4f particle_pos;
+        particle_pos << rota[0][0], rota[0][1] , rota[0][2], place[0],
+                        rota[1][0], rota[1][1] , rota[1][2], place[1],
+                        rota[2][0], rota[2][1] , rota[2][2], place[2],
+                               0.0,        0.0 ,        0.0,      1.0;
+        Eigen::Vector4f slide(0.2 , 0.0, 0.0, 1.0);
+        Eigen::Vector4f new_pos = particle_pos * slide;
+        viewer.setCameraPosition(
+                pose.position.x,
+                pose.position.y,
+                pose.position.z,
+                new_pos[0],
+                new_pos[1],
+                new_pos[2],
+                0.0,
+                0.0,
+                1.0);
+    }
+
+    void MeshLocalization::get_image_from_pcl_visualizer(){
+        //a
+    }
+
     double MeshLocalization::get_likelihood(geometry_msgs::Pose pose){
 
         double score = 0.0;
@@ -416,37 +449,9 @@ namespace semloam{
         
         }
         else{
-            tf::Quaternion quat_tf;
-            quaternionMsgToTF( pose.orientation , quat_tf );
 
-            tf::Matrix3x3 rota;
-            rota.setRotation( quat_tf );
-            tf::Vector3 place;
-            place.setValue( pose.position.x , pose.position.y , pose.position.z );
-
-            Eigen::Matrix4f particle_pos;
-            particle_pos << rota[0][0], rota[0][1] , rota[0][2], place[0],
-                            rota[1][0], rota[1][1] , rota[1][2], place[1],
-                            rota[2][0], rota[2][1] , rota[2][2], place[2],
-                                   0.0,        0.0 ,        0.0,      1.0;
-
-            Eigen::Vector4f slide(0.2 , 0.0, 0.0, 1.0);
-
-            Eigen::Vector4f new_pos = particle_pos * slide;
-
-
-
-            viewer.setCameraPosition(
-                    pose.position.x,
-                    pose.position.y,
-                    pose.position.z,
-                    new_pos[0],
-                    new_pos[1],
-                    new_pos[2],
-                    0.0,
-                    0.0,
-                    1.0);
-
+            change_camera_position_for_particle( viewer , pose );
+            get_image_from_pcl_visualizer();
 
         }
 

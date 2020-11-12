@@ -313,6 +313,7 @@ namespace semloam{
 		std::cout << "Config viewer init parameter except place" << std::endl;
 
 		viewer.initCameraParameters();
+        viewer.setSize(1241.0/2.0 , 376.0/2.0);
 
 	}
 

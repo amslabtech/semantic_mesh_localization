@@ -50,6 +50,10 @@ namespace semloam{
 
             double get_likelihood(geometry_msgs::Pose pose);
 
+            void change_camera_position_for_particle(pcl::visualization::PCLVisualizer& viewer, geometry_msgs::Pose pose);
+
+            void get_image_from_pcl_visualizer();
+
             void estimate_current_pose();
 
             geometry_msgs::PoseStamped max_likelihood_approach();
