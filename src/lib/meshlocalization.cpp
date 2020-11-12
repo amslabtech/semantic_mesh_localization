@@ -446,17 +446,49 @@ namespace semloam{
 
         double score = 0.0;
 
+        int map_channel = mapimage.channels();
+        uint8_t* mapimptr = (uint8_t*)mapimage.data;
+        int map_r, map_g, map_b;
+
+        int seg_channel = segimage.channels();
+        uint8_t* segimptr = (uint8_t*)segimage.data;
+        int seg_r, seg_g, seg_b;
+
+        int diff_r, diff_g, diff_b;
+
         if(     mapimage.rows == segimage.rows &&
                 mapimage.cols == segimage.cols    ){
 
 
             for(int i=0; i<mapimage.rows; i++){
                 for(int j=0; j<mapimage.cols; j++){
-                    //a
-                    }
+
+                    map_b = mapimptr[ i*mapimage.cols*map_channel + j*map_channel + 0];
+                    map_g = mapimptr[ i*mapimage.cols*map_channel + j*map_channel + 1];
+                    map_r = mapimptr[ i*mapimage.cols*map_channel + j*map_channel + 2];
+
+                    seg_b = segimptr[ i*segimage.cols*seg_channel + j*seg_channel + 0];
+                    seg_g = segimptr[ i*segimage.cols*seg_channel + j*seg_channel + 1];
+                    seg_r = segimptr[ i*segimage.cols*seg_channel + j*seg_channel + 2];
+
+                    if( map_b==0 && map_g==0 && map_r==0) continue;
+                    if( seg_b==0 && seg_g==0 && seg_r==0) continue;
+
+                    diff_r = std::abs( seg_r - map_r );
+                    if( diff_r > 10 ) diff_r = 100;
+
+                    diff_g = std::abs( seg_g - map_g );
+                    if( diff_g > 10 ) diff_g = 100;
+
+                    diff_b = std::abs( seg_b - map_b );
+                    if( diff_b > 10 ) diff_b = 100;
+
+                    double tmp_score = 10.0 - double(diff_r) - double(diff_g) - double(diff_b);
+                    if(tmp_score < 0.0) tmp_score = 0.0;
+
+                    score += tmp_score;
+                }
             }
-
-
         }
         else{
             ROS_ERROR("Image size between Segimage and Mapimage is different");
@@ -468,8 +500,6 @@ namespace semloam{
             std::cout << "Mapimage" << std::endl;
             std::cout << "Row: " << mapimage.rows << std::endl;
             std::cout << "Col: " << mapimage.cols << std::endl;
-
-
         }
 
         return score;
@@ -496,7 +526,7 @@ namespace semloam{
         }
 
         
-        score = ( (double)rand() / ((double)RAND_MAX + 1) ); //for test
+        //score = ( (double)rand() / ((double)RAND_MAX + 1) ); //for test
         return score;
     }
 
