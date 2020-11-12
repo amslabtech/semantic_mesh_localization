@@ -433,7 +433,13 @@ namespace semloam{
     }
 
     void MeshLocalization::get_image_from_pcl_visualizer(){
-        //a
+        
+        vtkSmartPointer<vtkRenderWindow> render = viewer.getRenderWindow();
+        std::unique_ptr<uchar> pixels( render->GetRGBACharPixelData( 0, 0, render->GetSize()[0]-1, render->GetSize()[1]-1, 1) );
+
+        mapimage = cv::Mat(render->GetSize()[1], render->GetSize()[0], CV_8UC4, &pixels.get()[0] );
+        cv::cvtColor( mapimage , mapimage , cv::COLOR_RGBA2BGRA);
+
     }
 
     double MeshLocalization::get_likelihood(geometry_msgs::Pose pose){

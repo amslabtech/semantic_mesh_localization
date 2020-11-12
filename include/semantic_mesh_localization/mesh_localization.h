@@ -75,7 +75,8 @@ namespace semloam{
             geometry_msgs::TransformStamped car_state;
 
             //cv_bridge::CvImagePtr segimage;
-            cv::Mat segimage;
+            cv::Mat segimage; //Segmented Image from Camera data
+            cv::Mat mapimage; //Image from Semantic Mesh Map
 
             nav_msgs::Odometry odom_data;
             nav_msgs::Odometry last_odom_data;
