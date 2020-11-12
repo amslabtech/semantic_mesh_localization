@@ -21,8 +21,11 @@ netHandler::netHandler(ros::NodeHandle& nodeHandle)
   }
 
   // Subscribe to images to infer
+  /*img_subscriber_ =
+      it_.subscribe(img_subscriber_topic_, 1, &netHandler::imageCallback, this);*/
   img_subscriber_ =
-      it_.subscribe(img_subscriber_topic_, 1, &netHandler::imageCallback, this);
+      it_.subscribe("/semantickitti/camera_color_right/image_raw", 1, &netHandler::imageCallback, this);
+
 
   // Advertise our topics
   bgr_publisher_ = it_.advertise(bgr_publisher_topic_, 1);

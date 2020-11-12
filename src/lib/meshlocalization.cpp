@@ -6,7 +6,7 @@ namespace semloam{
         : it_(node){
 
             image_sub = it_.subscribe
-                ("/image_view/output" , 1, &MeshLocalization::segmented_image_callback, this);
+                ("/bonnet/bgr" , 1, &MeshLocalization::segmented_image_callback, this);
 
             sub_odometry = node.subscribe<nav_msgs::Odometry>
                 ("/odom_pose", 1, &MeshLocalization::odometry_callback, this);
@@ -442,6 +442,39 @@ namespace semloam{
 
     }
 
+    double MeshLocalization::compare_image_pixelwise(){
+
+        double score = 0.0;
+
+        if(     mapimage.rows == segimage.rows &&
+                mapimage.cols == segimage.cols    ){
+
+
+            for(int i=0; i<mapimage.rows; i++){
+                for(int j=0; j<mapimage.cols; j++){
+                    //a
+                    }
+            }
+
+
+        }
+        else{
+            ROS_ERROR("Image size between Segimage and Mapimage is different");
+
+            std::cout << "Segimage" << std::endl;
+            std::cout << "Row: " << segimage.rows << std::endl;
+            std::cout << "Col: " << segimage.cols << std::endl;
+
+            std::cout << "Mapimage" << std::endl;
+            std::cout << "Row: " << mapimage.rows << std::endl;
+            std::cout << "Col: " << mapimage.cols << std::endl;
+
+
+        }
+
+        return score;
+    }
+
     double MeshLocalization::get_likelihood(geometry_msgs::Pose pose){
 
         double score = 0.0;
@@ -459,12 +492,11 @@ namespace semloam{
             change_camera_position_for_particle( viewer , pose );
             get_image_from_pcl_visualizer();
 
+            score = compare_image_pixelwise();
         }
 
-
-
-
-        score = ( (double)rand() / ((double)RAND_MAX + 1) );
+        
+        score = ( (double)rand() / ((double)RAND_MAX + 1) ); //for test
         return score;
     }
 

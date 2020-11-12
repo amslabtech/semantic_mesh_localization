@@ -54,6 +54,8 @@ namespace semloam{
 
             void get_image_from_pcl_visualizer();
 
+            double compare_image_pixelwise();
+
             void estimate_current_pose();
 
             geometry_msgs::PoseStamped max_likelihood_approach();

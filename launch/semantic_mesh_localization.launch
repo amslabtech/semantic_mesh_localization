@@ -1,0 +1,16 @@
+<launch>                                                                                             
+    <!-- Launch ROS Node for net handler with all the desired parameters-->
+    <node pkg="semantic_mesh_localization" type="bonnet_node" name="bonnet_node" output="screen">
+        <!-- Topics -->
+        <rosparam command="load" file="$(find bonnet_run)/config/topic_cfg.yaml" />
+        <!-- CNN stuff -->
+        <rosparam command="load" file="$(find bonnet_run)/config/cnn_cfg.yaml" />
+    </node>
+
+    <node pkg="semantic_mesh_localization" type="mesh_localization" name="mesh_localization" output="screen"> 
+    </node>
+        
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find semantic_mesh_localization)/config/test_building_map.rviz" />
+    
+</launch> 
+
