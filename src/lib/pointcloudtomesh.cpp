@@ -231,7 +231,7 @@ namespace semloam{
 		}
 	}
 
-	bool PcToMesh::classify(const pcl::PointXYZRGB& point, const color_data& color_id){
+	bool PcToMesh::classify(pcl::PointXYZRGB& point, const color_data& color_id){
 		if(color_id.r==0 && color_id.g==0 && color_id.b==0){
 			//unlabeled.push_back(point);
 		}
@@ -239,21 +239,36 @@ namespace semloam{
 			//outlier.push_back(point);
 		}
 		else if(color_id.r==100 && color_id.g==150 && color_id.b==245){
+            point.b = 142;
+            point.g = 0;
+            point.r = 0;
 			car.push_back(point);
 		}
 		else if(color_id.r==100 && color_id.g==230 && color_id.b==245){
+            point.b = 32;
+            point.g = 11;
+            point.r = 119;
 			bicycle.push_back(point);
 		}
 		else if(color_id.r==100 && color_id.g==80 && color_id.b==250){
+            point.b = 100;
+            point.g = 60;
+            point.r = 0;
 			bus.push_back(point);
 		}
 		else if(color_id.r==30 && color_id.g==60 && color_id.b==150){
+            point.b = 230;
+            point.g = 0;
+            point.r = 0;
 			motorcycle.push_back(point);
 		}
 		else if(color_id.r==0 && color_id.g==0 && color_id.b==255){
 			onrails.push_back(point);
 		}
 		else if(color_id.r==80 && color_id.g==30 && color_id.b==180){
+            point.b = 70;
+            point.g = 0;
+            point.r = 0;
 			truck.push_back(point);
 		}
 		else if(color_id.r==255 && color_id.g==30 && color_id.b==30){
@@ -266,21 +281,33 @@ namespace semloam{
 			//motorcyclist.push_back(point);
 		}
 		else if(color_id.r==255 && color_id.g==0 && color_id.b==255){
+            point.b = 128;
+            point.g = 64;
+            point.r = 128;
 			road.push_back(point);
 		}
 		else if(color_id.r==255 && color_id.g==150 && color_id.b==255){
 			parking.push_back(point);
 		}
 		else if(color_id.r==75 && color_id.g==0 && color_id.b==75){
+            point.b = 232;
+            point.g = 35;
+            point.r = 244;
 			sidewalk.push_back(point);
 		}
 		else if(color_id.r==175 && color_id.g==0 && color_id.b==75){
 			otherground.push_back(point);
 		}
 		else if(color_id.r==255 && color_id.g==200 && color_id.b==0){
+            point.b = 70;
+            point.g = 70;
+            point.r = 70;
 			building.push_back(point);
 		}
 		else if(color_id.r==255 && color_id.g==120 && color_id.b==50){
+            point.b = 153;
+            point.g = 153;
+            point.r = 190;
 			fence.push_back(point);
 		}
 		else if(color_id.r==255 && color_id.g==150 && color_id.b==0){
@@ -290,18 +317,30 @@ namespace semloam{
 			lanemarking.push_back(point);
 		}
 		else if(color_id.r==0 && color_id.g==175 && color_id.g==0){
+            point.b = 35;
+            point.g = 142;
+            point.r = 107;
 			vegetation.push_back(point);
 		}
 		else if(color_id.r==135 && color_id.g==60 && color_id.b==0){
 			trunk.push_back(point);
 		}
 		else if(color_id.r==150 && color_id.g==240 && color_id.b==80){
+            point.b = 152;
+            point.g = 251;
+            point.r = 152;
 			terrain.push_back(point);
 		}
 		else if(color_id.r==255 && color_id.g==240 && color_id.b==150){
+            point.b = 153;
+            point.g = 153;
+            point.r = 153;
 			pole.push_back(point);
 		}
 		else if(color_id.r==255 && color_id.g==0 && color_id.b==0){
+            point.b = 0;
+            point.g = 220;
+            point.r = 220;
 			trafficsign.push_back(point);
 		}
 

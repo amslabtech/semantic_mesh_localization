@@ -6,7 +6,7 @@ namespace semloam{
         : it_(node){
 
             image_sub = it_.subscribe
-                ("/bonnet/bgr" , 1, &MeshLocalization::segmented_image_callback, this);
+                ("/bonnet/color_mask" , 1, &MeshLocalization::segmented_image_callback, this);
 
             sub_odometry = node.subscribe<nav_msgs::Odometry>
                 ("/odom_pose", 1, &MeshLocalization::odometry_callback, this);

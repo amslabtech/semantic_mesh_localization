@@ -50,7 +50,7 @@ namespace semloam{
 
 			void classify_pointcloud();
 
-			bool classify(const pcl::PointXYZRGB& point, const color_data& color_id);
+			bool classify(pcl::PointXYZRGB& point, const color_data& color_id);
 
 			void generate_mesh(pcl::visualization::PCLVisualizer& viewer);
 
