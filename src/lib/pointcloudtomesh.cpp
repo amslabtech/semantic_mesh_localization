@@ -389,7 +389,7 @@ namespace semloam{
 		}
 
 		if(parking.size() > 10 ){
-			generate_semantic_mesh(viewer, parking, "parking", 0.35, 600);
+			generate_semantic_mesh(viewer, parking, "parking", 0.55, 600);
 		}
 
 		if(sidewalk.size() > 10){
@@ -401,7 +401,7 @@ namespace semloam{
 		}
 
 		if(building.size() > 10){
-			generate_semantic_mesh(viewer, building, "building", 0.40, 900);
+			generate_semantic_mesh(viewer, building, "building", 0.60, 1000);
 		}
 
 		if(fence.size() > 10){
@@ -437,7 +437,7 @@ namespace semloam{
 		}
 
 		if(road.size() > 10 ){
-			generate_semantic_mesh(viewer, road, "road", 0.40, 800);
+			generate_semantic_mesh(viewer, road, "road", 0.60, 1000);
 		}
 
 	}
