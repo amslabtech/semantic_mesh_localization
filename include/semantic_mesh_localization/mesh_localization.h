@@ -6,6 +6,7 @@
 #include"semantic_mesh_localization/pointcloud_to_mesh.h"
 
 #include<random>
+#include<iostream>
 #include<fstream>
 #include<stdlib.h>
 
@@ -64,6 +65,8 @@ namespace semloam{
 
             void publish_result();
 
+            void publish_as_csv(std::ofstream& groundtruth_csv, std::ofstream& odometry_csv, std::ofstream& estimated_csv);
+
         private:
             image_transport::ImageTransport it_;
             image_transport::Subscriber image_sub;
@@ -105,6 +108,13 @@ namespace semloam{
             //Image size data
             int image_height = 376;
             int image_width = 1241;
+
+            bool publish_csv_checker = false;
+            std::string groundtruth_path = "/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/groundtruth.csv";
+            std::string odometry_path = "/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/odometry.csv";
+            std::string estimated_path = "/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/estimated.csv";
+
+            tf::StampedTransform map_to_groundtruth;
 
 
     };

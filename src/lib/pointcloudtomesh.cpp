@@ -175,7 +175,7 @@ namespace semloam{
 		
 		bool load_checker = true;
 
-		while(load_checker==true){
+		while(load_checker==true /* && load_counter < 2 */ ){
 			std::string number = std::to_string(load_counter);
 
 			std::string file = file_path + file_name + "_" + file_type + number + ".pcd";
@@ -352,7 +352,7 @@ namespace semloam{
 		std::cout << "Config viewer init parameter except place" << std::endl;
 
 		viewer.initCameraParameters();
-        viewer.setSize(1241.0/2.0 , 376.0/2.0);
+        viewer.setSize( 620.0, 188.0);
 
 	}
 

@@ -127,6 +127,48 @@ namespace semloam{
 
         int iparam;
         double dparam;
+        bool bparam;
+        std::string sparam;
+
+        if( privateNode.getParam("GroundtruthPath", sparam)){
+            if(sparam.length() < 1){
+                ROS_ERROR("Invalid Groundtruth file path");
+                return false;
+            }
+            else{
+                groundtruth_path = sparam;
+            }
+        }
+        
+        if( privateNode.getParam("OdometryPath", sparam)){
+            if(sparam.length() < 1){
+                ROS_ERROR("Invalid Odometry file path");
+                return false;
+            }
+            else{
+                odometry_path = sparam;
+            }
+        }
+
+        if( privateNode.getParam("EstimatedPath", sparam)){
+            if(sparam.length() < 1){
+                ROS_ERROR("Invalid Estimated file path");
+                return false;
+            }
+            else{
+                estimated_path = sparam;
+            }
+        }
+
+        if( privateNode.getParam("PublishCSVChecker", bparam) ){
+            if( bparam == true || bparam == false ){
+                publish_csv_checker = bparam;
+            }
+            else{
+                ROS_ERROR("Invalid PublishCSVChecker");
+                return false;
+            }
+        }   
 
         if( privateNode.getParam("imageheight", iparam) ){
             if(iparam < 1){
@@ -292,6 +334,11 @@ namespace semloam{
     void MeshLocalization::particle_filter(){
         std::cout << "Do Particle fileter" << std::endl;
         ros::Rate loop_rate(1.0);
+
+        std::ofstream groundtruth_csv(groundtruth_path);
+        std::ofstream odometry_csv(odometry_path);
+        std::ofstream estimated_csv(estimated_path);
+
         while( ros::ok() ){
 
             std::cout << "Catch ROS data" << std::endl;
@@ -309,12 +356,22 @@ namespace semloam{
             std::cout << "Publish result" << std::endl;
             publish_result();//publish as ros data EXCEPT POINTCLOUD MAP
 
+            if(publish_csv_checker == true){
+                std::cout << "Publish as CSV file" << std::endl;
+                publish_as_csv(groundtruth_csv, odometry_csv, estimated_csv);
+            }
+
             std::cout << "Resampling particle" << std::endl;
             resampling_particle();//resampling
 
 
             loop_rate.sleep();
         }
+
+        groundtruth_csv.close();
+        odometry_csv.close();
+        estimated_csv.close();
+
     }
 
     double MeshLocalization::rand_delta(double ave, double dev){
@@ -539,6 +596,13 @@ namespace semloam{
             total_likelihood += likelihood[i];
         }
 
+        if(total_likelihood < 0.001){
+            ROS_ERROR("Invalid total likelihood");
+            for(size_t i=0; i<likelihood.size(); i++){
+                likelihood[i] = ( (double)rand() / ((double)RAND_MAX + 1) );
+            }
+        }
+
         //Normalize likelihood
         for(size_t i=0; i<likelihood.size(); i++){
             likelihood[i] = likelihood[i] / total_likelihood;
@@ -679,6 +743,43 @@ namespace semloam{
         pub_pose.publish(estimated_pose);
         pub_particle.publish(particle);
     }
+
+    void MeshLocalization::publish_as_csv(std::ofstream& groundtruth_csv, std::ofstream& odometry_csv, std::ofstream& estimated_csv){
+
+        //catch groundtruth data from bag file
+        while(true){
+            try{
+                listener.waitForTransform("map" , "ground_truth", last_odom_data.header.stamp, ros::Duration(1.0));
+                listener.lookupTransform("map" , "ground_truth" , last_odom_data.header.stamp, map_to_groundtruth);
+                break;
+            }
+            catch(tf::TransformException ex){
+                ROS_ERROR("%s", ex.what() );
+                ros::Duration(0.01).sleep();
+            }
+        }
+
+        double x_gt = map_to_groundtruth.getOrigin().x();
+        double y_gt = map_to_groundtruth.getOrigin().y();
+        double z_gt = map_to_groundtruth.getOrigin().z();
+
+        groundtruth_csv << odom_data.header.stamp << "," 
+                        << x_gt << "," 
+                        << y_gt << "," 
+                        << z_gt << "," << std::endl;
+
+        odometry_csv << odom_data.header.stamp << ","
+                     << odom_data.pose.pose.position.x << ","
+                     << odom_data.pose.pose.position.y << ","
+                     << odom_data.pose.pose.position.z << "," << std::endl;
+
+        estimated_csv << odom_data.header.stamp << "," 
+                      << estimated_pose.pose.position.x << ","
+                      << estimated_pose.pose.position.y << ","
+                      << estimated_pose.pose.position.z << "," << std::endl;
+
+    }
+
 
 }
 
