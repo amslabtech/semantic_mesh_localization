@@ -30,7 +30,9 @@ namespace semloam{
 
         cv::cvtColor( seg_ptr->image , segimage , cv::COLOR_RGB2BGRA );
 
-        cv::resize(segimage, segimage , cv::Size() , 0.5 , 0.5 );
+        if(image_down_height != 1.0 && image_down_width != 1.0){
+            cv::resize(segimage, segimage , cv::Size() , image_down_width, image_down_height);
+        }
 
         std::cout << "catch odom data" << std::endl;
     }
@@ -111,6 +113,11 @@ namespace semloam{
 
         load_PCD();
         init_config_viewer_parameter(viewer);
+
+        if(image_height > 0 && image_width > 0){
+            viewer.setSize( image_width, image_height);
+        }
+
         generate_mesh(viewer);
         config_tmp_viewer_parameter(viewer);
 
@@ -187,6 +194,26 @@ namespace semloam{
             }
             else{
                 image_width = iparam;
+            }
+        }
+
+        if( privateNode.getParam("imagedownwidth", dparam) ){
+            if( dparam > 1.0 || dparam < 0.0){
+                ROS_ERROR("Invalid downsize width ratio");
+                return false;
+            }
+            else{
+                image_down_width = dparam;
+            }
+        }
+
+        if( privateNode.getParam("imagedownheight", dparam) ){
+            if(dparam > 1.0 || dparam < 0.0){
+                ROS_ERROR("Invalid downsize height ratio");
+                return false;
+            }
+            else{
+                image_down_height = dparam;
             }
         }
 

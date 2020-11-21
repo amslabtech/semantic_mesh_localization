@@ -7,13 +7,35 @@
         <rosparam command="load" file="$(find bonnet_run)/config/cnn_cfg.yaml" />
     </node>
 
+
+
+
     <node pkg="semantic_mesh_localization" type="mesh_localization" name="mesh_localization" output="screen">
         <param name="PublishCSVChecker" value="true" type="bool" />
+
+        <!-- default image size is 1241(width) and 376(height) -->
+        <param name="imagewidth" value="620" type="int"/>
+        <param name="imageheight" value="188" type="int"/>
+
+        <param name="imagedownwidth" value="0.5" type="double" />
+        <param name="imagedownheight" value="0.5" type="double" />
+
+        <param name="xdev" value="0.15" type="double"/>
+        <param name="ydev" value="0.15" type="double"/>
+        <param name="zdev" value="0.15" type="double"/>
+
+        <param name="rolldev" value="0.02" type="double"/>
+        <param name="pitchdev" value="0.02" type="double"/>
+        <param name="yawdev" value="0.02" type="double" />
+
         <param name="GroundtruthPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/groundtruth.csv" />
         <param name= "OdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/odometry.csv" />
         <param name="EstimatedPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/estimated.csv" />
   </node>
-        
+
+
+
+
     <node pkg="rviz" type="rviz" name="rviz" args="-d $(find semantic_mesh_localization)/config/semantic_mesh_localization.rviz" />
     
 </launch> 

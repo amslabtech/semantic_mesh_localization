@@ -106,8 +106,12 @@ namespace semloam{
             double dyaw_dev = 0.01; //launch yawdev
 
             //Image size data
-            int image_height = 376;
-            int image_width = 1241;
+            int image_height = 0;
+            int image_width = 0;
+
+            //Image Downsize ratio
+            double image_down_width = 1.0;
+            double image_down_height = 1.0;
 
             bool publish_csv_checker = false;
             std::string groundtruth_path = "/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/groundtruth.csv";
