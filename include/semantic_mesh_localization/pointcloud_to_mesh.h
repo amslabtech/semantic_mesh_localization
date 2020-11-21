@@ -7,6 +7,7 @@
 #include <pcl/visualization/cloud_viewer.h>
 #include <pcl/io/io.h>
 #include <pcl/io/pcd_io.h>
+#include <pcl/io/ply_io.h>
 #include"pcl/point_cloud.h"
 #include"pcl/point_types.h"
 #include"util.h"
@@ -36,9 +37,9 @@ namespace semloam{
 	class PcToMesh{
 		
 		public:
-			//PcToMesh(ros::NodeHandle& node, ros::NodeHandle& privateNode);
+			PcToMesh();
 
-            //virtual ~PcToMesh();
+            virtual ~PcToMesh();
 
 			bool setup(ros::NodeHandle& node,ros::NodeHandle& privateNode);
 
@@ -85,9 +86,13 @@ namespace semloam{
 
         public:
 
-			std::string file_path = "/home/amsl/catkin_ws/src/semantic_mesh_loam/PCD_data/";
+			std::string file_path = "/home/amsl/PCD_data/";
 			std::string file_name = "semantic_mesh_loam";
 			std::string file_type = "ascii"; //ascii or binary
+
+            bool save_polygon_data = true;
+            std::string polygon_path = "/home/amsl/Polygon_data/sequence00/";
+            std::string polygon_name = "polygon_mesh_";
 
 			bool pcl_mesh_visualize_checker = true;
 			bool ros_mesh_visualize_checker = false;
@@ -124,6 +129,10 @@ namespace semloam{
 			pcl::PointCloud<pcl::PointXYZRGB> terrain;
 			pcl::PointCloud<pcl::PointXYZRGB> pole;
 			pcl::PointCloud<pcl::PointXYZRGB> trafficsign;
+
+            const size_t pc_size_big = 100000;
+            const size_t pc_size_mid =  50000;
+            const size_t pc_size_min =  10000;
 
 
 	};

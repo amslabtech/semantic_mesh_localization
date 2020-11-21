@@ -1,8 +1,8 @@
 #include"semantic_mesh_localization/pointcloud_to_mesh.h"
 
 namespace semloam{
-/*
-	PcToMesh::PcToMesh(ros::NodeHandle& node, ros::NodeHandle& privateNode)
+
+	PcToMesh::PcToMesh()
     {
 
 		std::cout << "Set up PcToMesh class" << std::endl;
@@ -10,7 +10,7 @@ namespace semloam{
 	}
 
     PcToMesh::~PcToMesh(){}
-*/
+
 	void PcToMesh::odometry_callback(const nav_msgs::OdometryConstPtr& odom){
 
 		odom_data = *odom;
@@ -114,6 +114,33 @@ namespace semloam{
 
 
 		std::cout << "Init set up is done" << std::endl;
+        
+        unlabeled.reserve(pc_size_min);
+        outlier.reserve(pc_size_min);
+        car.reserve(pc_size_mid);
+        bicycle.reserve(pc_size_min);
+        motorcycle.reserve(pc_size_min);
+        onrails.reserve(pc_size_min);
+        truck.reserve(pc_size_mid);
+        othervehicle.reserve(pc_size_mid);
+        //person.reserve(pc_size_min);
+        //bicyclist.reserve(pc_size_min);
+        //motorcyclist.reserve(pc_size_min);
+        road.reserve(pc_size_big);
+        parking.reserve(pc_size_mid);
+        sidewalk.reserve(pc_size_mid);
+        otherground.reserve(pc_size_mid);
+        building.reserve(pc_size_big);
+        fence.reserve(pc_size_big);
+        otherstructure.reserve(pc_size_min);
+        lanemarking.reserve(pc_size_min);
+        vegetation.reserve(pc_size_mid);
+        trunk.reserve(pc_size_min);
+        terrain.reserve(pc_size_mid);;
+        pole.reserve(pc_size_min);
+        trafficsign.reserve(pc_size_min);
+
+        std::cout << "Reserve memory" << std::endl;
 
 		return true;
 	}
@@ -417,15 +444,15 @@ namespace semloam{
 		}
 
 		if(vegetation.size() > 10 ){
-			generate_semantic_mesh(viewer, vegetation, "vegetation", 0.25, 600);
+			generate_semantic_mesh(viewer, vegetation, "vegetation", 0.5, 600);
 		}
 
 		if(trunk.size() > 10){
-			generate_semantic_mesh(viewer, trunk, "trunk", 0.10, 600);
+			generate_semantic_mesh(viewer, trunk, "trunk", 0.4, 600);
 		}
 
 		if(terrain.size() > 10){
-			generate_semantic_mesh(viewer, terrain, "terrain", 0.20, 500);
+			generate_semantic_mesh(viewer, terrain, "terrain", 0.4, 500);
 		}
 
 		if(pole.size() > 10){
@@ -525,6 +552,16 @@ namespace semloam{
 		viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_OPACITY, 1.0, semantic_name);
 
 		std::cout << "Semantic mesh " << semantic_name << " was added to PCL visualizer" << std::endl;
+
+        if(save_polygon_data == true){
+            std::string polygon_file_name = polygon_path + polygon_name + semantic_name + ".ply";
+
+            pcl::io::savePLYFile(polygon_file_name, triangles);
+
+            std::cout << "Polygon " << polygon_file_name << "was saved as .ply file" << std::endl;
+
+
+        }
 
 	}
 

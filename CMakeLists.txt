@@ -42,7 +42,6 @@ find_package(PCL REQUIRED)
 find_package(VTK REQUIRED)
 find_package(OpenCV REQUIRED)
 
-
 catkin_package(
 	CATKIN_DEPENDS geometry_msgs nav_msgs roscpp rospy std_msgs tf pcl_conversions sensor_msgs
     DEPENDS EIGEN3 PCL OpenCV
@@ -162,7 +161,8 @@ target_link_libraries(pointcloud_to_mesh
     ${PCL_LIBRARIES} 
     ${VTK_LIBRARIES} 
     ${OpenCV_LIBRARIES} 
-    semloam)
+    semloam
+    )
 
 add_executable(mesh_localization src/mesh_localization_node.cpp)
 target_link_libraries(mesh_localization 
@@ -170,7 +170,8 @@ target_link_libraries(mesh_localization
     ${PCL_LIBRARIES} 
     ${VTK_LIBRARIES} 
     ${OpenCV_LIBRARIES} 
-    semloam)
+    semloam
+    )
 
 add_executable(bonnet_node src/bonnet_node.cpp)
 target_link_libraries(bonnet_node
@@ -179,7 +180,7 @@ target_link_libraries(bonnet_node
     ${catkin_LIBRARIES}
     ${OpenCV_LIBS}
     semloam
-    #bonnet -> semloam de compile dekita
+    #bonnet
 )
 
 
