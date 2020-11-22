@@ -1,6 +1,6 @@
 #include"semantic_mesh_localization/pointcloud_to_mesh.h"
 
-namespace semloam{
+namespace semlocali{
 
 	PcToMesh::PcToMesh()
     {

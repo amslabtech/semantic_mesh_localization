@@ -1,6 +1,6 @@
 #include "semantic_mesh_localization/mesh_localization.h"
 
-namespace semloam{
+namespace semlocali{
 
     MeshLocalization::MeshLocalization(ros::NodeHandle& node, ros::NodeHandle& privateNode)
         : it_(node){

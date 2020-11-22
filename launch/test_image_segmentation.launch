@@ -1,5 +1,5 @@
 <launch>                                                                                             
-    <arg name="file_path" default="/home/amsl/catkin_ws/bag_data/" />
+    <arg name="file_path" default="/home/amsl/bag_data/" />
     <arg name="file_name" default="semantickitti_sequence00" />
     <node name="bag_data" pkg="rosbag" type="play" args="-l $(arg file_path)$(arg file_name).bag">   
     </node>

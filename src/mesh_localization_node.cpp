@@ -7,7 +7,7 @@ int main(int argc, char** argv){
     ros::NodeHandle node;
     ros::NodeHandle privateNode("~");
 
-    semloam::MeshLocalization meshloca(node, privateNode);
+    semlocali::MeshLocalization meshloca(node, privateNode);
 
     if( meshloca.setup_mesh_localization(node, privateNode) ){
 

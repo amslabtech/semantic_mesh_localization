@@ -46,7 +46,7 @@ if(TRT_AVAIL AND CUDA_AVAIL)
 endif()
 
 add_library(
-    semloam
+    semlocali
     pointcloudtomesh.cpp
     meshlocalization.cpp
 
@@ -55,7 +55,7 @@ add_library(
     )
 
 target_link_libraries(
-    semloam
+    semlocali
     ${catkin_LIBRARIES}
     ${PCL_LIBRARIES}
     ${OpenCV_LIBRARIES}

@@ -32,7 +32,7 @@
 
 
 
-namespace semloam{
+namespace semlocali{
 	
 	class PcToMesh{
 		

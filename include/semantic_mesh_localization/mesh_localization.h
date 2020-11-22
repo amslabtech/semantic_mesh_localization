@@ -15,7 +15,7 @@
 
 
 
-namespace semloam{
+namespace semlocali{
 
     class MeshLocalization : public PcToMesh{
 

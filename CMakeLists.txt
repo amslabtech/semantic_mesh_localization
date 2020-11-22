@@ -161,7 +161,7 @@ target_link_libraries(pointcloud_to_mesh
     ${PCL_LIBRARIES} 
     ${VTK_LIBRARIES} 
     ${OpenCV_LIBRARIES} 
-    semloam
+    semlocali
     )
 
 add_executable(mesh_localization src/mesh_localization_node.cpp)
@@ -170,7 +170,7 @@ target_link_libraries(mesh_localization
     ${PCL_LIBRARIES} 
     ${VTK_LIBRARIES} 
     ${OpenCV_LIBRARIES} 
-    semloam
+    semlocali
     )
 
 add_executable(bonnet_node src/bonnet_node.cpp)
@@ -179,7 +179,8 @@ target_link_libraries(bonnet_node
     ${bonnet_core_LIBRARIES}
     ${catkin_LIBRARIES}
     ${OpenCV_LIBS}
-    semloam
+    ${YAML_CPP_LIBRARIES}
+    semlocali
     #bonnet
 )
 
