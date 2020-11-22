@@ -109,6 +109,67 @@ namespace semlocali{
 
     }
 
+    void MeshLocalization::load_semantic_polygon(pcl::visualization::PCLVisualizer& viewer, std::string semantic_name, int blue, int green, int red){
+        
+        pcl::PolygonMesh semantic_mesh;
+
+        std::string polygon_file_string = polygon_data_path + polygon_file_name_base + semantic_name + ".ply";
+
+        int load_ply_success_checker = pcl::io::loadPLYFile( polygon_file_string, semantic_mesh);
+
+        if( load_ply_success_checker != 0 ){
+            std::cout << "loading " << polygon_file_string << " was failed" << std::endl;
+        }
+        else{
+            std::cout << "loading " << polygon_file_string << " was successfull" << std::endl;
+
+            viewer.addPolygonMesh( semantic_mesh, semantic_name);
+
+            viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, red, green, blue, semantic_name);
+            
+            viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_OPACITY, 1.0, semantic_name);
+
+            std::cout << semantic_name << "'s polygon mesh is added to PCL Visualizer" << std::endl;
+        }
+
+
+    }
+
+    void MeshLocalization::load_PLY(pcl::visualization::PCLVisualizer& viewer){
+        
+        load_semantic_polygon( viewer,     "road", 128,  64, 128);
+        load_semantic_polygon( viewer, "sidewalk", 232,  35, 244);
+        load_semantic_polygon( viewer, "building",  70,  70,  70);
+        //load_semantic_polygon( viewer,     "wall", 156, 102, 102);
+        load_semantic_polygon( viewer,    "fence", 153, 153, 190);
+        load_semantic_polygon( viewer,     "pole", 153, 153, 153);
+        load_semantic_polygon( viewer,"trafficsign", 0, 220, 220);
+        load_semantic_polygon( viewer, "vegetation",35, 142, 107);
+        load_semantic_polygon( viewer,  "terrain", 152, 251, 152);
+        load_semantic_polygon( viewer,      "car", 142,   0,   0);
+        load_semantic_polygon( viewer,    "truck",  70,   0,   0);
+        load_semantic_polygon( viewer,      "bus", 100,  60,   0);
+        load_semantic_polygon( viewer,"motorcycle",230,   0,   0);
+        load_semantic_polygon( viewer,  "bicycle",  32,  11, 119);
+
+        std::cout << "Loading semantic mesh polygon is done" << std::endl;
+    }
+
+    void MeshLocalization::read_mesh_map(){
+
+        load_PLY(viewer);
+        init_config_viewer_parameter(viewer);
+ 
+        if(image_height > 0 && image_width > 0){
+            viewer.setSize( image_width, image_height);
+        }
+
+        config_tmp_viewer_parameter(viewer);
+
+        std::cout << "Mesh map loading is done" << std::endl;
+
+    }  
+
     void MeshLocalization::build_mesh_map(){
 
         load_PCD();
@@ -136,6 +197,26 @@ namespace semlocali{
         double dparam;
         bool bparam;
         std::string sparam;
+
+        if( privateNode.getParam("ReadPolygonChecker", bparam) ){
+            if(bparam==true || bparam==false){
+                read_polygon_checker = bparam;
+            }
+            else{
+                ROS_ERROR("Invalid ReadPolygonChecker parameter");
+                return false;
+            }
+        }
+
+        if( privateNode.getParam("PolygonDataPath", sparam) ){
+            if( sparam.length() < 1){
+                ROS_ERROR("Invalid PolygonDataPath");
+                return false;
+            }
+            else{
+                polygon_data_path = sparam;
+            }
+        }
 
         if( privateNode.getParam("GroundtruthPath", sparam)){
             if(sparam.length() < 1){
@@ -296,6 +377,13 @@ namespace semlocali{
         std::cout << "Building mesh map....." << std::endl;
 
         build_mesh_map();
+
+        if(read_polygon_checker==false){
+            build_mesh_map();
+        }
+        else if(read_polygon_checker==true){
+            read_mesh_map();
+        }
 
         /*
         ros::Rate rate(10);

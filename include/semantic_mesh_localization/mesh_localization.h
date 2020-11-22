@@ -35,6 +35,12 @@ namespace semlocali{
 
             void build_mesh_map();
 
+            void read_mesh_map();
+
+            void load_PLY(pcl::visualization::PCLVisualizer& viewer);
+
+            void load_semantic_polygon(pcl::visualization::PCLVisualizer& viewer, std::string semantic_name, int blue, int green, int red);
+
             void spin_mesh_localization();
 
             void wait_for_bag_data();
@@ -119,6 +125,10 @@ namespace semlocali{
             std::string estimated_path = "/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/estimated.csv";
 
             tf::StampedTransform map_to_groundtruth;
+
+            bool read_polygon_checker = false;
+            std::string polygon_data_path = "/home/amsl/Polygon_data/sequence00/";
+            std::string polygon_file_name_base = "polygon_mesh_";
 
 
     };
