@@ -11,18 +11,20 @@
 
 
     <node pkg="semantic_mesh_localization" type="mesh_localization" name="mesh_localization" output="screen">
-        <param name="PublishCSVChecker" value="false" type="bool" />
+        <param name="PublishCSVChecker" value="true" type="bool" />
+
+        <param name="particlenumber" value="100" type="int"/>
 
         <!-- default image size is 1241(width) and 376(height) -->
-        <param name="imagewidth" value="620" type="int"/>
-        <param name="imageheight" value="188" type="int"/>
+        <param name="imagewidth" value="310" type="int"/>
+        <param name="imageheight" value="94" type="int"/>
 
-        <param name="imagedownwidth" value="0.5" type="double" />
-        <param name="imagedownheight" value="0.5" type="double" />
+        <param name="imagedownwidth" value="0.25" type="double" />
+        <param name="imagedownheight" value="0.25" type="double" />
 
-        <param name="xdev" value="0.15" type="double"/>
-        <param name="ydev" value="0.15" type="double"/>
-        <param name="zdev" value="0.15" type="double"/>
+        <param name="xdev" value="0.2" type="double"/>
+        <param name="ydev" value="0.2" type="double"/>
+        <param name="zdev" value="0.2" type="double"/>
 
         <param name="rolldev" value="0.02" type="double"/>
         <param name="pitchdev" value="0.02" type="double"/>

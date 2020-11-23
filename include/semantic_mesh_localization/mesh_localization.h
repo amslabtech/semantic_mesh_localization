@@ -115,6 +115,9 @@ namespace semlocali{
             int image_height = 0;
             int image_width = 0;
 
+            bool imheight_checker = false;
+            bool imwidth_checker = false;
+
             //Image Downsize ratio
             double image_down_width = 1.0;
             double image_down_height = 1.0;

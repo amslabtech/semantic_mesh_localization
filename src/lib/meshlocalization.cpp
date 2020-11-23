@@ -164,7 +164,7 @@ namespace semlocali{
         load_PLY(viewer);
         init_config_viewer_parameter(viewer);
  
-        if(image_height > 0 && image_width > 0){
+        if(image_height > 0 && image_width > 0 && imheight_checker == true && imwidth_checker == true){
             viewer.setSize( image_width, image_height);
         }
 
@@ -269,6 +269,7 @@ namespace semlocali{
             }
             else{
                 image_height = iparam;
+                imheight_checker = true;
             }
         }
 
@@ -279,6 +280,7 @@ namespace semlocali{
             }
             else{
                 image_width = iparam;
+                imwidth_checker = true;
             }
         }
 
@@ -872,7 +874,8 @@ namespace semlocali{
             }
             catch(tf::TransformException ex){
                 ROS_ERROR("%s", ex.what() );
-                ros::Duration(0.01).sleep();
+                ros::Duration(0.1).sleep();
+                break;
             }
         }
 
