@@ -125,7 +125,11 @@ namespace semlocali{
 
             viewer.addPolygonMesh( semantic_mesh, semantic_name);
 
-            viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, red, green, blue, semantic_name);
+            double color_r = double(red)/255.0;
+            double color_g = double(green)/255.0;
+            double color_b = double(blue)/255.0;
+
+            viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, color_r, color_g, color_b, semantic_name);
             
             viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_OPACITY, 1.0, semantic_name);
 
@@ -375,8 +379,6 @@ namespace semlocali{
 
         std::cout << "Mesh map setup is done..." << std::endl;
         std::cout << "Building mesh map....." << std::endl;
-
-        build_mesh_map();
 
         if(read_polygon_checker==false){
             build_mesh_map();
