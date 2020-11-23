@@ -16,11 +16,11 @@
         <param name="particlenumber" value="100" type="int"/>
 
         <!-- default image size is 1241(width) and 376(height) -->
-        <param name="imagewidth" value="310" type="int"/>
-        <param name="imageheight" value="94" type="int"/>
+        <param name="imagewidth" value="124" type="int"/>
+        <param name="imageheight" value="38" type="int"/>
 
-        <param name="imagedownwidth" value="0.25" type="double" />
-        <param name="imagedownheight" value="0.25" type="double" />
+        <param name="imagedownwidth" value="0.1" type="double" />
+        <param name="imagedownheight" value="0.1" type="double" />
 
         <param name="xdev" value="0.2" type="double"/>
         <param name="ydev" value="0.2" type="double"/>
