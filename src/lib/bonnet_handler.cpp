@@ -84,8 +84,8 @@ bool netHandler::readParameters() {
 void netHandler::imageCallback(const sensor_msgs::ImageConstPtr& img_msg) {
   if (verbose_) {
     // report that we got something
-    ROS_INFO("Image received.");
-    ROS_INFO("Image encoding: %s", img_msg->encoding.c_str());
+    //ROS_INFO("Image received.");
+    //ROS_INFO("Image encoding: %s", img_msg->encoding.c_str());
   }
 
   // Get the image
@@ -96,13 +96,13 @@ void netHandler::imageCallback(const sensor_msgs::ImageConstPtr& img_msg) {
   cv::Mat cv_img_bgr(cv_img->image.rows, cv_img->image.cols, CV_8UC3);
   ;
   if (img_msg->encoding == "bayer_rggb8") {
-    if (verbose_) ROS_INFO("Converting BAYER_RGGB8 to BGR for CNN");
+    if (verbose_) //ROS_INFO("Converting BAYER_RGGB8 to BGR for CNN");
     cv::cvtColor(cv_img->image, cv_img_bgr, cv::COLOR_BayerBG2BGR);
   } else if (img_msg->encoding == "bgr8") {
-    if (verbose_) ROS_INFO("Converting BGR8 to BGR for CNN");
+    if (verbose_) //ROS_INFO("Converting BGR8 to BGR for CNN");
     cv_img_bgr = cv_img->image;
   } else if (img_msg->encoding == "rgb8") {
-    if (verbose_) ROS_INFO("Converting RGB8 to BGR for CNN");
+    if (verbose_) //ROS_INFO("Converting RGB8 to BGR for CNN");
     cv::cvtColor(cv_img->image, cv_img_bgr, cv::COLOR_RGB2BGR);
   } else {
     if (verbose_) ROS_ERROR("Colorspace conversion non implemented. Skip...");

@@ -37,6 +37,37 @@ namespace semlocali{
         std::cout << "catch odom data" << std::endl;
     }
 
+    double MeshLocalization::add_bias_XYZ(double dt, int random_value){
+        double delta = 0.0;
+
+
+
+        return delta;
+    }
+
+    double MeshLocalization::add_bias_RPY(double dt, int random_value){
+        double delta = 0.0;
+
+
+
+
+
+        return delta;
+    }
+
+    void MeshLocalization::add_bias_to_odometry(pos_trans& odom_trans){
+
+        int random_value = rand();
+        
+        odom_trans.dx = odom_trans.dx + add_bias_XYZ(odom_trans.dx, random_value);
+        odom_trans.dy = odom_trans.dy + add_bias_XYZ(odom_trans.dy, random_value);
+        odom_trans.dz = odom_trans.dz + add_bias_XYZ(odom_trans.dz, random_value);
+
+        odom_trans.droll  = odom_trans.droll  + add_bias_RPY(odom_trans.droll , random_value);
+        odom_trans.dpitch = odom_trans.dpitch + add_bias_RPY(odom_trans.dpitch, random_value);
+        odom_trans.dyaw   = odom_trans.dyaw   + add_bias_RPY(odom_trans.dyaw  , random_value);
+    }
+
     pos_trans MeshLocalization::get_relative_trans(nav_msgs::Odometry odom, nav_msgs::Odometry last_odom){
 
         if(
@@ -105,6 +136,9 @@ namespace semlocali{
             first_odom_checker = true;
 
             odom_trans = get_relative_trans( odom_data, last_odom_data);
+            if(add_bias_checker == true){
+                add_bias_to_odometry(odom_trans);
+            }
         }
 
     }
@@ -201,6 +235,16 @@ namespace semlocali{
         double dparam;
         bool bparam;
         std::string sparam;
+
+        if( privateNode.getParam("AddBiasChecker", bparam) ){
+            if( bparam==true || bparam==false ){
+                add_bias_checker = bparam;
+            }
+            else{
+                ROS_ERROR("Invalid AddBiasChecker Parameter");
+                return false;
+            }
+        }
 
         if( privateNode.getParam("ReadPolygonChecker", bparam) ){
             if(bparam==true || bparam==false){
@@ -636,7 +680,9 @@ namespace semlocali{
         uint8_t* segimptr = (uint8_t*)segimage.data;
         int seg_r, seg_g, seg_b;
 
-        int diff_r, diff_g, diff_b;
+        double diff_r, diff_g, diff_b;
+
+        double tmp_score = 0.0;
 
         if(     mapimage.rows == segimage.rows &&
                 mapimage.cols == segimage.cols    ){
@@ -657,15 +703,15 @@ namespace semlocali{
                     if( seg_b==0 && seg_g==0 && seg_r==0) continue;
 
                     diff_r = std::abs( seg_r - map_r );
-                    if( diff_r > 10 ) diff_r = 100;
+                    if( diff_r > 10 ) diff_r = 100.0;
 
                     diff_g = std::abs( seg_g - map_g );
-                    if( diff_g > 10 ) diff_g = 100;
+                    if( diff_g > 10 ) diff_g = 100.0;
 
                     diff_b = std::abs( seg_b - map_b );
-                    if( diff_b > 10 ) diff_b = 100;
+                    if( diff_b > 10 ) diff_b = 100.0;
 
-                    double tmp_score = 10.0 - double(diff_r) - double(diff_g) - double(diff_b);
+                    tmp_score = 10.0 - diff_r - diff_g - diff_b;
                     if(tmp_score < 0.0) tmp_score = 0.0;
 
                     score += tmp_score;

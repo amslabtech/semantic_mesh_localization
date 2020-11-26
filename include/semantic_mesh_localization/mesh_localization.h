@@ -29,6 +29,12 @@ namespace semlocali{
 
             void odometry_callback(const nav_msgs::OdometryConstPtr& msg);
 
+            void add_bias_to_odometry(pos_trans& odom_trans);
+
+            double add_bias_XYZ(double dt, int random_value);
+
+            double add_bias_RPY(double dt, int random_value);
+
             pos_trans get_relative_trans(nav_msgs::Odometry odom, nav_msgs::Odometry last_odom);
 
             bool setup_mesh_localization(ros::NodeHandle& node, ros::NodeHandle& privateNode);
@@ -132,6 +138,8 @@ namespace semlocali{
             bool read_polygon_checker = false;
             std::string polygon_data_path = "/home/amsl/Polygon_data/sequence00/";
             std::string polygon_file_name_base = "polygon_mesh_";
+
+            bool add_bias_checker = false;
 
 
     };

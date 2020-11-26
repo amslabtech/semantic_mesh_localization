@@ -295,9 +295,11 @@ retCode NetTRT::infer(const cv::Mat& image, cv::Mat& mask, const bool verbose) {
           .count();
 
   if (verbose) {
+    /*
     std::cout << "Successfully run prediction from engine." << std::endl;
     std::cout << "Time to infer: " << elapsed_inference << "ms." << std::endl;
     std::cout << "Time in total: " << elapsed_total << "ms." << std::endl;
+    */
   }
 
   // convert to 8U and put in mask
