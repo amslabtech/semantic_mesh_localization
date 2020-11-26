@@ -86,12 +86,12 @@ namespace semlocali{
 
         public:
 
-			std::string file_path = "/home/amsl/PCD_data/sequence00_ground_truth/";
+			std::string file_path = "/home/amsl/PCD_data/sequence00_velodyne/";
 			std::string file_name = "semantic_mesh_loam";
 			std::string file_type = "ascii"; //ascii or binary
 
             bool save_polygon_data = true;
-            std::string polygon_path = "/home/amsl/Polygon_data/sequence00_ground_truth/";
+            std::string polygon_path = "/home/amsl/Polygon_data/sequence00_velodyne/";
             std::string polygon_name = "polygon_mesh_";
 
 			bool pcl_mesh_visualize_checker = true;

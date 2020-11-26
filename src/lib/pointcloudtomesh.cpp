@@ -62,6 +62,26 @@ namespace semlocali{
 			}
 		}
 
+        if( privateNode.getParam("polygonpathpc", strparam) ){
+            if(strparam.length() < 1){
+                ROS_ERROR("Invalid polygon file path in pctomesh");
+                return false;
+            }
+            else{
+                polygon_path = strparam;
+            }
+        }
+
+        if( privateNode.getParam("polygonnamepc", strparam) ){
+            if( strparam.length() < 1 ){
+                ROS_ERROR("Invalid polygon file name");
+                return false;
+            }
+            else{
+                polygon_name = strparam;
+            }
+        }
+
 		if( privateNode.getParam("filepath", strparam) ){
 			if(strparam.length() < 1 ){
 				ROS_ERROR("Invalid file path");
@@ -378,8 +398,8 @@ namespace semlocali{
 
 		std::cout << "Config viewer init parameter except place" << std::endl;
 
-		viewer.initCameraParameters();
         viewer.setSize( 620.0, 188.0);
+        viewer.initCameraParameters();
 
 	}
 

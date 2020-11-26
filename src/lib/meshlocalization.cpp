@@ -164,7 +164,7 @@ namespace semlocali{
         load_PLY(viewer);
         init_config_viewer_parameter(viewer);
  
-        if(image_height > 0 && image_width > 0 && imheight_checker == true && imwidth_checker == true){
+        if(image_height > 0 && image_width > 0){
             viewer.setSize( image_width, image_height);
         }
 
@@ -443,6 +443,12 @@ namespace semlocali{
     }
 
     void MeshLocalization::spin_mesh_localization(){
+ 
+        /*
+        if(imheight_checker == true && imwidth_checker == true){
+            viewer.setSize( image_width, image_height);
+        }
+        */
 
         wait_for_bag_data();
 

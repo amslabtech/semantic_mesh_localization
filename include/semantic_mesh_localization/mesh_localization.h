@@ -112,8 +112,8 @@ namespace semlocali{
             double dyaw_dev = 0.01; //launch yawdev
 
             //Image size data
-            int image_height = 0;
-            int image_width = 0;
+            int image_height = 1241;
+            int image_width = 376;
 
             bool imheight_checker = false;
             bool imwidth_checker = false;
