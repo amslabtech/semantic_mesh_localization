@@ -140,6 +140,8 @@ namespace semlocali{
             std::string polygon_file_name_base = "polygon_mesh_";
 
             bool add_bias_checker = false;
+            bool step_pebbles_checker = false; //pebbles means small stone
+            bool stack_muddy_checker = false; //muddy means a ground coverd with mud, and it is called Nukarumi in Japanese
 
 
     };

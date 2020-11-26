@@ -246,6 +246,26 @@ namespace semlocali{
             }
         }
 
+        if( privateNode.getParam("StepPebblesChecker", bparam) ){
+            if(bparam==true || bparam==false){
+                step_pebbles_checker = bparam;
+            }
+            else{
+                ROS_ERROR("Invalid SteppebblesChecker parameter");
+                return false;
+            }
+        }
+
+        if( privateNode.getParam("StackMuddyChecker", bparam) ){
+            if( bparam==true || bparam==false ){
+                stack_muddy_checker = bparam;
+            }
+            else{
+                ROS_ERROR("Invalid StackMuddyChecker Parameter");
+                return false;
+            }
+        }
+
         if( privateNode.getParam("ReadPolygonChecker", bparam) ){
             if(bparam==true || bparam==false){
                 read_polygon_checker = bparam;

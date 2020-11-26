@@ -13,6 +13,9 @@
     <node pkg="semantic_mesh_localization" type="mesh_localization" name="mesh_localization" output="screen">
         
         <param name="AddBiasChecker" value="false" type="bool" />
+        <param name="StepPebblesChecker" value="false" type="bool" />
+        <param name="StackMuddyChecker" value="false" type="bool" />
+
         <param name="PublishCSVChecker" value="true" type="bool" />
 
         <param name="particlenumber" value="100" type="int"/>
