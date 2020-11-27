@@ -57,6 +57,9 @@ namespace semlocali{
         }
 
         if( step_pebbles_checker == true ){
+
+            std::cout << "Step on pebbles" << std::endl;
+
             if( (random_value % pebbles_counter) == 0 ){
                 if(plumin == true){
                     number = number + pebbles_bias_XYZ;
@@ -658,6 +661,9 @@ namespace semlocali{
 
             std::cout << "Resampling particle" << std::endl;
             resampling_particle();//resampling
+
+            std::cout << std::endl;
+            std::cout << std::endl;
 
 
             loop_rate.sleep();
