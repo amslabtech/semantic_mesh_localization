@@ -38,34 +38,90 @@ namespace semlocali{
     }
 
     double MeshLocalization::add_bias_XYZ(double dt, int random_value){
-        double delta = 0.0;
+        
+        double dev_bias = dt * bias_XYZ;
+        
+        std::random_device seed_gen;
+        std::default_random_engine engine( seed_gen() );
 
+        std::normal_distribution<double> dist(dt, dev_bias);
 
+        double number = dist(engine);
 
-        return delta;
+        bool plumin;
+        if( (number - dt) > 0 ){
+            plumin = true;
+        }
+        else{
+            plumin = false;
+        }
+
+        if( step_pebbles_checker == true ){
+            if( (random_value % pebbles_counter) == 0 ){
+                if(plumin == true){
+                    number = number + pebbles_bias_XYZ;
+                }
+                else if(plumin == false){
+                    number = number - pebbles_bias_XYZ;
+                }
+            }
+        }
+
+        return number;
     }
 
     double MeshLocalization::add_bias_RPY(double dt, int random_value){
-        double delta = 0.0;
+        
+        double dev_bias = dt * bias_RPY;
 
+        std::random_device seed_gen;
+        std::default_random_engine engine( seed_gen() );
 
+        std::normal_distribution<double> dist(dt, dev_bias);
 
+        double number = dist(engine);
 
+        bool plumin;
+        if( (number - dt) > 0 ){
+            plumin = true;
+        }
+        else{
+            plumin = false;
+        }
 
-        return delta;
+        if( step_pebbles_checker == true ){
+            if( (random_value % pebbles_counter) == 0 ){
+                if(plumin == true){
+                    number = number + pebbles_bias_RPY*dt;
+                }
+                else if(plumin == false){
+                    number = number - pebbles_bias_RPY*dt;
+                }
+            }
+        }
+
+        return number;
     }
 
     void MeshLocalization::add_bias_to_odometry(pos_trans& odom_trans){
 
         int random_value = rand();
+        odom_trans.dx = add_bias_XYZ(odom_trans.dx, random_value);
         
-        odom_trans.dx = odom_trans.dx + add_bias_XYZ(odom_trans.dx, random_value);
-        odom_trans.dy = odom_trans.dy + add_bias_XYZ(odom_trans.dy, random_value);
-        odom_trans.dz = odom_trans.dz + add_bias_XYZ(odom_trans.dz, random_value);
+        random_value = rand();
+        odom_trans.dy = add_bias_XYZ(odom_trans.dy, random_value);
 
-        odom_trans.droll  = odom_trans.droll  + add_bias_RPY(odom_trans.droll , random_value);
-        odom_trans.dpitch = odom_trans.dpitch + add_bias_RPY(odom_trans.dpitch, random_value);
-        odom_trans.dyaw   = odom_trans.dyaw   + add_bias_RPY(odom_trans.dyaw  , random_value);
+        random_value = rand();
+        odom_trans.dz = add_bias_XYZ(odom_trans.dz, random_value);
+
+        random_value = rand();
+        odom_trans.droll  = add_bias_RPY(odom_trans.droll , random_value);
+
+        random_value = rand();
+        odom_trans.dpitch = add_bias_RPY(odom_trans.dpitch, random_value);
+
+        random_value = rand();
+        odom_trans.dyaw   = add_bias_RPY(odom_trans.dyaw  , random_value);
     }
 
     pos_trans MeshLocalization::get_relative_trans(nav_msgs::Odometry odom, nav_msgs::Odometry last_odom){
@@ -263,6 +319,56 @@ namespace semlocali{
             else{
                 ROS_ERROR("Invalid StackMuddyChecker Parameter");
                 return false;
+            }
+        }
+
+        if( privateNode.getParam("BiasXYZ", dparam) ){
+            if(dparam < 0.0 || dparam > 0.5){
+                ROS_ERROR("Invalid BiasXYZ parameter, BiasXYZ must be 0< BiasXYZ < 0.5");
+                return false;
+            }
+            else{
+                bias_XYZ = dparam;
+            }
+        }
+
+        if( privateNode.getParam("BiasRPY", dparam) ){
+            if(dparam < 0.0 || dparam > 0.1){
+                ROS_ERROR("BiasRPY parameter is under 0 or over 0.1");
+                return false;
+            }
+            else{
+                bias_RPY = dparam;
+            }
+        }
+
+        if( privateNode.getParam("BiasPebblesXYZ", dparam) ){
+            if(dparam < 0.0 || dparam > 0.1){
+                ROS_ERROR("Invalid Pebbles XYZ parameter");
+                return false;
+            }
+            else{
+                pebbles_bias_XYZ = dparam;
+            }
+        }
+
+        if( privateNode.getParam("BiasPebblesRPY", dparam) ){
+            if(dparam < 0.0 || dparam > 0.1){
+                ROS_ERROR("Invalid Pebbles RPY parameter");
+                return false;
+            }
+            else{
+                pebbles_bias_RPY = dparam;
+            }
+        }
+
+        if( privateNode.getParam("PebblesCounter", iparam) ){
+            if(iparam < 2){
+                ROS_ERROR("Invalid PebblesCounter parameter");
+                return false;
+            }
+            else{
+                pebbles_counter = iparam;
             }
         }
 
@@ -787,7 +893,7 @@ namespace semlocali{
             total_likelihood += likelihood[i];
         }
 
-        if(total_likelihood < 0.001){
+        if(total_likelihood < 0.01){
             ROS_ERROR("Invalid total likelihood");
             for(size_t i=0; i<likelihood.size(); i++){
                 likelihood[i] = ( (double)rand() / ((double)RAND_MAX + 1) );

@@ -143,6 +143,13 @@ namespace semlocali{
             bool step_pebbles_checker = false; //pebbles means small stone
             bool stack_muddy_checker = false; //muddy means a ground coverd with mud, and it is called Nukarumi in Japanese
 
+            double bias_XYZ = 0.01; //10m進むごとに10cm狂うというInfantのデータをもとに
+            double bias_RPY = 0.01; //1度回転するごとに0.01度のズレが発生、この値は暫定値
+
+            double pebbles_bias_XYZ = 0.01;
+            double pebbles_bias_RPY = 0.01;
+            int pebbles_counter = 79;
+
 
     };
 
