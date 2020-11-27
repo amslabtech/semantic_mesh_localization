@@ -95,10 +95,10 @@ namespace semlocali{
         if( step_pebbles_checker == true ){
             if( (random_value % pebbles_counter) == 0 ){
                 if(plumin == true){
-                    number = number + pebbles_bias_RPY*dt;
+                    number = number + pebbles_bias_RPY;
                 }
                 else if(plumin == false){
-                    number = number - pebbles_bias_RPY*dt;
+                    number = number - pebbles_bias_RPY;
                 }
             }
         }

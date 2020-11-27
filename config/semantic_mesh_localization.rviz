@@ -31,7 +31,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: Image
+    SyncSource: ""
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -62,46 +62,13 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        camera_color_left:
-          Value: true
-        camera_color_right:
-          Value: true
-        camera_gray_left:
-          Value: true
-        camera_gray_right:
-          Value: true
-        estimated_pose:
-          Value: true
-        ground_truth:
-          Value: true
-        map:
-          Value: true
-        vehicle:
-          Value: true
-        velodyne:
-          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        map:
-          estimated_pose:
-            {}
-          ground_truth:
-            {}
-          vehicle:
-            camera_color_left:
-              {}
-            camera_color_right:
-              {}
-            camera_gray_left:
-              {}
-            camera_gray_right:
-              {}
-            velodyne:
-              {}
+        {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -189,7 +156,7 @@ Visualization Manager:
           Value: true
         Value: true
       Enabled: true
-      Keep: 100000
+      Keep: 1000
       Name: Odometry
       Position Tolerance: 0.10000000149011612
       Shape:
@@ -272,4 +239,4 @@ Window Geometry:
     collapsed: false
   Width: 1200
   X: 685
-  Y: 150
+  Y: 120
