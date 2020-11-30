@@ -1,11 +1,11 @@
 <launch>
 
 	<node pkg="semantic_mesh_localization" type="pointcloud_to_mesh" name="pointcloud_to_mesh" output="screen">
-        <param name="filepath" value="/home/amsl/PCD_data/sequence00_velodyne/" />
+        <param name="filepath" value="/home/amsl/PCD_data/sequence00_ground_truth/" />
         <param name="filename" value="semantic_mesh_loam" />
         <param name="filetype" value="ascii" />
 
-        <param name="polygonpathpc" value="/home/amsl/Polygon_data/sequence00_velodyne/" />
+        <param name="polygonpathpc" value="/home/amsl/Polygon_data/sequence00_ground_truth/" />
         <param name="polygonnamepc" value="polygon_mesh_" />
 
 	</node>

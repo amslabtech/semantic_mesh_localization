@@ -408,7 +408,7 @@ namespace semlocali{
 		std::cout << "Generate Triangle Mesh" << std::endl;
 		
 		if(car.size() > 10){
-			generate_semantic_mesh(viewer, car, "car", 0.30, 400);
+			generate_semantic_mesh(viewer, car, "car", 0.60, 700);
 		}
 		
 		if(bicycle.size() > 10 ){
@@ -440,7 +440,7 @@ namespace semlocali{
 		}
 
 		if(sidewalk.size() > 10){
-			generate_semantic_mesh(viewer, sidewalk, "sidewalk", 0.35, 600);
+			generate_semantic_mesh(viewer, sidewalk, "sidewalk", 0.90, 600);
 		}
 
 		if(otherground.size() > 10){
@@ -448,7 +448,7 @@ namespace semlocali{
 		}
 
 		if(building.size() > 10){
-			generate_semantic_mesh(viewer, building, "building", 0.60, 1000);
+			generate_semantic_mesh(viewer, building, "building", 0.90, 1000);
 		}
 
 		if(fence.size() > 10){
@@ -472,11 +472,11 @@ namespace semlocali{
 		}
 
 		if(terrain.size() > 10){
-			generate_semantic_mesh(viewer, terrain, "terrain", 0.4, 500);
+			generate_semantic_mesh(viewer, terrain, "terrain", 0.6, 500);
 		}
 
 		if(pole.size() > 10){
-			generate_semantic_mesh(viewer, pole, "pole", 0.10, 500);
+			generate_semantic_mesh(viewer, pole, "pole", 0.3, 500);
 		}
 
 		if(trafficsign.size() > 10){
@@ -484,7 +484,7 @@ namespace semlocali{
 		}
 
 		if(road.size() > 10 ){
-			generate_semantic_mesh(viewer, road, "road", 0.60, 1000);
+			generate_semantic_mesh(viewer, road, "road", 0.90, 1000);
 		}
 
 	}
