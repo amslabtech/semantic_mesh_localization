@@ -63,7 +63,7 @@ namespace semlocali{
 
             double get_likelihood(geometry_msgs::Pose pose);
 
-            void change_camera_position_for_particle(pcl::visualization::PCLVisualizer& viewer, geometry_msgs::Pose pose);
+            void change_camera_position_for_particle(geometry_msgs::Pose pose);
 
             void get_image_from_pcl_visualizer();
 
@@ -149,6 +149,29 @@ namespace semlocali{
             double pebbles_bias_XYZ = 0.01;
             double pebbles_bias_RPY = 0.01;
             int pebbles_counter = 79;
+
+            double get_image_vtk_time = 0.0;
+            Time start_vtk;
+            Time end_vtk;
+
+            double compare_time = 0.0;
+            Time start_cmp;
+            Time end_cmp;
+
+            double camera_time = 0.0;
+            Time start_camera;
+            Time end_camera;
+
+            double resampling_time = 0.0;
+            Time start_re;
+            Time end_re;
+
+            Time start_csv;
+            Time end_csv;
+
+            Time start_mot;
+            Time end_mot;
+
 
 
     };

@@ -26,6 +26,8 @@ namespace semlocali{
 
     void MeshLocalization::segmented_image_callback(const sensor_msgs::ImageConstPtr& msg){
         
+        Time start_im = ros::Time::now();
+
         cv_bridge::CvImagePtr seg_ptr=cv_bridge::toCvCopy(msg,sensor_msgs::image_encodings::BGR8);
 
         cv::cvtColor( seg_ptr->image , segimage , cv::COLOR_RGB2BGRA );
@@ -33,6 +35,10 @@ namespace semlocali{
         if(image_down_height != 1.0 && image_down_width != 1.0){
             cv::resize(segimage, segimage , cv::Size() , image_down_width, image_down_height);
         }
+
+        Time end_im = ros::Time::now();
+
+        //std::cout << "Image convert and resize time :" << end_im.toSec() - start_im.toSec() <<"[s]" << std::endl;
 
         std::cout << "catch odom data" << std::endl;
     }
@@ -239,7 +245,7 @@ namespace semlocali{
         load_semantic_polygon( viewer, "building",  70,  70,  70);
         //load_semantic_polygon( viewer,     "wall", 156, 102, 102);
         load_semantic_polygon( viewer,    "fence", 153, 153, 190);
-        load_semantic_polygon( viewer,     "pole", 153, 153, 153);
+        //load_semantic_polygon( viewer,     "pole", 153, 153, 153);
         load_semantic_polygon( viewer,"trafficsign", 0, 220, 220);
         load_semantic_polygon( viewer, "vegetation",35, 142, 107);
         load_semantic_polygon( viewer,  "terrain", 152, 251, 152);
@@ -639,32 +645,59 @@ namespace semlocali{
 
         while( ros::ok() ){
 
+            Time start_time_pf = ros::Time::now();
+            Time end_time_pf;
+
             std::cout << "Catch ROS data" << std::endl;
             ros::spinOnce();//catch odometry and image data
+            //end_time_pf = ros::Time::now();
+            //std::cout << "spinOnce  "<< end_time_pf.toSec() - start_time_pf.toSec() << std::endl;
 
             std::cout << "Motion update" << std::endl;
             motion_update();//Create prior distribution
+            //end_time_pf = ros::Time::now();
+            //std::cout << "Motion update  "<< end_time_pf.toSec() - start_time_pf.toSec() << std::endl;
 
+ 
             std::cout << "Update likelihood" << std::endl;
             update_likelihood();//Observe and create posterior distribution
+            //end_time_pf = ros::Time::now();
+            //std::cout << "Update likelihood  "<< end_time_pf.toSec() - start_time_pf.toSec() << std::endl;
 
+ 
             std::cout << "Estimate current pose" << std::endl;
             estimate_current_pose();//estimate current pose
+            //end_time_pf = ros::Time::now();
+            //std::cout << "Estimate pose  "<< end_time_pf.toSec() - start_time_pf.toSec() << std::endl;
 
+ 
             std::cout << "Publish result" << std::endl;
             publish_result();//publish as ros data EXCEPT POINTCLOUD MAP
+            //end_time_pf = ros::Time::now();
+            //std::cout << "Pub result  "<< end_time_pf.toSec() - start_time_pf.toSec() << std::endl;
 
+ 
             if(publish_csv_checker == true){
+                start_csv = ros::Time::now();
+
                 std::cout << "Publish as CSV file" << std::endl;
                 publish_as_csv(groundtruth_csv, odometry_csv, estimated_csv);
+
+                end_csv = ros::Time::now();
+
+                //std::cout << "Pub CSV Time :" << end_csv.toSec() - start_csv.toSec() <<"[s]"<<std::endl;
             }
 
             std::cout << "Resampling particle" << std::endl;
             resampling_particle();//resampling
 
-            std::cout << std::endl;
-            std::cout << std::endl;
+            end_time_pf = ros::Time::now();
+            double duration_pf = end_time_pf.toSec() - start_time_pf.toSec();
 
+            std::cout << "Total time " << duration_pf << " [s]" << std::endl;
+
+            std::cout << std::endl;
+            std::cout << std::endl;
 
             loop_rate.sleep();
         }
@@ -699,6 +732,8 @@ namespace semlocali{
     }
 
     void MeshLocalization::motion_update(){
+
+        start_mot = ros::Time::now();
 
         for(size_t i=0; i < particle.poses.size(); i++){
 
@@ -759,10 +794,16 @@ namespace semlocali{
             particle.poses[i].orientation = geo_quat;
 
         }
+
+        end_mot = ros::Time::now();
+
+        //std::cout << "Motion update time :" << end_mot.toSec() - start_mot.toSec() << "[s]" << std::endl;
     }
 
-    void MeshLocalization::change_camera_position_for_particle(pcl::visualization::PCLVisualizer& viewer , geometry_msgs::Pose pose){
-        //a
+    void MeshLocalization::change_camera_position_for_particle(geometry_msgs::Pose pose){
+
+        start_camera = ros::Time::now();
+
         tf::Quaternion quat_tf;
         quaternionMsgToTF( pose.orientation , quat_tf );
 
@@ -788,9 +829,14 @@ namespace semlocali{
                 0.0,
                 0.0,
                 1.0);
+
+        end_camera = ros::Time::now();
+        camera_time += end_camera.toSec() - start_camera.toSec();
     }
 
     void MeshLocalization::get_image_from_pcl_visualizer(){
+
+        start_vtk = ros::Time::now();
         
         vtkSmartPointer<vtkRenderWindow> render = viewer.getRenderWindow();
         std::unique_ptr<uchar> pixels( render->GetRGBACharPixelData( 0, 0, render->GetSize()[0]-1, render->GetSize()[1]-1, 1) );
@@ -798,9 +844,14 @@ namespace semlocali{
         mapimage = cv::Mat(render->GetSize()[1], render->GetSize()[0], CV_8UC4, &pixels.get()[0] );
         cv::cvtColor( mapimage , mapimage , cv::COLOR_RGBA2BGRA);
 
+        end_vtk = ros::Time::now();
+        get_image_vtk_time += end_vtk.toSec() - start_vtk.toSec();
+
     }
 
     double MeshLocalization::compare_image_pixelwise(){
+
+        start_cmp = ros::Time::now();
 
         double score = 0.0;
 
@@ -862,12 +913,18 @@ namespace semlocali{
             std::cout << "Col: " << mapimage.cols << std::endl;
         }
 
+        end_cmp = ros::Time::now();
+
+        compare_time += end_cmp.toSec() - start_cmp.toSec();
+
         return score;
     }
 
     double MeshLocalization::get_likelihood(geometry_msgs::Pose pose){
 
         double score = 0.0;
+        //Time start_i;
+        //Time end_i;
 
         if(     pose.orientation.x == 0.0 &&
                 pose.orientation.y == 0.0 &&
@@ -879,10 +936,22 @@ namespace semlocali{
         }
         else{
 
-            change_camera_position_for_particle( viewer , pose );
-            get_image_from_pcl_visualizer();
+            //start_i = ros::Time::now();
+            change_camera_position_for_particle( pose );
+            //end_i = ros::Time::now();
+            //std::cout << "Change Camera Position :" << end_i.toSec()-start_i.toSec()<<std::endl;
 
+            //start_i = ros::Time::now();
+            get_image_from_pcl_visualizer();
+            //end_i = ros::Time::now();
+            //std::cout << "Change Camera Position :" << end_i.toSec()-start_i.toSec()<<std::endl;
+
+            //start_i = ros::Time::now();
             score = compare_image_pixelwise();
+            //end_i = ros::Time::now();
+            //std::cout << "Change Camera Position :" << end_i.toSec()-start_i.toSec()<<std::endl;
+
+            //std::cout << std::endl;
         }
 
         
@@ -893,6 +962,9 @@ namespace semlocali{
     void MeshLocalization::update_likelihood(){
         
         double total_likelihood = 0.0;
+
+        Time start_li = ros::Time::now();
+        Time end_li;
 
         for(size_t i=0; i<likelihood.size(); i++){
             likelihood[i] = get_likelihood( particle.poses[i] );
@@ -910,6 +982,18 @@ namespace semlocali{
         for(size_t i=0; i<likelihood.size(); i++){
             likelihood[i] = likelihood[i] / total_likelihood;
         }
+
+        /*
+        std::cout << "Change camera Time :" << camera_time << "[s]" << std::endl;
+
+        std::cout << "VTK Image Time :" << get_image_vtk_time<< "[s]" << std::endl;
+
+        std::cout << "Image Compare Time :" << compare_time<< "[s]" << std::endl;
+        */
+
+        camera_time = 0.0;
+        get_image_vtk_time = 0.0;
+        compare_time = 0.0;
 
     }
 
@@ -957,6 +1041,8 @@ namespace semlocali{
     }
 
     void MeshLocalization::resampling_particle(){
+
+        start_re = ros::Time::now();
         
         //std::cout << "Resampling first" << std::endl;
 
@@ -1033,6 +1119,11 @@ namespace semlocali{
         
         particle = new_particle;
         likelihood = new_likelihood;
+
+        end_re = ros::Time::now();
+        //std::cout << "Resampling Time: "<< end_re.toSec() - start_re.toSec() << "[s]" << std::endl;
+
+
     }
 
     void MeshLocalization::publish_result(){
