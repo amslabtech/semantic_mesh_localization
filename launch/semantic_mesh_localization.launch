@@ -48,6 +48,7 @@
 
         <param name="PolygonDataPath" value="/home/amsl/Polygon_data/sequence00_ground_truth/" />
         <param name="ReadPolygonChecker" value="true" type="bool" />
+        <param name="BuildPolygonChecker" value="false" type="bool" />
         
     </node>
 

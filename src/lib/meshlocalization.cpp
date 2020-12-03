@@ -391,6 +391,16 @@ namespace semlocali{
             }
         }
 
+        if( privateNode.getParam("BuildPolygonChecker", bparam) ){
+            if(bparam==true || bparam==false){
+                build_polygon_checker = bparam;
+            }
+            else{
+                ROS_ERROR("Invalid BuildPolygonChecker");
+                return false;
+            }
+        }
+
         if( privateNode.getParam("PolygonDataPath", sparam) ){
             if( sparam.length() < 1){
                 ROS_ERROR("Invalid PolygonDataPath");
@@ -561,11 +571,14 @@ namespace semlocali{
         std::cout << "Mesh map setup is done..." << std::endl;
         std::cout << "Building mesh map....." << std::endl;
 
-        if(read_polygon_checker==false){
+        if(read_polygon_checker==false && build_polygon_checker==true){
             build_mesh_map();
         }
-        else if(read_polygon_checker==true){
+        else if(read_polygon_checker==true && build_polygon_checker==false){
             read_mesh_map();
+        }
+        else{
+            ROS_INFO("Building Point Cloud Map");
         }
 
         /*

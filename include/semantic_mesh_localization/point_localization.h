@@ -1,85 +1,23 @@
-#ifndef __MESH_LOCALIZATION_H
-#define __MESH_LOCALIZATION_H
+#ifndef __POINT_LOCALIZATION_H
+#define __POINT_LOCALIZATION_H
 
-#define PI 3.141592
-
-#include"semantic_mesh_localization/pointcloud_to_mesh.h"
-
-#include<random>
-#include<iostream>
-#include<fstream>
-#include<stdlib.h>
-
-#include"geometry_msgs/PoseArray.h"
-#include"geometry_msgs/PoseStamped.h"
-
-
+#include "semantic_mesh_localization/mesh_localization.h"
 
 namespace semlocali{
 
-    class MeshLocalization : public PcToMesh{
+    class PointLocalization : public MeshLocalization{
 
         public:
+            PointLocalization( ros::NodeHandle& node, ros::NodeHandle& privateNode);
 
-            MeshLocalization(ros::NodeHandle& node, ros::NodeHandle& privateNode);
+            virtual ~PointLocalization();
+            
+            bool setup_point_localization( ros::NodeHandle& node, ros::NodeHandle& privateNode);
 
-            virtual ~MeshLocalization();
-
-            void segmented_image_callback(const sensor_msgs::ImageConstPtr& msg);
-
-            void odometry_callback(const nav_msgs::OdometryConstPtr& msg);
-
-            void add_bias_to_odometry(pos_trans& odom_trans);
-
-            double add_bias_XYZ(double dt, int random_value);
-
-            double add_bias_RPY(double dt, int random_value);
-
-            pos_trans get_relative_trans(nav_msgs::Odometry odom, nav_msgs::Odometry last_odom);
-
-            bool setup_mesh_localization(ros::NodeHandle& node, ros::NodeHandle& privateNode);
-
-            void build_mesh_map();
-
-            void read_mesh_map();
-
-            void load_PLY(pcl::visualization::PCLVisualizer& viewer);
-
-            void load_semantic_polygon(pcl::visualization::PCLVisualizer& viewer, std::string semantic_name, int blue, int green, int red);
-
-            void spin_mesh_localization();
-
-            void wait_for_bag_data();
-
-            void init_odometry_process();
-
-            void particle_filter();
-
-            void motion_update();
-
-            double rand_delta(double ave, double dev);
-
-            void update_likelihood();
-
-            double get_likelihood(geometry_msgs::Pose pose);
-
-            void change_camera_position_for_particle(geometry_msgs::Pose pose);
-
-            void get_image_from_pcl_visualizer();
-
-            double compare_image_pixelwise();
-
-            void estimate_current_pose();
-
-            geometry_msgs::PoseStamped max_likelihood_approach();
-
-            void resampling_particle();
-
-            void publish_result();
-
-            void publish_as_csv(std::ofstream& groundtruth_csv, std::ofstream& odometry_csv, std::ofstream& estimated_csv);
+            void spin_point_localization();
 
         private:
+            //a
             image_transport::ImageTransport it_;
             image_transport::Subscriber image_sub;
 
@@ -135,7 +73,6 @@ namespace semlocali{
 
             tf::StampedTransform map_to_groundtruth;
 
-            bool build_polygon_checker = true;
             bool read_polygon_checker = false;
             std::string polygon_data_path = "/home/amsl/Polygon_data/sequence00/";
             std::string polygon_file_name_base = "polygon_mesh_";
@@ -143,7 +80,6 @@ namespace semlocali{
             bool add_bias_checker = false;
             bool step_pebbles_checker = false; //pebbles means small stone
             bool stack_muddy_checker = false; //muddy means a ground coverd with mud, and it is called Nukarumi in Japanese
-
             double bias_XYZ = 0.01; //10m進むごとに10cm狂うというInfantのデータをもとに
             double bias_RPY = 0.01; //1度回転するごとに0.01度のズレが発生、この値は暫定値
 
@@ -172,11 +108,7 @@ namespace semlocali{
 
             Time start_mot;
             Time end_mot;
-
-
-
     };
-
 }
 
 #endif
