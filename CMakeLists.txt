@@ -173,6 +173,15 @@ target_link_libraries(mesh_localization
     semlocali
     )
 
+add_executable(point_localization src/point_localization_node.cpp)
+target_link_libraries(point_localization
+    ${catkin_LIBRARIES}
+    ${PCL_LIBRARIES}
+    ${VTL_LIBRARIES}
+    ${OpenCV_LIBRARIES}
+    semlocali
+    )
+
 add_executable(bonnet_node src/bonnet_node.cpp)
 target_link_libraries(bonnet_node
     ${bonnet_node_LIBRARIES}

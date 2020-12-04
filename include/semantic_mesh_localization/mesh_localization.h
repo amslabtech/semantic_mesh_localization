@@ -79,7 +79,7 @@ namespace semlocali{
 
             void publish_as_csv(std::ofstream& groundtruth_csv, std::ofstream& odometry_csv, std::ofstream& estimated_csv);
 
-        private:
+        public:
             image_transport::ImageTransport it_;
             image_transport::Subscriber image_sub;
 
@@ -91,6 +91,22 @@ namespace semlocali{
             tf::TransformBroadcaster br;
             geometry_msgs::TransformStamped car_state;
 
+            bool build_polygon_checker = true;
+            bool read_polygon_checker = false;
+
+            pcl::visualization::PCLVisualizer viewer;
+
+            //Image size data
+            int image_height = 1241;
+            int image_width = 376;
+
+            bool imheight_checker = false;
+            bool imwidth_checker = false;
+
+            //Image Downsize ratio
+            double image_down_width = 1.0;
+            double image_down_height = 1.0;
+
             //cv_bridge::CvImagePtr segimage;
             cv::Mat segimage; //Segmented Image from Camera data
             cv::Mat mapimage; //Image from Semantic Mesh Map
@@ -99,8 +115,6 @@ namespace semlocali{
             nav_msgs::Odometry last_odom_data;
             pos_trans odom_trans;
             bool first_odom_checker = false;
-
-            pcl::visualization::PCLVisualizer viewer;
 
             int particlenumber = 50;//launch particlenumber
 
@@ -117,17 +131,6 @@ namespace semlocali{
             double dpitch_dev = 0.01; //launch pitchdev
             double dyaw_dev = 0.01; //launch yawdev
 
-            //Image size data
-            int image_height = 1241;
-            int image_width = 376;
-
-            bool imheight_checker = false;
-            bool imwidth_checker = false;
-
-            //Image Downsize ratio
-            double image_down_width = 1.0;
-            double image_down_height = 1.0;
-
             bool publish_csv_checker = false;
             std::string groundtruth_path = "/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/groundtruth.csv";
             std::string odometry_path = "/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/odometry.csv";
@@ -135,8 +138,6 @@ namespace semlocali{
 
             tf::StampedTransform map_to_groundtruth;
 
-            bool build_polygon_checker = true;
-            bool read_polygon_checker = false;
             std::string polygon_data_path = "/home/amsl/Polygon_data/sequence00/";
             std::string polygon_file_name_base = "polygon_mesh_";
 
@@ -172,8 +173,6 @@ namespace semlocali{
 
             Time start_mot;
             Time end_mot;
-
-
 
     };
 

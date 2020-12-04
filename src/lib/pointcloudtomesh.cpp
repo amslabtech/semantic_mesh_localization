@@ -42,15 +42,16 @@ namespace semlocali{
 		bool bparam;
 		std::string strparam;
 
-		_pubroad = node.advertise<sensor_msgs::PointCloud2>("/road",2);
-		_pubcar = node.advertise<sensor_msgs::PointCloud2>("/car",2);
+		//_pubroad = node.advertise<sensor_msgs::PointCloud2>("/road",2);
+		//_pubcar = node.advertise<sensor_msgs::PointCloud2>("/car",2);
 
 		//Image Transformerをこれから使う
-        _pub_test_image = node.advertise<sensor_msgs::Image>("test_image", 1);
+        //_pub_test_image = node.advertise<sensor_msgs::Image>("test_image", 1);
 
+        /*
 		_sub_odometry = node.subscribe<nav_msgs::Odometry>
 			("/odom_pose", 1, &PcToMesh::odometry_callback, this);
-
+            */
 
 		if( privateNode.getParam("NormalSearchRadius", dparam) ){
 			if(dparam < 0.0001){

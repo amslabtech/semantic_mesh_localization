@@ -49,6 +49,7 @@ add_library(
     semlocali
     pointcloudtomesh.cpp
     meshlocalization.cpp
+    pointlocalization.cpp
 
     bonnet
     ${bonnet_under_SOURCES}

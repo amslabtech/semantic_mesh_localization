@@ -581,16 +581,17 @@ namespace semlocali{
             ROS_INFO("Building Point Cloud Map");
         }
 
-        /*
+        
         ros::Rate rate(10);
 
+        /*
         while( ros::ok() ){
 
             viewer.spinOnce();
 
             rate.sleep();
-        }
-        */
+        }*/
+        
 
         return true;
     }
