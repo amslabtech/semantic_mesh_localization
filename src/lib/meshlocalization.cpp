@@ -997,13 +997,13 @@ namespace semlocali{
             likelihood[i] = likelihood[i] / total_likelihood;
         }
 
-        /*
+        
         std::cout << "Change camera Time :" << camera_time << "[s]" << std::endl;
 
         std::cout << "VTK Image Time :" << get_image_vtk_time<< "[s]" << std::endl;
 
         std::cout << "Image Compare Time :" << compare_time<< "[s]" << std::endl;
-        */
+        
 
         camera_time = 0.0;
         get_image_vtk_time = 0.0;
