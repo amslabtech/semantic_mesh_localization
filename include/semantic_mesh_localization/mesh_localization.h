@@ -80,6 +80,10 @@ namespace semlocali{
             void publish_as_csv(std::ofstream& groundtruth_csv, std::ofstream& odometry_csv, std::ofstream& estimated_csv);
 
         public:
+
+            vtkSmartPointer<vtkRenderWindow> render;
+            cv::Mat tmpimage;
+
             image_transport::ImageTransport it_;
             image_transport::Subscriber image_sub;
 

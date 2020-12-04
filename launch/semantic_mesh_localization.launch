@@ -28,15 +28,15 @@
         <param name="particlenumber" value="100" type="int"/>
 
         <!-- default image size is 1241(width) and 376(height) -->
-        <param name="imagewidth" value="310" type="int"/>
-        <param name="imageheight" value="94" type="int"/>
+        <param name="imagewidth" value="1241" type="int"/>
+        <param name="imageheight" value="376" type="int"/>
 
-        <param name="imagedownwidth" value="0.25" type="double" />
-        <param name="imagedownheight" value="0.25" type="double" />
+        <param name="imagedownwidth" value="1.0" type="double" />
+        <param name="imagedownheight" value="1.0" type="double" />
 
         <param name="xdev" value="0.2" type="double"/>
         <param name="ydev" value="0.2" type="double"/>
-        <param name="zdev" value="0.2" type="double"/>
+        <param name="zdev" value="0.08" type="double"/>
 
         <param name="rolldev" value="0.02" type="double"/>
         <param name="pitchdev" value="0.02" type="double"/>
@@ -46,7 +46,7 @@
         <param name= "OdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/odometry.csv" />
         <param name="EstimatedPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/estimated.csv" />
 
-        <param name="PolygonDataPath" value="/home/amsl/Polygon_data/sequence00_velodyne/" />
+        <param name="PolygonDataPath" value="/home/amsl/Polygon_data/sequence00_ground_truth/" />
         <param name="ReadPolygonChecker" value="true" type="bool" />
         <param name="BuildPolygonChecker" value="false" type="bool" />
         

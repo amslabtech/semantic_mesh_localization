@@ -851,12 +851,15 @@ namespace semlocali{
     void MeshLocalization::get_image_from_pcl_visualizer(){
 
         start_vtk = ros::Time::now();
-        
-        vtkSmartPointer<vtkRenderWindow> render = viewer.getRenderWindow();
-        std::unique_ptr<uchar> pixels( render->GetRGBACharPixelData( 0, 0, render->GetSize()[0]-1, render->GetSize()[1]-1, 1) );
 
-        mapimage = cv::Mat(render->GetSize()[1], render->GetSize()[0], CV_8UC4, &pixels.get()[0] );
-        cv::cvtColor( mapimage , mapimage , cv::COLOR_RGBA2BGRA);
+        render = viewer.getRenderWindow();//この処理は早い
+
+        std::unique_ptr<uchar> pixels( render->GetRGBACharPixelData( 0, 0, render->GetSize()[0]-1, render->GetSize()[1]-1, 1) );//諸悪の根源
+
+        //end_vtk = ros::Time::now();
+
+        tmpimage = cv::Mat(render->GetSize()[1], render->GetSize()[0], CV_8UC4, &pixels.get()[0] );
+        cv::cvtColor( tmpimage , mapimage , cv::COLOR_RGBA2BGRA);
 
         end_vtk = ros::Time::now();
         get_image_vtk_time += end_vtk.toSec() - start_vtk.toSec();
