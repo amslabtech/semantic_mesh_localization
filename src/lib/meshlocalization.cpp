@@ -241,19 +241,19 @@ namespace semlocali{
     void MeshLocalization::load_PLY(pcl::visualization::PCLVisualizer& viewer){
         
         load_semantic_polygon( viewer,     "road", 128,  64, 128);
-        load_semantic_polygon( viewer, "sidewalk", 232,  35, 244);
+        //load_semantic_polygon( viewer, "sidewalk", 232,  35, 244);
         load_semantic_polygon( viewer, "building",  70,  70,  70);
         //load_semantic_polygon( viewer,     "wall", 156, 102, 102);
-        load_semantic_polygon( viewer,    "fence", 153, 153, 190);
+        //load_semantic_polygon( viewer,    "fence", 153, 153, 190);
         //load_semantic_polygon( viewer,     "pole", 153, 153, 153);
-        load_semantic_polygon( viewer,"trafficsign", 0, 220, 220);
+        //load_semantic_polygon( viewer,"trafficsign", 0, 220, 220);
         load_semantic_polygon( viewer, "vegetation",35, 142, 107);
         load_semantic_polygon( viewer,  "terrain", 152, 251, 152);
         load_semantic_polygon( viewer,      "car", 142,   0,   0);
-        load_semantic_polygon( viewer,    "truck",  70,   0,   0);
-        load_semantic_polygon( viewer,      "bus", 100,  60,   0);
-        load_semantic_polygon( viewer,"motorcycle",230,   0,   0);
-        load_semantic_polygon( viewer,  "bicycle",  32,  11, 119);
+        //load_semantic_polygon( viewer,    "truck",  70,   0,   0);
+        //load_semantic_polygon( viewer,      "bus", 100,  60,   0);
+        //load_semantic_polygon( viewer,"motorcycle",230,   0,   0);
+        //load_semantic_polygon( viewer,  "bicycle",  32,  11, 119);
 
         std::cout << "Loading semantic mesh polygon is done" << std::endl;
     }

@@ -36,7 +36,7 @@
 
         <param name="xdev" value="0.2" type="double"/>
         <param name="ydev" value="0.2" type="double"/>
-        <param name="zdev" value="0.08" type="double"/>
+        <param name="zdev" value="0.1" type="double"/>
 
         <param name="rolldev" value="0.02" type="double"/>
         <param name="pitchdev" value="0.02" type="double"/>
@@ -46,7 +46,7 @@
         <param name= "OdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/odometry.csv" />
         <param name="EstimatedPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/estimated.csv" />
 
-        <param name="PolygonDataPath" value="/home/amsl/Polygon_data/sequence00_ground_truth/" />
+        <param name="PolygonDataPath" value="/home/amsl/Polygon_data/sequence00_12_05/" />
         <param name="ReadPolygonChecker" value="true" type="bool" />
         <param name="BuildPolygonChecker" value="false" type="bool" />
         
