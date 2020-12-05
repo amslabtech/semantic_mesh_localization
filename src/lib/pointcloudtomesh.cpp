@@ -189,11 +189,11 @@ namespace semlocali{
 
 		while( ros::ok() ){
 
-			ros::spinOnce();//catch pose data
+			//ros::spinOnce();//catch pose data
 
-			change_camera_data(viewer);
+			//change_camera_data(viewer);
 
-            test_publish_image_data(viewer);
+            //test_publish_image_data(viewer);
 
 			viewer.spinOnce();
 
