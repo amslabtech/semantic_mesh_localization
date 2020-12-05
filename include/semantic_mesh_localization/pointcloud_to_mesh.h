@@ -29,7 +29,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <image_transport/image_transport.h>
 #include <image_transport/image_transport.h>
-
+#include"pcl/features/normal_3d_omp.h"
 
 
 namespace semlocali{

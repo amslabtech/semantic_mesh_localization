@@ -498,7 +498,7 @@ namespace semlocali{
 		pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloudin (new pcl::PointCloud<pcl::PointXYZRGB>(semantic_cloud));
 		//create smart pointer because normal estimation and greedytriangulation need smart pointer
 
-		pcl::NormalEstimation<pcl::PointXYZRGB, pcl::PointNormal> ne;
+		pcl::NormalEstimationOMP<pcl::PointXYZRGB, pcl::PointNormal> ne;
 
 		pcl::PointCloud<pcl::PointNormal>::Ptr cloud_normal(new pcl::PointCloud<pcl::PointNormal>);
 
@@ -546,7 +546,7 @@ namespace semlocali{
 		gp3.setMaximumSurfaceAngle(PI/2.0);
 		gp3.setMinimumAngle(-PI);
 		gp3.setMaximumAngle(PI);
-		gp3.setNormalConsistency(true);
+		gp3.setNormalConsistency(false);
 
 		gp3.setInputCloud(cloud_normal);
 		
