@@ -38,9 +38,9 @@
         <param name="ydev" value="0.2" type="double"/>
         <param name="zdev" value="0.1" type="double"/>
 
-        <param name="rolldev" value="0.05" type="double"/>
-        <param name="pitchdev" value="0.05" type="double"/>
-        <param name="yawdev" value="0.05" type="double" />
+        <param name="rolldev" value="0.02" type="double"/>
+        <param name="pitchdev" value="0.02" type="double"/>
+        <param name="yawdev" value="0.02" type="double" />
 
         <param name="GroundtruthPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/groundtruth.csv" />
         <param name= "OdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/odometry.csv" />

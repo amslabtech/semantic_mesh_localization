@@ -722,7 +722,32 @@ namespace semlocali{
 
     }
 
-    double MeshLocalization::rand_delta(double ave, double dev){
+    double MeshLocalization::rand_delta_RPY(double ave, double dev){
+
+        std::random_device seed_gen;
+        std::default_random_engine engine( seed_gen() );
+
+        std::normal_distribution<double> dist(ave,dev);
+
+        double number = dist(engine);
+
+        /*
+        std::cout << "AVE" << std::endl;
+        std::cout << ave << std::endl;
+
+        std::cout << "DEV" << std::endl;
+        std::cout << dev << std::endl;
+
+        std::cout << "Number" << std::endl;
+        std::cout << number << std::endl;
+        */
+
+        if(ave < 0.1) number = ave;
+
+        return number;
+    }
+
+    double MeshLocalization::rand_delta_XYZ(double ave, double dev){
 
         std::random_device seed_gen;
         std::default_random_engine engine( seed_gen() );
@@ -753,11 +778,11 @@ namespace semlocali{
 
             //Get XYZ
             particle.poses[i].position.x = 
-                particle.poses[i].position.x + rand_delta(odom_trans.dx, dx_dev);
+                particle.poses[i].position.x + rand_delta_XYZ(odom_trans.dx, dx_dev);
             particle.poses[i].position.y = 
-                particle.poses[i].position.y + rand_delta(odom_trans.dy, dy_dev);
+                particle.poses[i].position.y + rand_delta_XYZ(odom_trans.dy, dy_dev);
             particle.poses[i].position.z = 
-                particle.poses[i].position.z + rand_delta(odom_trans.dz, dz_dev);
+                particle.poses[i].position.z + rand_delta_XYZ(odom_trans.dz, dz_dev);
 
             /*
             std::cout << "poses" << std::endl;
@@ -780,9 +805,9 @@ namespace semlocali{
             //std::cout << pitch << std::endl;
             //std::cout << yaw << std::endl;
 
-            roll = roll + rand_delta( odom_trans.droll , droll_dev );
-            pitch = pitch + rand_delta( odom_trans.dpitch , dpitch_dev );
-            yaw = yaw + rand_delta( odom_trans.dyaw , dyaw_dev );
+            roll = roll + rand_delta_RPY( odom_trans.droll , droll_dev );
+            pitch = pitch + rand_delta_RPY( odom_trans.dpitch , dpitch_dev );
+            yaw = yaw + rand_delta_RPY( odom_trans.dyaw , dyaw_dev );
 
             /*
             std::cout << "RPY after" << std::endl;
@@ -911,7 +936,7 @@ namespace semlocali{
                     diff_b = std::abs( seg_b - map_b );
                     if( diff_b > 10 ) diff_b = 100.0;
 
-                    tmp_score = 10.0 - diff_r - diff_g - diff_b;
+                    tmp_score = 30.0 - diff_r - diff_g - diff_b;
                     if(tmp_score < 0.0) tmp_score = 0.0;
 
                     score += tmp_score;
@@ -989,7 +1014,7 @@ namespace semlocali{
         }
 
         if(total_likelihood < 0.01){
-            ROS_ERROR("Invalid total likelihood");
+            ROS_INFO("Invalid total likelihood");
             for(size_t i=0; i<likelihood.size(); i++){
                 likelihood[i] = ( (double)rand() / ((double)RAND_MAX + 1) );
             }

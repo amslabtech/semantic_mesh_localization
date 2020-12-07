@@ -57,7 +57,9 @@ namespace semlocali{
 
             void motion_update();
 
-            double rand_delta(double ave, double dev);
+            double rand_delta_XYZ(double ave, double dev);
+
+            double rand_delta_RPY(double ave, double dev);
 
             void update_likelihood();
 
