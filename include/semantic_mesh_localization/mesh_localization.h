@@ -33,6 +33,10 @@ namespace semlocali{
 
             double add_bias_XYZ(double dt, int random_value);
 
+            double add_bias_XY(double dt, int random_value);
+
+            double add_bias_Z(double dt, int random_value);
+
             double add_bias_RPY(double dt, int random_value);
 
             pos_trans get_relative_trans(nav_msgs::Odometry odom, nav_msgs::Odometry last_odom);
@@ -152,6 +156,9 @@ namespace semlocali{
             bool stack_muddy_checker = false; //muddy means a ground coverd with mud, and it is called Nukarumi in Japanese
 
             double bias_XYZ = 0.01; //10m進むごとに10cm狂うというInfantのデータをもとに
+            double bias_XY = 0.01;
+            double bias_Z = 0.01;
+
             double bias_RPY = 0.01; //1度回転するごとに0.01度のズレが発生、この値は暫定値
 
             double pebbles_bias_XYZ = 0.01;

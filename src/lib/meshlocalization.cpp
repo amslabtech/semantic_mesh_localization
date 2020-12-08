@@ -43,6 +43,80 @@ namespace semlocali{
         std::cout << "catch odom data" << std::endl;
     }
 
+    double MeshLocalization::add_bias_XY(double dt, int random_value){
+        
+        double dev_bias = dt * bias_XY;
+        
+        std::random_device seed_gen;
+        std::default_random_engine engine( seed_gen() );
+
+        std::normal_distribution<double> dist(dt, dev_bias);
+
+        double number = dist(engine);
+
+        bool plumin;
+        if( (number - dt) > 0 ){
+            plumin = true;
+        }
+        else{
+            plumin = false;
+        }
+
+        if( step_pebbles_checker == true ){
+
+            std::cout << "Step on pebbles" << std::endl;
+
+            if( (random_value % pebbles_counter) == 0 ){
+                if(plumin == true){
+                    number = number + pebbles_bias_XYZ;
+                }
+                else if(plumin == false){
+                    number = number - pebbles_bias_XYZ;
+                }
+            }
+        }
+
+        return number;
+    }
+
+    double MeshLocalization::add_bias_Z(double dt, int random_value){
+        
+        double dev_bias = dt * bias_Z;
+        
+        std::random_device seed_gen;
+        std::default_random_engine engine( seed_gen() );
+
+        std::normal_distribution<double> dist(dt, dev_bias);
+
+        double number = dist(engine);
+
+        bool plumin;
+        if( (number - dt) > 0 ){
+            plumin = true;
+        }
+        else{
+            plumin = false;
+        }
+
+        if( step_pebbles_checker == true ){
+
+            std::cout << "Step on pebbles" << std::endl;
+
+            if( (random_value % pebbles_counter) == 0 ){
+                if(plumin == true){
+                    number = number + pebbles_bias_XYZ;
+                }
+                else if(plumin == false){
+                    number = number - pebbles_bias_XYZ;
+                }
+            }
+        }
+
+        return number;
+    }
+
+
+
     double MeshLocalization::add_bias_XYZ(double dt, int random_value){
         
         double dev_bias = dt * bias_XYZ;
@@ -115,13 +189,13 @@ namespace semlocali{
     void MeshLocalization::add_bias_to_odometry(pos_trans& odom_trans){
 
         int random_value = rand();
-        odom_trans.dx = add_bias_XYZ(odom_trans.dx, random_value);
+        odom_trans.dx = add_bias_XY(odom_trans.dx, random_value);
         
         random_value = rand();
-        odom_trans.dy = add_bias_XYZ(odom_trans.dy, random_value);
+        odom_trans.dy = add_bias_XY(odom_trans.dy, random_value);
 
         random_value = rand();
-        odom_trans.dz = add_bias_XYZ(odom_trans.dz, random_value);
+        odom_trans.dz = add_bias_Z(odom_trans.dz, random_value);
 
         random_value = rand();
         odom_trans.droll  = add_bias_RPY(odom_trans.droll , random_value);
@@ -244,7 +318,7 @@ namespace semlocali{
         //load_semantic_polygon( viewer, "sidewalk", 232,  35, 244);
         load_semantic_polygon( viewer, "building",  70,  70,  70);
         //load_semantic_polygon( viewer,     "wall", 156, 102, 102);
-        //load_semantic_polygon( viewer,    "fence", 153, 153, 190);
+        load_semantic_polygon( viewer,    "fence", 153, 153, 190);
         //load_semantic_polygon( viewer,     "pole", 153, 153, 153);
         //load_semantic_polygon( viewer,"trafficsign", 0, 220, 220);
         load_semantic_polygon( viewer, "vegetation",35, 142, 107);
@@ -338,6 +412,26 @@ namespace semlocali{
             }
             else{
                 bias_XYZ = dparam;
+            }
+        }
+
+        if( privateNode.getParam("BiasXY", dparam) ){
+            if(dparam < 0.0 || dparam > 0.5){
+                ROS_ERROR("Invalid BiasXY parameter, BiasXYZ must be 0< BiasXYZ < 0.5");
+                return false;
+            }
+            else{
+                bias_XY = dparam;
+            }
+        }
+
+        if( privateNode.getParam("BiasZ", dparam) ){
+            if(dparam < 0.0 || dparam > 0.5){
+                ROS_ERROR("Invalid BiasZ parameter, BiasXYZ must be 0< BiasXYZ < 0.5");
+                return false;
+            }
+            else{
+                bias_Z = dparam;
             }
         }
 

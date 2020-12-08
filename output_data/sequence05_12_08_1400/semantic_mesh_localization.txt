@@ -17,8 +17,6 @@
         <param name="StackMuddyChecker" value="false" type="bool" />
         
         <param name="BiasXYZ" value="0.015" type="double" />
-        <param name="BiasXY" value="0.015" type="double" />
-        <param name="BiasZ" value="0.01" type="double" />
         <param name="BiasRPY" value="0.015" type="double" />
 
         <param name="BiasPebblesXYZ" value="0.01" type="double" />
