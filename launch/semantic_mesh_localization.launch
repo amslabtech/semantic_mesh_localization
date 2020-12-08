@@ -44,9 +44,10 @@
         <param name="pitchdev" value="0.05" type="double"/>
         <param name="yawdev" value="0.05" type="double" />
 
-        <param name="GroundtruthPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/sequence05_12_08_1400/groundtruth.csv" />
-        <param name= "OdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/sequence05_12_08_1400/odometry.csv" />
-        <param name="EstimatedPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/sequence05_12_08_1400/estimated.csv" />
+        <param name="GroundtruthPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/sequence09/groundtruth.csv" />
+        <param name= "OdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/sequence09/odometry.csv" />
+        <param name="EstimatedPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/sequence09/estimated.csv" />
+        <param name="BiasedOdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/sequence09/biased_odom.csv" />
 
         <param name="PolygonDataPath" value="/home/amsl/Polygon_data/sequence05/" />
         <param name="ReadPolygonChecker" value="true" type="bool" />

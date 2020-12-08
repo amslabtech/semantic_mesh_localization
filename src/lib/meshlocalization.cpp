@@ -13,6 +13,7 @@ namespace semlocali{
 
             pub_pose = node.advertise<geometry_msgs::PoseStamped>("/estimated_pose", 1);
             pub_particle = node.advertise<geometry_msgs::PoseArray>("/particle", 1);
+            pub_biased_odometry = node.advertise<nav_msgs::Odometry>("biased_odom", 1);
 
             estimated_pose.header.frame_id = "map";
             particle.header.frame_id = "map";
@@ -205,6 +206,26 @@ namespace semlocali{
 
         random_value = rand();
         odom_trans.dyaw   = add_bias_RPY(odom_trans.dyaw  , random_value);
+
+        //Biased Odometry
+        biased_odom.pose.pose.position.x = biased_odom.pose.pose.position.x + odom_trans.dx;
+        biased_odom.pose.pose.position.y = biased_odom.pose.pose.position.y + odom_trans.dy;
+        biased_odom.pose.pose.position.z = biased_odom.pose.pose.position.z + odom_trans.dz;
+
+        double tmp_r,tmp_p,tmp_y;
+        tf::Quaternion biased_quat;
+        quaternionMsgToTF( biased_odom.pose.pose.orientation, biased_quat);
+        tf::Matrix3x3( biased_quat ).getRPY( tmp_r, tmp_p, tmp_y);
+        tmp_r += odom_trans.droll;
+        tmp_p += odom_trans.dpitch;
+        tmp_y += odom_trans.dyaw;
+
+        tf::Quaternion quat_li = tf::createQuaternionFromRPY( tmp_r, tmp_p, tmp_y);
+        geometry_msgs::Quaternion qwe_quat;
+        quaternionTFToMsg( quat_li, qwe_quat);
+
+        biased_odom.pose.pose.orientation = qwe_quat;
+
     }
 
     pos_trans MeshLocalization::get_relative_trans(nav_msgs::Odometry odom, nav_msgs::Odometry last_odom){
@@ -273,6 +294,9 @@ namespace semlocali{
             last_odom_data = odom_data;
             odom_data = *msg;
             first_odom_checker = true;
+
+            biased_odom.header.stamp = odom_data.header.stamp;
+            biased_odom.header.frame_id = odom_data.header.frame_id;
 
             odom_trans = get_relative_trans( odom_data, last_odom_data);
             if(add_bias_checker == true){
@@ -535,6 +559,16 @@ namespace semlocali{
             }
         }
 
+        if( privateNode.getParam("BiasedOdometryPath", sparam)){
+            if(sparam.length() < 1){
+                ROS_ERROR("Invalid Biased Odometry file path");
+                return false;
+            }
+            else{
+                biased_odom_path = sparam;
+            }
+        }
+
         if( privateNode.getParam("PublishCSVChecker", bparam) ){
             if( bparam == true || bparam == false ){
                 publish_csv_checker = bparam;
@@ -701,6 +735,8 @@ namespace semlocali{
         particle.header.frame_id = odom_data.header.frame_id;
         particle.header.stamp = odom_data.header.stamp;
 
+        biased_odom = odom_data;
+
         double tmp_zero = 0.00;
         for(int i=0; i<particlenumber; i++){
             particle.poses.push_back( odom_data.pose.pose );
@@ -750,6 +786,7 @@ namespace semlocali{
         std::ofstream groundtruth_csv(groundtruth_path);
         std::ofstream odometry_csv(odometry_path);
         std::ofstream estimated_csv(estimated_path);
+        std::ofstream biased_odom_csv(biased_odom_path);
 
         while( ros::ok() ){
 
@@ -789,7 +826,7 @@ namespace semlocali{
                 start_csv = ros::Time::now();
 
                 std::cout << "Publish as CSV file" << std::endl;
-                publish_as_csv(groundtruth_csv, odometry_csv, estimated_csv);
+                publish_as_csv(groundtruth_csv, odometry_csv, estimated_csv, biased_odom_csv);
 
                 end_csv = ros::Time::now();
 
@@ -813,6 +850,7 @@ namespace semlocali{
         groundtruth_csv.close();
         odometry_csv.close();
         estimated_csv.close();
+        biased_odom_csv.close();
 
     }
 
@@ -1264,6 +1302,9 @@ namespace semlocali{
 
     void MeshLocalization::publish_result(){
         
+        biased_odom.header.frame_id = "map";
+        biased_odom.header.stamp = odom_data.header.stamp;
+
         estimated_pose.header.frame_id = "map";
         particle.header.frame_id = "map";
 
@@ -1272,9 +1313,10 @@ namespace semlocali{
 
         pub_pose.publish(estimated_pose);
         pub_particle.publish(particle);
+        pub_biased_odometry.publish(biased_odom);
     }
 
-    void MeshLocalization::publish_as_csv(std::ofstream& groundtruth_csv, std::ofstream& odometry_csv, std::ofstream& estimated_csv){
+    void MeshLocalization::publish_as_csv(std::ofstream& groundtruth_csv, std::ofstream& odometry_csv, std::ofstream& estimated_csv, std::ofstream& biased_odom_csv){
 
         //catch groundtruth data from bag file
         while(true){
@@ -1308,6 +1350,11 @@ namespace semlocali{
                       << estimated_pose.pose.position.x << ","
                       << estimated_pose.pose.position.y << ","
                       << estimated_pose.pose.position.z << "," << std::endl;
+
+        biased_odom_csv << biased_odom.header.stamp << ","
+                        << biased_odom.pose.pose.position.x << ","
+                        << biased_odom.pose.pose.position.y << ","
+                        << biased_odom.pose.pose.position.z << "," << std::endl;
 
     }
 

@@ -143,6 +143,7 @@ namespace semlocali{
         std::ofstream groundtruth_csv(groundtruth_path);
         std::ofstream odometry_csv(odometry_path);
         std::ofstream estimated_csv(estimated_path);
+        std::ofstream biased_odom_csv(biased_odom_path);
 
         while( ros::ok() ){
 
@@ -181,7 +182,7 @@ namespace semlocali{
             if(publish_csv_checker == true){
                 start_csv = ros::Time::now();
                 std::cout << "Publish as CSV file" << std::endl;
-                publish_as_csv(groundtruth_csv, odometry_csv, estimated_csv);
+                publish_as_csv(groundtruth_csv, odometry_csv, estimated_csv, biased_odom_csv);
 
                 end_csv = ros::Time::now();
 

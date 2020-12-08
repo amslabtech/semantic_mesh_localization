@@ -83,7 +83,7 @@ namespace semlocali{
 
             void publish_result();
 
-            void publish_as_csv(std::ofstream& groundtruth_csv, std::ofstream& odometry_csv, std::ofstream& estimated_csv);
+            void publish_as_csv(std::ofstream& groundtruth_csv, std::ofstream& odometry_csv, std::ofstream& estimated_csv, std::ofstream& biased_odom_csv);
 
         public:
 
@@ -96,6 +96,9 @@ namespace semlocali{
             ros::Subscriber sub_odometry;
             ros::Publisher pub_particle;
             ros::Publisher pub_pose;
+
+            ros::Publisher pub_biased_odometry;
+            nav_msgs::Odometry biased_odom;
 
             tf::TransformListener listener;
             tf::TransformBroadcaster br;
@@ -145,6 +148,7 @@ namespace semlocali{
             std::string groundtruth_path = "/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/groundtruth.csv";
             std::string odometry_path = "/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/odometry.csv";
             std::string estimated_path = "/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/estimated.csv";
+            std::string biased_odom_path = "/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/biased_odom.csv";
 
             tf::StampedTransform map_to_groundtruth;
 
