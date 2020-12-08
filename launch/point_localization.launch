@@ -17,8 +17,10 @@
         <param name="StepPebblesChecker" value="false" type="bool" />
         <param name="StackMuddyChecker" value="false" type="bool" />
 
-        <param name="BiasXYZ" value="0.01" type="double" />
-        <param name="BiasRPY" value="0.01" type="double" />
+        <param name="BiasXYZ" value="0.015" type="double" />
+        <param name="BiasXY" value="0.015" type="double" />
+        <param name="BiasZ" value="0.01" type="double" />
+        <param name="BiasRPY" value="0.015" type="double" />
 
         <param name="BiasPebblesXYZ" value="0.01" type="double" />
         <param name="BiasPebblesRPY" value="0.01" type="double" />
@@ -46,6 +48,7 @@
         <param name="GroundtruthPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/groundtruth.csv" />
         <param name= "OdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/odometry.csv" />
         <param name="EstimatedPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/estimated.csv" />
+        <param name="BiasedOdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/biased_odom.csv" />
 
         <param name="PolygonDataPath" value="/home/amsl/Polygon_data/sequence00_ground_truth/" />
         <param name="ReadPolygonChecker" value="false" type="bool" />
