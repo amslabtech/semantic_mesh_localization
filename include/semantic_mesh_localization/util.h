@@ -9,6 +9,7 @@
 #include<list>
 #include<math.h>
 #include<complex>
+#include<sstream>
 
 namespace semlocali
 { 

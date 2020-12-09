@@ -1,0 +1,16 @@
+<launch>
+
+    <node pkg="semantic_mesh_localization" type="verify_cal_likelihood" name="verify_cal_likelihood" output="screen" >
+        
+        <param name="PlaceDataPath" value="/home/amsl/semantic_mesh_localization_data/sequence00_init/place/" />
+        <param name="ImageDataPath" value="/home/amsl/semantic_mesh_localization_data/sequence00_init/segimage/" />
+        <param name="MeshMapImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00_init/mesh_map_image/" />
+        <Param name="PointMapImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00_init/point_map_image/" />
+        <param name="PCDPath" value="/home/amsl/PCD_data/sequence00_12_05_1830/" />
+        <param name="PCDName" value="semantic_mesh_loam_ascii" />
+        
+        <param name="PolygonDataPath" value="/home/amsl/Polygon_data/sequence00_12_05_1830/" />
+        <param name="PolygonFileNameBase" value="polygon_mesh_" />
+
+    </node>
+</launch>

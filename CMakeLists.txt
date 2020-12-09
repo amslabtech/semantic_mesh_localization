@@ -182,6 +182,15 @@ target_link_libraries(point_localization
     semlocali
     )
 
+add_executable(verify_cal_likelihood src/verify_cal_likelihood_node.cpp)
+target_link_libraries(verify_cal_likelihood
+    ${catkin_LIBRARIES}
+    ${PCL_LIBRARIES}
+    ${VTL_LIBRARIES}
+    ${OpenCV_LIBRARIES}
+    semlocali
+    )
+
 add_executable(bonnet_node src/bonnet_node.cpp)
 target_link_libraries(bonnet_node
     ${bonnet_node_LIBRARIES}

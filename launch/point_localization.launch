@@ -25,7 +25,7 @@
 
         <param name="PublishCSVChecker" value="true" type="bool" />
 
-        <param name="SaveImageChecker" value="false" type="bool" />
+        <param name="SaveImageChecker" value="true" type="bool" />
         <param name="SegImagePath" value="/home/amsl/Image_data/segimage/" />
         <param name="MapImagePath" value="/home/amsl/Image_data/mapimage/" /> 
         

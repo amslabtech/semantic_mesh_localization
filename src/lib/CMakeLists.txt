@@ -50,6 +50,7 @@ add_library(
     pointcloudtomesh.cpp
     meshlocalization.cpp
     pointlocalization.cpp
+    verifycallikelihood.cpp
 
     bonnet
     ${bonnet_under_SOURCES}

@@ -1384,7 +1384,7 @@ namespace semlocali{
                      << odom_data.pose.pose.orientation.x << ","
                      << odom_data.pose.pose.orientation.y << ","
                      << odom_data.pose.pose.orientation.z << ","
-                     << odom_data.pose.pose.orientation.z << std::endl;
+                     << odom_data.pose.pose.orientation.w << std::endl;
 
         estimated_csv << odom_data.header.stamp << "," 
                       << estimated_pose.pose.position.x << ","
