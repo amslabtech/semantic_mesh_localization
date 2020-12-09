@@ -27,6 +27,10 @@
 
         <param name="PublishCSVChecker" value="true" type="bool" />
 
+        <param name="SaveImageChecker" value="false" type="bool" />
+        <param name="SegImagePath" value="/home/amsl/Image_data/segimage/" />
+        <param name="MapImagePath" value="/home/amsl/Image_data/mapimage/" />
+
         <param name="particlenumber" value="100" type="int"/>
 
         <!-- default image size is 1241(width) and 376(height) -->
@@ -44,10 +48,10 @@
         <param name="pitchdev" value="0.05" type="double"/>
         <param name="yawdev" value="0.05" type="double" />
 
-        <param name="GroundtruthPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/sequence09/groundtruth.csv" />
-        <param name= "OdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/sequence09/odometry.csv" />
-        <param name="EstimatedPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/sequence09/estimated.csv" />
-        <param name="BiasedOdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/sequence09/biased_odom.csv" />
+        <param name="GroundtruthPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/groundtruth.csv" />
+        <param name= "OdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/odometry.csv" />
+        <param name="EstimatedPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/estimated.csv" />
+        <param name="BiasedOdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/biased_odom.csv" />
 
         <param name="PolygonDataPath" value="/home/amsl/Polygon_data/sequence05/" />
         <param name="ReadPolygonChecker" value="true" type="bool" />

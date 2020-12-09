@@ -130,7 +130,12 @@ namespace semlocali{
     }
 
     void PointLocalization::spin_point_localization(){
-        
+        /*
+        while( ros::ok() ){
+            viewer.spin();
+        }
+        */
+
         wait_for_bag_data();
         particle_filter_for_point_cloud_map();
 
@@ -187,6 +192,13 @@ namespace semlocali{
                 end_csv = ros::Time::now();
 
                 //std::cout << "Pub CSV Time :" << end_csv.toSec() - start_csv.toSec() <<"[s]"<<std  ::endl;
+            }
+            
+            if(save_image_checker == true){
+            
+                save_image();
+                std::cout << "Save segmented image as png file" << std::endl;
+            
             }
 
             std::cout << "Resampling particle" << std::endl;

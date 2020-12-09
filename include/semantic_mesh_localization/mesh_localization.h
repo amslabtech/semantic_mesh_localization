@@ -85,6 +85,8 @@ namespace semlocali{
 
             void publish_as_csv(std::ofstream& groundtruth_csv, std::ofstream& odometry_csv, std::ofstream& estimated_csv, std::ofstream& biased_odom_csv);
 
+            void save_image();
+
         public:
 
             vtkSmartPointer<vtkRenderWindow> render;
@@ -149,6 +151,11 @@ namespace semlocali{
             std::string odometry_path = "/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/odometry.csv";
             std::string estimated_path = "/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/estimated.csv";
             std::string biased_odom_path = "/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/biased_odom.csv";
+
+            bool save_image_checker = false;
+            std::string seg_image_path = "/home/amsl/Image_data/segimage/";
+            std::string map_image_path = "/home/amsl/Image_data/mapimage/";
+            int image_counter = 0;
 
             tf::StampedTransform map_to_groundtruth;
 

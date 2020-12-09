@@ -1,7 +1,4 @@
 <launch>
-
-    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find semantic_mesh_localization)/config/point_localization.rviz" />
-
     <node pkg="semantic_mesh_localization" type="point_localization" name="point_localization" output="screen">
 
         <!--PointCloud localization config parameter -->
@@ -28,6 +25,10 @@
 
         <param name="PublishCSVChecker" value="true" type="bool" />
 
+        <param name="SaveImageChecker" value="false" type="bool" />
+        <param name="SegImagePath" value="/home/amsl/Image_data/segimage/" />
+        <param name="MapImagePath" value="/home/amsl/Image_data/mapimage/" /> 
+        
         <param name="particlenumber" value="100" type="int"/>
 
         <!-- default image size is 1241(width) and 376(height) -->
@@ -49,7 +50,7 @@
         <param name= "OdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/odometry.csv" />
         <param name="EstimatedPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/estimated.csv" />
         <param name="BiasedOdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/biased_odom.csv" />
-
+        
         <param name="PolygonDataPath" value="/home/amsl/Polygon_data/sequence00_ground_truth/" />
         <param name="ReadPolygonChecker" value="false" type="bool" />
         <param name="BuildPolygonChecker" value="false" type="bool" />
@@ -63,6 +64,9 @@
         <!-- CNN stuff -->
         <rosparam command="load" file="$(find bonnet_run)/config/cnn_cfg.yaml" />
     </node>
+
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find semantic_mesh_localization)/config/point_localization.rviz" />
+
 
 
 </launch>

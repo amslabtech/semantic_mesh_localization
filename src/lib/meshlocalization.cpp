@@ -29,7 +29,8 @@ namespace semlocali{
         
         Time start_im = ros::Time::now();
 
-        cv_bridge::CvImagePtr seg_ptr=cv_bridge::toCvCopy(msg,sensor_msgs::image_encodings::BGR8);
+        //cv_bridge::CvImagePtr seg_ptr=cv_bridge::toCvCopy(msg,sensor_msgs::image_encodings::BGR8);
+        cv_bridge::CvImagePtr seg_ptr=cv_bridge::toCvCopy(msg,sensor_msgs::image_encodings::RGB8);
 
         cv::cvtColor( seg_ptr->image , segimage , cv::COLOR_RGB2BGRA );
 
@@ -577,7 +578,37 @@ namespace semlocali{
                 ROS_ERROR("Invalid PublishCSVChecker");
                 return false;
             }
-        }   
+        }
+
+        if( privateNode.getParam("SaveImageChecker" , bparam) ){
+            if( bparam==true || bparam==false ){
+                save_image_checker = bparam;
+            }
+            else{
+                ROS_ERROR("Invalid Publish Image Checker");
+                return false;
+            }
+        }
+
+        if(privateNode.getParam("SegImagePath", sparam)){
+            if(sparam.length() < 1){
+                ROS_ERROR("Invalid SegImagePath");
+                return false;
+            }
+            else{
+                seg_image_path = sparam;
+            }
+        }
+
+        if(privateNode.getParam("MapImagePath", sparam)){
+            if(sparam.length() < 1){
+                ROS_ERROR("Invalid MapImagePath");
+                return false;
+            }
+            else{
+                map_image_path = sparam;
+            }
+        }
 
         if( privateNode.getParam("imageheight", iparam) ){
             if(iparam < 1){
@@ -718,8 +749,8 @@ namespace semlocali{
             viewer.spinOnce();
 
             rate.sleep();
-        }*/
-        
+        }
+        */
 
         return true;
     }
@@ -831,6 +862,11 @@ namespace semlocali{
                 end_csv = ros::Time::now();
 
                 //std::cout << "Pub CSV Time :" << end_csv.toSec() - start_csv.toSec() <<"[s]"<<std::endl;
+            }
+
+            if(save_image_checker == true){
+                save_image();
+                std::cout << "Save segmented image as png file" << std::endl;
             }
 
             std::cout << "Resampling particle" << std::endl;
@@ -1344,18 +1380,42 @@ namespace semlocali{
         odometry_csv << odom_data.header.stamp << ","
                      << odom_data.pose.pose.position.x << ","
                      << odom_data.pose.pose.position.y << ","
-                     << odom_data.pose.pose.position.z << "," << std::endl;
+                     << odom_data.pose.pose.position.z << "," 
+                     << odom_data.pose.pose.orientation.x << ","
+                     << odom_data.pose.pose.orientation.y << ","
+                     << odom_data.pose.pose.orientation.z << ","
+                     << odom_data.pose.pose.orientation.z << std::endl;
 
         estimated_csv << odom_data.header.stamp << "," 
                       << estimated_pose.pose.position.x << ","
                       << estimated_pose.pose.position.y << ","
-                      << estimated_pose.pose.position.z << "," << std::endl;
+                      << estimated_pose.pose.position.z << "," 
+                      << estimated_pose.pose.orientation.x << ","
+                      << estimated_pose.pose.orientation.y << ","
+                      << estimated_pose.pose.orientation.z << ","
+                      << estimated_pose.pose.orientation.w << ","
+                      << std::endl;
 
         biased_odom_csv << biased_odom.header.stamp << ","
                         << biased_odom.pose.pose.position.x << ","
                         << biased_odom.pose.pose.position.y << ","
-                        << biased_odom.pose.pose.position.z << "," << std::endl;
+                        << biased_odom.pose.pose.position.z << "," 
+                        << biased_odom.pose.pose.orientation.x << ","
+                        << biased_odom.pose.pose.orientation.y << ","
+                        << biased_odom.pose.pose.orientation.z << ","
+                        << biased_odom.pose.pose.orientation.w << ","
+                        << std::endl;
 
+    }
+
+    void MeshLocalization::save_image(){
+
+        std::string file_number = std::to_string(image_counter);
+        std::string file_path = seg_image_path + "image" + file_number + ".jpg";
+
+        cv::imwrite( file_path , segimage );
+
+        image_counter += 1;
     }
 
 
