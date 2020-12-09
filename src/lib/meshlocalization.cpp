@@ -1054,6 +1054,12 @@ namespace semlocali{
         tmpimage = cv::Mat(render->GetSize()[1], render->GetSize()[0], CV_8UC4, &pixels.get()[0] );
         cv::cvtColor( tmpimage , mapimage , cv::COLOR_RGBA2BGRA);
 
+        //Kaiten
+        cv::flip(mapimage, mapimage, -1);
+        cv::flip(mapimage, mapimage,  1);
+
+        //cv::imwrite("/home/amsl/image.jpg",mapimage);
+
         end_vtk = ros::Time::now();
         get_image_vtk_time += end_vtk.toSec() - start_vtk.toSec();
 

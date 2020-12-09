@@ -76,6 +76,10 @@ namespace semlocali{
 
             void load_semantic_polygon(pcl::visualization::PCLVisualizer& viewer, std::string semantic_name, int blue, int green, int red);
 
+            void get_map_image();
+
+            cv::Mat get_image( pcl::visualization::PCLVisualizer& viewer, geometry_msgs::Pose pose, int counter, std::string file_dir);
+
         private:
 
             pcl::visualization::PCLVisualizer point_viewer;

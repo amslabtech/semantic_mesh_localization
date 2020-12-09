@@ -120,6 +120,9 @@ namespace semlocali{
         std::cout << "Load Mesh Data" << std::endl;
         load_mesh( mesh_viewer);
 
+        std::cout << "Get Map Image" << std::endl;
+        get_map_image();
+
         while(1){
             point_viewer.spin();
             mesh_viewer.spin();
@@ -469,8 +472,82 @@ namespace semlocali{
         }
     }
 
+    void VerCalLike::get_map_image(){
 
+        cv::Mat tmp_image;
 
+        for(int i=0; i<agent_place.size(); i++){
 
+            tmp_image = get_image( point_viewer, agent_place[i], i, "point_map_image");
+            point_map_image.push_back(tmp_image);
+
+            tmp_image = get_image( mesh_viewer, agent_place[i], i, "mesh_map_image");
+            mesh_map_image.push_back(tmp_image);
+
+        }
+
+        std::cout << "Get Map Image" << std::endl;
+    }
+
+    cv::Mat VerCalLike::get_image( pcl::visualization::PCLVisualizer& viewer, geometry_msgs::Pose pose, int counter, std::string file_dir){
+        
+        //Set Camera position
+        tf::Quaternion quat_tf;
+        quaternionMsgToTF( pose.orientation , quat_tf );
+
+        tf::Matrix3x3 rota;
+        rota.setRotation( quat_tf );
+        tf::Vector3 place;
+        place.setValue( pose.position.x , pose.position.y , pose.position.z );
+
+        Eigen::Matrix4f particle_pos;
+        particle_pos << rota[0][0], rota[0][1] , rota[0][2], place[0],
+                        rota[1][0], rota[1][1] , rota[1][2], place[1],
+                        rota[2][0], rota[2][1] , rota[2][2], place[2],
+                               0.0,        0.0 ,        0.0,      1.0;
+        
+        Eigen::Vector4f slide(0.2 , 0.0, 0.0, 1.0);
+        Eigen::Vector4f new_pos = particle_pos * slide;
+        viewer.setCameraPosition(
+                pose.position.x,
+                pose.position.y,
+                pose.position.z,
+                new_pos[0],
+                new_pos[1],
+                new_pos[2],
+                0.0,
+                0.0,
+                1.0);
+
+        //Get Image as cv::Mat
+
+        cv::Mat mapimage;
+
+        vtkSmartPointer<vtkRenderWindow> render = viewer.getRenderWindow();
+        std::unique_ptr<uchar> pixels( render->GetRGBACharPixelData( 0, 0, render->GetSize()[0]-1, render->GetSize()[1]-1, 1) );
+
+        cv::Mat tmpimage = cv::Mat(render->GetSize()[1], render->GetSize()[0], CV_8UC4, &pixels.get()[0] );
+        cv::cvtColor( tmpimage , mapimage , cv::COLOR_RGBA2BGRA);
+        //Kaiten
+        cv::flip(mapimage, mapimage, -1);
+        cv::flip(mapimage, mapimage,  1);
+
+        std::string number = std::to_string(counter);
+
+        std::string file_path;
+        if(file_dir=="point_map_image"){
+            file_path = point_map_image_path + "image" + number + ".jpg";
+            cv::imwrite(file_path, mapimage);
+        }
+        else if(file_dir=="mesh_map_image"){
+            file_path = mesh_map_image_path + "image" + number + ".jpg";
+            cv::imwrite(file_path, mapimage);
+        }
+        else{
+            ROS_ERROR("Error in saving %s image",file_dir);
+        }
+       
+        return mapimage;
+    }
 
 }
