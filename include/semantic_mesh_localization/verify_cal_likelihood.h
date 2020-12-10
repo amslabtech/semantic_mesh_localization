@@ -80,6 +80,10 @@ namespace semlocali{
 
             cv::Mat get_image( pcl::visualization::PCLVisualizer& viewer, geometry_msgs::Pose pose, int counter, std::string file_dir);
 
+            void verify_compare(std::vector<cv::Mat> image_row, std::string image_file_path);
+
+            cv::Mat compare_image( cv::Mat segimage, cv::Mat mapimage);
+
         private:
 
             pcl::visualization::PCLVisualizer point_viewer;
@@ -89,6 +93,8 @@ namespace semlocali{
             std::string image_data_path = "/home/amsl/semantic_mesh_localization_data/sequence00_init/segimage/";
             std::string mesh_map_image_path = "/home/amsl/semantic_mesh_localization_data/sequence00_init/mesh_map_image/";
             std::string point_map_image_path = "/home/amsl/semantic_mesh_localization_data/sequence00_init/point_map_image/";
+            std::string valued_mesh_map_image_path ="/home/amsl/semantic_mesh_localization/sequence00_init/valued_mesh_map_image/";
+            std::string valued_point_map_image_path ="/home/amsl/semantic_mesh_localization/sequence00_init/valued_point_map_image/";
 
             std::string pcd_path = "/home/amsl/PCD_data/sequence00_12_05_1830/";
             std::string pcd_name = "semantic_mesh_loam_ascii";

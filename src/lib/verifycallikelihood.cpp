@@ -52,6 +52,26 @@ namespace semlocali{
             }
         }
 
+        if( privateNode.getParam("ValuedMeshMapImagePath", sparam) ){
+            if( sparam.length() < 1 ){
+                ROS_ERROR("Invalid file path");
+                return false;
+            }
+            else{
+                valued_mesh_map_image_path = sparam;
+            }
+        }
+
+        if( privateNode.getParam("ValuedPointMapImagePath", sparam) ){
+            if( sparam.length() < 1){
+                ROS_ERROR("Invalid file path");
+                return false;
+            }
+            else{
+                valued_point_map_image_path = sparam;
+            }
+        }
+
         if( privateNode.getParam("PCDPath", sparam)){
             if( sparam.length() < 1){
                 ROS_ERROR("Invalid file path");
@@ -122,6 +142,12 @@ namespace semlocali{
 
         std::cout << "Get Map Image" << std::endl;
         get_map_image();
+
+        std::cout << "Compara image and save verification result" << std::endl;
+        std::cout << "Verify mesh image" << std::endl;
+        verify_compare( mesh_map_image, valued_mesh_map_image_path);
+        std::cout << "Verify point image" << std::endl;
+        verify_compare( point_map_image, valued_point_map_image_path);
 
         while(1){
             point_viewer.spin();
@@ -550,4 +576,34 @@ namespace semlocali{
         return mapimage;
     }
 
+    void VerCalLike::verify_compare( std::vector<cv::Mat> image_row, std::string image_file_path){
+        
+        int compare_counter = 0;
+
+        for( int i=0; i<seg_image.size(); i++){
+            cv::Mat cmp_image = compare_image( seg_image[i], image_row[i] );
+
+            std::string number = std::to_string( compare_counter );
+            std::string file_path = image_file_path + "image" + number + ".jpg";
+
+            cv::imwrite( file_path, cmp_image );
+            compare_counter += 1;
+
+        }
+
+    }
+
+    cv::Mat VerCalLike::compare_image( cv::Mat segimage, cv::Mat mapimage ){
+
+        cv::Mat verified_image;
+
+
+
+
+        return verified_image;
+    }
+
+
 }
+
+
