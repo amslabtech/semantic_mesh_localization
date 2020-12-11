@@ -1090,6 +1090,7 @@ namespace semlocali{
             for(int i=0; i<mapimage.rows; i++){
                 for(int j=0; j<mapimage.cols; j++){
 
+                    /*
                     map_b = mapimptr[ i*mapimage.cols*map_channel + j*map_channel + 0];
                     map_g = mapimptr[ i*mapimage.cols*map_channel + j*map_channel + 1];
                     map_r = mapimptr[ i*mapimage.cols*map_channel + j*map_channel + 2];
@@ -1097,20 +1098,29 @@ namespace semlocali{
                     seg_b = segimptr[ i*segimage.cols*seg_channel + j*seg_channel + 0];
                     seg_g = segimptr[ i*segimage.cols*seg_channel + j*seg_channel + 1];
                     seg_r = segimptr[ i*segimage.cols*seg_channel + j*seg_channel + 2];
+                    */
+                    
+                    map_b = mapimage.at<cv::Vec4b>(i,j)[0];
+                    map_g = mapimage.at<cv::Vec4b>(i,j)[1];
+                    map_r = mapimage.at<cv::Vec4b>(i,j)[2];
+
+                    seg_b = segimage.at<cv::Vec4b>(i,j)[0];
+                    seg_g = segimage.at<cv::Vec4b>(i,j)[1];
+                    seg_r = segimage.at<cv::Vec4b>(i,j)[2];
 
                     if( map_b==0 && map_g==0 && map_r==0) continue;
                     if( seg_b==0 && seg_g==0 && seg_r==0) continue;
 
                     diff_r = std::abs( seg_r - map_r );
-                    if( diff_r > 10 ) diff_r = 100.0;
+                    if( diff_r > 30 ) diff_r = 100.0;
 
                     diff_g = std::abs( seg_g - map_g );
-                    if( diff_g > 10 ) diff_g = 100.0;
+                    if( diff_g > 30 ) diff_g = 100.0;
 
                     diff_b = std::abs( seg_b - map_b );
-                    if( diff_b > 10 ) diff_b = 100.0;
+                    if( diff_b > 30 ) diff_b = 100.0;
 
-                    tmp_score = 30.0 - diff_r - diff_g - diff_b;
+                    tmp_score = 90.0 - diff_r - diff_g - diff_b;
                     if(tmp_score < 0.0) tmp_score = 0.0;
 
                     score += tmp_score;

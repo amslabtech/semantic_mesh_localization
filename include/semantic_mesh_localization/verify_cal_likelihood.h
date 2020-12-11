@@ -80,7 +80,7 @@ namespace semlocali{
 
             cv::Mat get_image( pcl::visualization::PCLVisualizer& viewer, geometry_msgs::Pose pose, int counter, std::string file_dir);
 
-            void verify_compare(std::vector<cv::Mat> image_row, std::string image_file_path);
+            void verify_compare( std::vector<cv::Mat> segmented_image, std::vector<cv::Mat> image_row, std::string image_file_path);
 
             cv::Mat compare_image( cv::Mat segimage, cv::Mat mapimage);
 

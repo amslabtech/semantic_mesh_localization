@@ -6,8 +6,8 @@
         <param name="ImageDataPath" value="/home/amsl/semantic_mesh_localization_data/sequence00_init/segimage/" />
         <param name="MeshMapImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00_init/mesh_map_image/" />
         <param name="PointMapImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00_init/point_map_image/" />
-        <param name="ValuedMeshMapImagePath" value="/home/amsl/semantic_mesh_localization/sequence  00_init/valued_mesh_map_image/" />
-        <param name="ValuedPointMapImagePath" value="/home/amsl/semantic_mesh_localization/sequenc  e00_init/valued_point_map_image/" />
+        <param name="ValuedMeshMapImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00_init/valued_mesh_map_image/" />
+        <param name="ValuedPointMapImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00_init/valued_point_map_image/" />
         <param name="PCDPath" value="/home/amsl/PCD_data/sequence00_12_05_1830/" />
         <param name="PCDName" value="semantic_mesh_loam_ascii" />
         

@@ -145,14 +145,16 @@ namespace semlocali{
 
         std::cout << "Compara image and save verification result" << std::endl;
         std::cout << "Verify mesh image" << std::endl;
-        verify_compare( mesh_map_image, valued_mesh_map_image_path);
+        verify_compare( seg_image, mesh_map_image, valued_mesh_map_image_path);
         std::cout << "Verify point image" << std::endl;
-        verify_compare( point_map_image, valued_point_map_image_path);
+        verify_compare( seg_image, point_map_image, valued_point_map_image_path);
 
+        /*
         while(1){
             point_viewer.spin();
             mesh_viewer.spin();
         }
+        */
 
     }
 
@@ -576,12 +578,12 @@ namespace semlocali{
         return mapimage;
     }
 
-    void VerCalLike::verify_compare( std::vector<cv::Mat> image_row, std::string image_file_path){
+    void VerCalLike::verify_compare( std::vector<cv::Mat> segmented_image, std::vector<cv::Mat> image_row, std::string image_file_path){
         
         int compare_counter = 0;
 
-        for( int i=0; i<seg_image.size(); i++){
-            cv::Mat cmp_image = compare_image( seg_image[i], image_row[i] );
+        for( int i=0; i<segmented_image.size(); i++){
+            cv::Mat cmp_image = compare_image( segmented_image[i], image_row[i] );
 
             std::string number = std::to_string( compare_counter );
             std::string file_path = image_file_path + "image" + number + ".jpg";
@@ -595,10 +597,66 @@ namespace semlocali{
 
     cv::Mat VerCalLike::compare_image( cv::Mat segimage, cv::Mat mapimage ){
 
-        cv::Mat verified_image;
+        //cv::Mat verified_image( cv::Size( image_width, image_height), CV_8UC4, cv::Scalar(0,0,0,0));
 
+        cv::Mat verified_image( image_height, image_width, CV_8UC4, cv::Scalar(0,0,0,0) );
 
+        int map_r, map_g, map_b;
+        int seg_r, seg_g, seg_b;
+        double diff_r, diff_g, diff_b;
 
+        /*
+        while(1){
+            cv::imshow("image1" , segimage);
+            cv::imshow("image2" , mapimage);
+            cv::waitKey(0);
+        }
+        */
+
+        /*
+        std::cout << "verified_image row " << verified_image.rows << std::endl;
+        std::cout << "seg_image row " << segimage.rows << std::endl;
+        std::cout << "map_image row " << mapimage.rows << std::endl;
+        std::cout << "Image row " << image_height << std::endl;
+        */
+
+        for( int y=0; y<image_height; y++){
+
+            cv::Vec4b* ver_ptr = verified_image.ptr<cv::Vec4b>( y );
+
+            for( int x=0; x<image_width; x++){
+ 
+                    map_b = mapimage.at<cv::Vec4b>(y,x)[0];
+                    map_g = mapimage.at<cv::Vec4b>(y,x)[1];
+                    map_r = mapimage.at<cv::Vec4b>(y,x)[2];
+
+                    seg_b = segimage.at<cv::Vec4b>(y,x)[0];
+                    seg_g = segimage.at<cv::Vec4b>(y,x)[1];
+                    seg_r = segimage.at<cv::Vec4b>(y,x)[2];
+
+                    if( map_b==0 && map_g==0 && map_r==0) continue;
+                    if( seg_b==0 && seg_g==0 && seg_r==0) continue;
+
+                    diff_r = std::abs( seg_r - map_r );
+                    diff_g = std::abs( seg_g - map_g );
+                    diff_b = std::abs( seg_b - map_b );
+
+                    //std::cout << diff_r << std::endl;
+
+                    if( diff_r < 30 && diff_g < 30 && diff_b < 30 ){
+
+                        ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
+
+                        //verified_image.at<cv::Vec4b>(x,y) = cv::Vec4b( 255-diff_b , 255 - diff_g , 255 - diff_r , 0);
+                    }
+            }
+
+            /*
+            std::cout << map_b << std::endl;
+            std::cout << seg_b << std::endl;
+            std::cout << diff_b << std::endl << std::endl;
+            */
+        }
 
         return verified_image;
     }
