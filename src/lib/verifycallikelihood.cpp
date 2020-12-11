@@ -495,6 +495,7 @@ namespace semlocali{
 
             viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, color_r, color_g, color_b, semantic_name);
             viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_OPACITY, 1.0  , semantic_name);
+            //viewer.setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_SHADING, pcl::visualization::PCL_VISUALIZER_SHADING_FLAT, semantic_name);
 
             std::cout << semantic_name << "'s polygon mesh is added to PCL Visualizer" << std::endl  ;
         }
@@ -601,8 +602,8 @@ namespace semlocali{
 
         cv::Mat verified_image( image_height, image_width, CV_8UC4, cv::Scalar(0,0,0,0) );
 
-        int map_r, map_g, map_b;
-        int seg_r, seg_g, seg_b;
+        double map_r, map_g, map_b;
+        double seg_r, seg_g, seg_b;
         double diff_r, diff_g, diff_b;
 
         /*
@@ -630,9 +631,17 @@ namespace semlocali{
                     map_g = mapimage.at<cv::Vec4b>(y,x)[1];
                     map_r = mapimage.at<cv::Vec4b>(y,x)[2];
 
+                    double map_b_r = std::abs(map_b - map_r);
+                    double map_r_g = std::abs(map_r - map_g);
+                    double map_g_b = std::abs(map_g - map_b);
+
                     seg_b = segimage.at<cv::Vec4b>(y,x)[0];
                     seg_g = segimage.at<cv::Vec4b>(y,x)[1];
                     seg_r = segimage.at<cv::Vec4b>(y,x)[2];
+
+                    double seg_b_r = std::abs(seg_b - seg_r);
+                    double seg_r_g = std::abs(seg_r - seg_g);
+                    double seg_g_b = std::abs(seg_g - seg_b);
 
                     if( map_b==0 && map_g==0 && map_r==0) continue;
                     if( seg_b==0 && seg_g==0 && seg_r==0) continue;
@@ -641,14 +650,25 @@ namespace semlocali{
                     diff_g = std::abs( seg_g - map_g );
                     diff_b = std::abs( seg_b - map_b );
 
+                    double diff_b_r = std::abs( map_b_r - seg_b_r );
+                    double diff_r_g = std::abs( map_r_g - seg_r_g );
+                    double diff_g_b = std::abs( map_g_b - seg_g_b );
+
+
                     //std::cout << diff_r << std::endl;
 
+                    /*
                     if( diff_r < 30 && diff_g < 30 && diff_b < 30 ){
-
                         ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
-
-                        //verified_image.at<cv::Vec4b>(x,y) = cv::Vec4b( 255-diff_b , 255 - diff_g , 255 - diff_r , 0);
                     }
+                    */
+
+                    if(     (diff_b_r < 20 && diff_r_g < 20 && diff_g_b < 20) ||
+                            ( diff_r < 20 && diff_g < 20 && diff_b < 20 )
+                            ){
+                        ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
+                    }
+
             }
 
             /*
