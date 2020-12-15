@@ -251,7 +251,10 @@ namespace semlocali{
 
         load_PCD();
 
+
         add_semantic_pc( viewer,     "road",         road, 128,  64, 128);
+        //add_semantic_pc( viewer,     "road",         road, 120, 120, 120);
+        
         add_semantic_pc( viewer, "sidewalk",     sidewalk, 232,  35, 244);
         add_semantic_pc( viewer, "building",     building,  70,  70,  70);
         //add_semantic_pc( viewer,     "wall",    wall, 156, 102, 102);
@@ -376,6 +379,7 @@ namespace semlocali{
             point.b = 128;
             point.g = 64;
             point.r = 128;
+
             road.push_back(point);
         }
         else if(color_id.r==255 && color_id.g==150 && color_id.b==255){
@@ -470,6 +474,8 @@ namespace semlocali{
     void VerCalLike::load_PLY(pcl::visualization::PCLVisualizer& viewer){
 
         load_semantic_polygon( viewer,     "road", 128,  64, 128);
+        //load_semantic_polygon( viewer,     "road", 120, 120, 120);
+
         load_semantic_polygon( viewer, "sidewalk", 232,  35, 244);
         load_semantic_polygon( viewer, "building",  70,  70,  70);
         load_semantic_polygon( viewer,     "wall", 156, 102, 102);
@@ -657,6 +663,15 @@ namespace semlocali{
                     seg_b = segimage.at<cv::Vec4b>(y,x)[0];
                     seg_g = segimage.at<cv::Vec4b>(y,x)[1];
                     seg_r = segimage.at<cv::Vec4b>(y,x)[2];
+                    
+                    /*
+                    if( seg_b==128 && seg_g==64 && seg_r==128){
+                        seg_b = 120;
+                        seg_g = 120;
+                        seg_r = 120;
+                    }*/
+                    
+
 
                     double seg_b_r = std::abs(seg_b - seg_r);
                     double seg_r_g = std::abs(seg_r - seg_g);
@@ -682,10 +697,10 @@ namespace semlocali{
                     }
                     */
 
-                    if(     (diff_b_r < 20 && diff_r_g < 20 && diff_g_b < 20) ||
-                            ( diff_r < 20 && diff_g < 20 && diff_b < 20 )
+                    if(     (diff_b_r < 10.0 && diff_r_g < 10.0 && diff_g_b < 10.0) || 
+                            ( diff_r < 30.0 && diff_g < 30.0 && diff_b < 30.0 )
                             ){
-                        ver_ptr[ x ] = cv::Vec4b( map_b, map_g, map_r, 0);
+                        ver_ptr[ x ] = cv::Vec4b( map_b, map_g, map_r, 255);
                         //ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
                         likelihood += 1.0;
                     }
@@ -714,7 +729,7 @@ namespace semlocali{
         size_t like_size = likelihoods.size()/2;
 
         for( size_t i=0; i<cmp_times; i++){
-            std::cout << "Mesh Map: " << likelihoods[i] << " Point Map: " << likelihoods[like_size + i] << std::endl;
+            std::cout << "Image" << i << ": " << "Mesh Map: " << likelihoods[i] << " Point Map: " << likelihoods[like_size + i] << " Diff: " << std::abs(likelihoods[i]-likelihoods[i+like_size]) <<std::endl;
 
             csv_key << likelihoods[i] << "," << likelihoods[i + like_size] << std::endl;
         }

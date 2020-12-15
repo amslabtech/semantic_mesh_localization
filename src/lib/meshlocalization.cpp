@@ -1134,8 +1134,8 @@ namespace semlocali{
                     double diff_r_g = std::abs( map_r_g - seg_r_g );
                     double diff_g_b = std::abs( map_g_b - seg_g_b );
 
-                    if(     (diff_b_r < 20 && diff_r_g < 20 && diff_g_b < 20) || 
-                            ( diff_r < 20 && diff_g < 20 && diff_b < 20 )
+                    if(     (diff_b_r < 10 && diff_r_g < 10 && diff_g_b < 10) || 
+                            ( diff_r < 30 && diff_g < 30 && diff_b < 30 )
                             ){
                         tmp_score = 1.0;
                     }
