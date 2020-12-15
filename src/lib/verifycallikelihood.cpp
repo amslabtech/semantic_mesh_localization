@@ -510,6 +510,8 @@ namespace semlocali{
             viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_OPACITY, 1.0  , semantic_name);
             //viewer.setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_SHADING, pcl::visualization::PCL_VISUALIZER_SHADING_FLAT, semantic_name);
 
+            viewer.setRepresentationToSurfaceForAllActors();
+
             std::cout << semantic_name << "'s polygon mesh is added to PCL Visualizer" << std::endl  ;
         }
     }
@@ -683,7 +685,8 @@ namespace semlocali{
                     if(     (diff_b_r < 20 && diff_r_g < 20 && diff_g_b < 20) ||
                             ( diff_r < 20 && diff_g < 20 && diff_b < 20 )
                             ){
-                        ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
+                        ver_ptr[ x ] = cv::Vec4b( map_b, map_g, map_r, 0);
+                        //ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
                         likelihood += 1.0;
                     }
 
