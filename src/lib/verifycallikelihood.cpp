@@ -72,6 +72,16 @@ namespace semlocali{
             }
         }
 
+        if( privateNode.getParam("CSVPath" , sparam) ){
+            if(sparam.length() < 1){
+                ROS_ERROR("Invalid csv file path");
+                return false;
+            }
+            else{
+                likelihood_csv_file_path = sparam;
+            }
+        }
+
         if( privateNode.getParam("PCDPath", sparam)){
             if( sparam.length() < 1){
                 ROS_ERROR("Invalid file path");
@@ -148,6 +158,9 @@ namespace semlocali{
         verify_compare( seg_image, mesh_map_image, valued_mesh_map_image_path);
         std::cout << "Verify point image" << std::endl;
         verify_compare( seg_image, point_map_image, valued_point_map_image_path);
+
+        std::cout << "Save likelihood as csv file" << std::endl;
+        save_csv();
 
         /*
         while(1){
@@ -583,8 +596,10 @@ namespace semlocali{
         
         int compare_counter = 0;
 
-        for( int i=0; i<segmented_image.size(); i++){
-            cv::Mat cmp_image = compare_image( segmented_image[i], image_row[i] );
+        cmp_times = segmented_image.size() - 1;
+
+        for( int i=0; i<cmp_times; i++){
+            cv::Mat cmp_image = compare_image( segmented_image[i], image_row[ i+1 ] );
 
             std::string number = std::to_string( compare_counter );
             std::string file_path = image_file_path + "image" + number + ".jpg";
@@ -620,6 +635,8 @@ namespace semlocali{
         std::cout << "map_image row " << mapimage.rows << std::endl;
         std::cout << "Image row " << image_height << std::endl;
         */
+
+        double likelihood = 0;
 
         for( int y=0; y<image_height; y++){
 
@@ -667,6 +684,7 @@ namespace semlocali{
                             ( diff_r < 20 && diff_g < 20 && diff_b < 20 )
                             ){
                         ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
+                        likelihood += 1.0;
                     }
 
             }
@@ -678,7 +696,28 @@ namespace semlocali{
             */
         }
 
+        likelihoods.push_back( likelihood );
+
         return verified_image;
+    }
+
+    void VerCalLike::save_csv(){
+
+        std::string csv_file_name = likelihood_csv_file_path + "likelihood.csv";
+        std::ofstream csv_key( csv_file_name );
+
+        csv_key << "Mesh" << "," << "Point" << std::endl;
+
+        size_t like_size = likelihoods.size()/2;
+
+        for( size_t i=0; i<cmp_times; i++){
+            std::cout << "Mesh Map: " << likelihoods[i] << " Point Map: " << likelihoods[like_size + i] << std::endl;
+
+            csv_key << likelihoods[i] << "," << likelihoods[i + like_size] << std::endl;
+        }
+
+        csv_key.close();
+
     }
 
 

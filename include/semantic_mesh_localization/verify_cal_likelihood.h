@@ -84,6 +84,8 @@ namespace semlocali{
 
             cv::Mat compare_image( cv::Mat segimage, cv::Mat mapimage);
 
+            void save_csv();
+
         private:
 
             pcl::visualization::PCLVisualizer point_viewer;
@@ -95,6 +97,7 @@ namespace semlocali{
             std::string point_map_image_path = "/home/amsl/semantic_mesh_localization_data/sequence00_init/point_map_image/";
             std::string valued_mesh_map_image_path ="/home/amsl/semantic_mesh_localization/sequence00_init/valued_mesh_map_image/";
             std::string valued_point_map_image_path ="/home/amsl/semantic_mesh_localization/sequence00_init/valued_point_map_image/";
+            std::string likelihood_csv_file_path = "/home/amsl/semantic_mesh_localization/sequence00_init/";
 
             std::string pcd_path = "/home/amsl/PCD_data/sequence00_12_05_1830/";
             std::string pcd_name = "semantic_mesh_loam_ascii";
@@ -115,6 +118,9 @@ namespace semlocali{
             int image_height = 0;
 
             pcl::PointCloud<pcl::PointXYZRGB> cloud_tmp;
+
+            std::vector<double> likelihoods; //upper half:mesh lower half:pointcloud
+            size_t cmp_times = 0;
 
             pcl::PointCloud<pcl::PointXYZRGB> unlabeled;
             pcl::PointCloud<pcl::PointXYZRGB> outlier;
