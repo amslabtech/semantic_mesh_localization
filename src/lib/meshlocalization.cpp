@@ -779,7 +779,7 @@ namespace semlocali{
 
     void MeshLocalization::wait_for_bag_data(){
 
-        ros::Rate message_rate(1.0);
+        ros::Rate message_rate(2.0);
         while(1){
             ros::spinOnce();
             if(first_odom_checker == true){
@@ -812,7 +812,7 @@ namespace semlocali{
 
     void MeshLocalization::particle_filter(){
         std::cout << "Do Particle fileter" << std::endl;
-        ros::Rate loop_rate(1.0);
+        ros::Rate loop_rate(10.0);
 
         std::ofstream groundtruth_csv(groundtruth_path);
         std::ofstream odometry_csv(odometry_path);
@@ -892,10 +892,12 @@ namespace semlocali{
 
     double MeshLocalization::rand_delta_RPY(double ave, double dev){
 
+        double dev_motion = dev;
+
         std::random_device seed_gen;
         std::default_random_engine engine( seed_gen() );
 
-        std::normal_distribution<double> dist(ave,dev);
+        std::normal_distribution<double> dist(ave,dev_motion);
 
         double number = dist(engine);
 
@@ -917,10 +919,12 @@ namespace semlocali{
 
     double MeshLocalization::rand_delta_XYZ(double ave, double dev){
 
+        double dev_motion = dev;
+
         std::random_device seed_gen;
         std::default_random_engine engine( seed_gen() );
 
-        std::normal_distribution<double> dist(ave,dev);
+        std::normal_distribution<double> dist(ave,dev_motion);
 
         double number = dist(engine);
 
