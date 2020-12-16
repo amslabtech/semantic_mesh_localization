@@ -155,9 +155,9 @@ namespace semlocali{
 
         std::cout << "Compara image and save verification result" << std::endl;
         std::cout << "Verify mesh image" << std::endl;
-        verify_compare( seg_image, mesh_map_image, valued_mesh_map_image_path);
+        verify_compare( seg_image, mesh_map_image, valued_mesh_map_image_path, "mesh");
         std::cout << "Verify point image" << std::endl;
-        verify_compare( seg_image, point_map_image, valued_point_map_image_path);
+        verify_compare( seg_image, point_map_image, valued_point_map_image_path, "point");
 
         std::cout << "Save likelihood as csv file" << std::endl;
         save_csv();
@@ -476,6 +476,7 @@ namespace semlocali{
         load_semantic_polygon( viewer,     "road", 128,  64, 128);
         //load_semantic_polygon( viewer,     "road", 120, 120, 120);
 
+        
         load_semantic_polygon( viewer, "sidewalk", 232,  35, 244);
         load_semantic_polygon( viewer, "building",  70,  70,  70);
         load_semantic_polygon( viewer,     "wall", 156, 102, 102);
@@ -514,7 +515,7 @@ namespace semlocali{
 
             viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, color_r, color_g, color_b, semantic_name);
             viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_OPACITY, 1.0  , semantic_name);
-            //viewer.setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_SHADING, pcl::visualization::PCL_VISUALIZER_SHADING_FLAT, semantic_name);
+            //viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_SHADING, pcl::visualization::PCL_VISUALIZER_SHADING_FLAT, semantic_name);
 
             viewer.setRepresentationToSurfaceForAllActors();
 
@@ -600,14 +601,14 @@ namespace semlocali{
         return mapimage;
     }
 
-    void VerCalLike::verify_compare( std::vector<cv::Mat> segmented_image, std::vector<cv::Mat> image_row, std::string image_file_path){
+    void VerCalLike::verify_compare( std::vector<cv::Mat> segmented_image, std::vector<cv::Mat> image_row, std::string image_file_path, std::string type){
         
         int compare_counter = 0;
 
         cmp_times = segmented_image.size() - 1;
 
         for( int i=0; i<cmp_times; i++){
-            cv::Mat cmp_image = compare_image( segmented_image[i], image_row[ i+1 ] );
+            cv::Mat cmp_image = compare_image( segmented_image[i], image_row[ i ] , type);
 
             std::string number = std::to_string( compare_counter );
             std::string file_path = image_file_path + "image" + number + ".jpg";
@@ -619,7 +620,7 @@ namespace semlocali{
 
     }
 
-    cv::Mat VerCalLike::compare_image( cv::Mat segimage, cv::Mat mapimage ){
+    cv::Mat VerCalLike::compare_image( cv::Mat segimage, cv::Mat mapimage , std::string type){
 
         //cv::Mat verified_image( cv::Size( image_width, image_height), CV_8UC4, cv::Scalar(0,0,0,0));
 
@@ -670,8 +671,6 @@ namespace semlocali{
                         seg_g = 120;
                         seg_r = 120;
                     }*/
-                    
-
 
                     double seg_b_r = std::abs(seg_b - seg_r);
                     double seg_r_g = std::abs(seg_r - seg_g);
@@ -679,6 +678,21 @@ namespace semlocali{
 
                     if( map_b==0 && map_g==0 && map_r==0) continue;
                     if( seg_b==0 && seg_g==0 && seg_r==0) continue;
+
+                    double map_bgr = map_b * 1000.0 * 1000.0 + map_g * 1000.0 + map_r;
+                    double seg_bgr = seg_b * 1000.0 * 1000.0 + seg_g * 1000.0 + seg_r;
+
+                    if(type == "mesh"){
+                        mesh_image_bgr.push_back(map_bgr);
+                        //seg_image_bgr.push_back(seg_bgr);
+                    }
+                    else if(type == "point"){
+                        point_image_bgr.push_back(map_bgr);
+                        //seg_image_bgr.push_back(seg_bgr);
+                    }
+                    else{
+                        seg_image_bgr.push_back(seg_bgr);
+                    }
 
                     diff_r = std::abs( seg_r - map_r );
                     diff_g = std::abs( seg_g - map_g );
@@ -696,10 +710,19 @@ namespace semlocali{
                         ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
                     }
                     */
+                    bool match_checker = cmp_pixel(seg_b,seg_g,seg_r,map_b,map_g,map_r);
 
+                    /*
                     if(     (diff_b_r < 10.0 && diff_r_g < 10.0 && diff_g_b < 10.0) || 
                             ( diff_r < 30.0 && diff_g < 30.0 && diff_b < 30.0 )
                             ){
+                        ver_ptr[ x ] = cv::Vec4b( map_b, map_g, map_r, 255);
+                        //ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
+                        likelihood += 1.0;
+                    }
+                    */
+
+                    if( match_checker==true){
                         ver_ptr[ x ] = cv::Vec4b( map_b, map_g, map_r, 255);
                         //ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
                         likelihood += 1.0;
@@ -719,10 +742,43 @@ namespace semlocali{
         return verified_image;
     }
 
+    bool VerCalLike::cmp_pixel(double seg_b,double seg_g,double seg_r,double map_b,double map_g, double map_r){
+        //
+
+        double diff_r = std::abs( seg_r - map_r );
+        double diff_g = std::abs( seg_g - map_g );
+        double diff_b = std::abs( seg_b - map_b );
+        if( diff_r < 30 && diff_g < 30 && diff_b < 30 ){
+            return true;
+        }
+
+        if( (std::abs(seg_b - 128.0) < 5.0) && (std::abs(seg_g - 64.0) < 5.0) &&  (std::abs(seg_r - 128.0) < 5.0) ){//road
+            if( std::abs(map_r - map_b) < 5.0 ) return true;
+        }
+
+        if( (std::abs(seg_b - 142.0) < 5.0) && (std::abs(seg_g - 0.0) < 5.0) &&  (std::abs(seg_r - 0.0) < 5.0) ){//car
+            if( map_g < 10.0 && map_r < 10.0 && map_b > 10.0) return true;
+        }
+
+        if( (std::abs(seg_b - 70.0) < 5.0) && (std::abs(seg_g - 70.0) < 5.0) &&  (std::abs(seg_r - 70.0) < 5.0) ){//building
+            if( std::abs(map_r - map_g) < 5.0 && std::abs(map_g - map_b) < 5.0 && std::abs(map_b - map_r) < 5.0){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     void VerCalLike::save_csv(){
 
         std::string csv_file_name = likelihood_csv_file_path + "likelihood.csv";
         std::ofstream csv_key( csv_file_name );
+
+        std::string mesh_bgr_file_name = likelihood_csv_file_path + "mesh_bgr.csv";
+        std::ofstream mesh_bgr_key( mesh_bgr_file_name );
+
+        std::string point_bgr_file_name = likelihood_csv_file_path + "point_bgr.csv";
+        std::ofstream point_bgr_key( point_bgr_file_name );
 
         csv_key << "Mesh" << "," << "Point" << std::endl;
 
@@ -734,7 +790,17 @@ namespace semlocali{
             csv_key << likelihoods[i] << "," << likelihoods[i + like_size] << std::endl;
         }
 
+        for(size_t i=0; i<mesh_image_bgr.size(); i++){
+            mesh_bgr_key << mesh_image_bgr[i] << std::endl;
+        }
+
+        for(size_t i=0; i<point_image_bgr.size(); i++){
+            point_bgr_key << point_image_bgr[i] << std::endl;
+        }
+
         csv_key.close();
+        mesh_bgr_key.close();
+        point_bgr_key.close();
 
     }
 

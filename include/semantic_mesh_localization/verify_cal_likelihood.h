@@ -5,6 +5,7 @@
 
 #include"ros/ros.h"
 #include <pcl/visualization/cloud_viewer.h>
+#include <pcl/visualization/common/common.h> 
 #include <pcl/io/io.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/io/ply_io.h>
@@ -36,6 +37,11 @@
 #include<stdlib.h>
 #include"geometry_msgs/PoseArray.h"
 #include"geometry_msgs/PoseStamped.h"
+#include <pcl/console/parse.h>
+#include <pcl/surface/convex_hull.h>
+#include <pcl/common/common_headers.h>
+#include <pcl/console/parse.h>
+#include <pcl/io/vtk_lib_io.h>
 
 namespace semlocali{
     
@@ -80,11 +86,13 @@ namespace semlocali{
 
             cv::Mat get_image( pcl::visualization::PCLVisualizer& viewer, geometry_msgs::Pose pose, int counter, std::string file_dir);
 
-            void verify_compare( std::vector<cv::Mat> segmented_image, std::vector<cv::Mat> image_row, std::string image_file_path);
+            void verify_compare( std::vector<cv::Mat> segmented_image, std::vector<cv::Mat> image_row, std::string image_file_path, std::string type);
 
-            cv::Mat compare_image( cv::Mat segimage, cv::Mat mapimage);
+            cv::Mat compare_image( cv::Mat segimage, cv::Mat mapimage, std::string type);
 
             void save_csv();
+
+            bool cmp_pixel(double seg_b,double seg_g,double seg_r,double map_b,double map_g, double map_r);
 
         private:
 
@@ -111,6 +119,10 @@ namespace semlocali{
             std::vector<cv::Mat> point_map_image;
             
             std::vector<geometry_msgs::Pose> agent_place;
+
+            std::vector<double> seg_image_bgr;
+            std::vector<double> mesh_image_bgr;
+            std::vector<double> point_image_bgr;
 
             int data_length = 0;
 
