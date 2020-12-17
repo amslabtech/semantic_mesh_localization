@@ -75,6 +75,8 @@ namespace semlocali{
 
             double compare_image_pixelwise();
 
+            bool cmp_pixel(double seg_b,double seg_g,double seg_r,double map_b,double map_g, double map_r);
+
             void estimate_current_pose();
 
             geometry_msgs::PoseStamped max_likelihood_approach();

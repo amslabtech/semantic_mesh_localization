@@ -163,11 +163,14 @@ namespace semlocali{
         save_csv();
 
         /*
+        std::cout << "Viewer" << std::endl;
+        
         while(1){
             point_viewer.spin();
             mesh_viewer.spin();
         }
         */
+        
 
     }
 
@@ -223,11 +226,13 @@ namespace semlocali{
             std::string pic_number = std::to_string(counter);
             std::string image_path = image_data_path + "image" + pic_number + ".jpg";
             cv::Mat image_tmp = cv::imread(image_path);
-            seg_image.push_back( image_tmp );
+            cv::Mat tmp_image(image_tmp.size().height, image_tmp.size().width, CV_8UC4);
+            cv::cvtColor(image_tmp,tmp_image, CV_BGR2BGRA);
+            seg_image.push_back( tmp_image );
 
             //Get image size
-            image_width = image_tmp.size().width;
-            image_height = image_tmp.size().height;
+            image_width = tmp_image.size().width;
+            image_height = tmp_image.size().height;
         }
 
         /*
@@ -626,6 +631,9 @@ namespace semlocali{
 
         cv::Mat verified_image( image_height, image_width, CV_8UC4, cv::Scalar(0,0,0,0) );
 
+        std::cout << "segimage mat type" << segimage.type() << std::endl;
+        std::cout << "mapimage mat type" << mapimage.type() << std::endl;
+
         double map_r, map_g, map_b;
         double seg_r, seg_g, seg_b;
         double diff_r, diff_g, diff_b;
@@ -647,23 +655,44 @@ namespace semlocali{
 
         double likelihood = 0;
 
-        for( int y=0; y<image_height; y++){
+        for( int y=0; y<verified_image.rows; y++){
 
             cv::Vec4b* ver_ptr = verified_image.ptr<cv::Vec4b>( y );
 
-            for( int x=0; x<image_width; x++){
- 
-                    map_b = mapimage.at<cv::Vec4b>(y,x)[0];
-                    map_g = mapimage.at<cv::Vec4b>(y,x)[1];
-                    map_r = mapimage.at<cv::Vec4b>(y,x)[2];
+            cv::Vec4b* seg_ptr = segimage.ptr<cv::Vec4b>( y );
+            cv::Vec4b* map_ptr = mapimage.ptr<cv::Vec4b>( y );
 
-                    double map_b_r = std::abs(map_b - map_r);
-                    double map_r_g = std::abs(map_r - map_g);
-                    double map_g_b = std::abs(map_g - map_b);
+            for( int x=0; x<verified_image.cols; x++){
 
-                    seg_b = segimage.at<cv::Vec4b>(y,x)[0];
-                    seg_g = segimage.at<cv::Vec4b>(y,x)[1];
-                    seg_r = segimage.at<cv::Vec4b>(y,x)[2];
+                cv::Vec4b ver_bgr = ver_ptr[ x ];
+                cv::Vec4b map_bgr = map_ptr[ x ];
+                cv::Vec4b seg_bgr = seg_ptr[ x ];
+
+                double b = ver_bgr[0];
+
+                /*
+                map_b = mapimage.at<cv::Vec4b>(y,x)[0];
+                map_g = mapimage.at<cv::Vec4b>(y,x)[1];
+                map_r = mapimage.at<cv::Vec4b>(y,x)[2];
+                */
+
+                map_b = map_bgr[0];
+                map_g = map_bgr[1];
+                map_r = map_bgr[2];
+
+                double map_b_r = std::abs(map_b - map_r);
+                double map_r_g = std::abs(map_r - map_g);
+                double map_g_b = std::abs(map_g - map_b);
+
+                /*
+                seg_b = segimage.at<cv::Vec4b>(y,x)[0];
+                seg_g = segimage.at<cv::Vec4b>(y,x)[1];
+                seg_r = segimage.at<cv::Vec4b>(y,x)[2];
+                */
+
+                seg_b = seg_bgr[0];
+                seg_g = seg_bgr[1];
+                seg_r = seg_bgr[2];
                     
                     /*
                     if( seg_b==128 && seg_g==64 && seg_r==128){
@@ -672,16 +701,21 @@ namespace semlocali{
                         seg_r = 120;
                     }*/
 
-                    double seg_b_r = std::abs(seg_b - seg_r);
-                    double seg_r_g = std::abs(seg_r - seg_g);
-                    double seg_g_b = std::abs(seg_g - seg_b);
+                double seg_b_r = std::abs(seg_b - seg_r);
+                double seg_r_g = std::abs(seg_r - seg_g);
+                double seg_g_b = std::abs(seg_g - seg_b);
 
+                    /*
                     if( map_b==0 && map_g==0 && map_r==0) continue;
                     if( seg_b==0 && seg_g==0 && seg_r==0) continue;
+                    */
 
-                    double map_bgr = map_b * 1000.0 * 1000.0 + map_g * 1000.0 + map_r;
-                    double seg_bgr = seg_b * 1000.0 * 1000.0 + seg_g * 1000.0 + seg_r;
+                /*
+                double map_bgr = map_b * 1000.0 * 1000.0 + map_g * 1000.0 + map_r;
+                double seg_bgr = seg_b * 1000.0 * 1000.0 + seg_g * 1000.0 + seg_r;
+                */
 
+                    /*
                     if(type == "mesh"){
                         mesh_image_bgr.push_back(map_bgr);
                         //seg_image_bgr.push_back(seg_bgr);
@@ -693,14 +727,15 @@ namespace semlocali{
                     else{
                         seg_image_bgr.push_back(seg_bgr);
                     }
+                    */
 
-                    diff_r = std::abs( seg_r - map_r );
-                    diff_g = std::abs( seg_g - map_g );
-                    diff_b = std::abs( seg_b - map_b );
+                diff_r = std::abs( seg_r - map_r );
+                diff_g = std::abs( seg_g - map_g );
+                diff_b = std::abs( seg_b - map_b );
 
-                    double diff_b_r = std::abs( map_b_r - seg_b_r );
-                    double diff_r_g = std::abs( map_r_g - seg_r_g );
-                    double diff_g_b = std::abs( map_g_b - seg_g_b );
+                double diff_b_r = std::abs( map_b_r - seg_b_r );
+                double diff_r_g = std::abs( map_r_g - seg_r_g );
+                double diff_g_b = std::abs( map_g_b - seg_g_b );
 
 
                     //std::cout << diff_r << std::endl;
@@ -710,7 +745,7 @@ namespace semlocali{
                         ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
                     }
                     */
-                    bool match_checker = cmp_pixel(seg_b,seg_g,seg_r,map_b,map_g,map_r);
+                bool match_checker = cmp_pixel(seg_b,seg_g,seg_r,map_b,map_g,map_r);
 
                     /*
                     if(     (diff_b_r < 10.0 && diff_r_g < 10.0 && diff_g_b < 10.0) || 
@@ -722,12 +757,11 @@ namespace semlocali{
                     }
                     */
 
-                    if( match_checker==true){
-                        ver_ptr[ x ] = cv::Vec4b( map_b, map_g, map_r, 255);
-                        //ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
-                        likelihood += 1.0;
-                    }
-
+                if( match_checker==true){
+                    ver_ptr[ x ] = cv::Vec4b( map_b, map_g, map_r, 0.0);
+                    //ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
+                    likelihood += 1.0;
+                }
             }
 
             /*
@@ -745,6 +779,8 @@ namespace semlocali{
     bool VerCalLike::cmp_pixel(double seg_b,double seg_g,double seg_r,double map_b,double map_g, double map_r){
         //
 
+        if(map_r==0 && map_g==0 && map_b==0) return false;
+
         double diff_r = std::abs( seg_r - map_r );
         double diff_g = std::abs( seg_g - map_g );
         double diff_b = std::abs( seg_b - map_b );
@@ -753,7 +789,11 @@ namespace semlocali{
         }
 
         if( (std::abs(seg_b - 128.0) < 5.0) && (std::abs(seg_g - 64.0) < 5.0) &&  (std::abs(seg_r - 128.0) < 5.0) ){//road
-            if( std::abs(map_r - map_b) < 5.0 ) return true;
+            if( std::abs(map_r - map_b) < 10.0  && map_r/(map_g+1) < 4.0 && map_b/(map_g+1) < 4.0) return true;
+        }
+
+        if( (std::abs(seg_b - 232.0) < 5.0) && (std::abs(seg_g - 35.0) < 5.0) &&  (std::abs(seg_r - 244.0) < 5.0) ){//sidewalk
+            if( std::abs(map_r - map_b) < 15.0  && map_r/map_g > 4.0 && map_b/map_g > 4.0) return true;
         }
 
         if( (std::abs(seg_b - 142.0) < 5.0) && (std::abs(seg_g - 0.0) < 5.0) &&  (std::abs(seg_r - 0.0) < 5.0) ){//car
@@ -766,6 +806,12 @@ namespace semlocali{
             }
         }
 
+        if( (std::abs(seg_b - 152.0) < 10.0) && (std::abs(seg_g - 251.0) < 10.0) &&  (std::abs(seg_r - 152.0) < 10.0) ){//terrain (shibahu)
+            
+            if( std::abs(map_r-map_b) < 5.0 && map_g>map_b && map_g>map_r ) return true;
+
+        }
+
         return false;
     }
 
@@ -774,11 +820,13 @@ namespace semlocali{
         std::string csv_file_name = likelihood_csv_file_path + "likelihood.csv";
         std::ofstream csv_key( csv_file_name );
 
+        /*
         std::string mesh_bgr_file_name = likelihood_csv_file_path + "mesh_bgr.csv";
         std::ofstream mesh_bgr_key( mesh_bgr_file_name );
 
         std::string point_bgr_file_name = likelihood_csv_file_path + "point_bgr.csv";
         std::ofstream point_bgr_key( point_bgr_file_name );
+        */
 
         csv_key << "Mesh" << "," << "Point" << std::endl;
 
@@ -790,17 +838,20 @@ namespace semlocali{
             csv_key << likelihoods[i] << "," << likelihoods[i + like_size] << std::endl;
         }
 
+        /*
         for(size_t i=0; i<mesh_image_bgr.size(); i++){
             mesh_bgr_key << mesh_image_bgr[i] << std::endl;
         }
 
         for(size_t i=0; i<point_image_bgr.size(); i++){
             point_bgr_key << point_image_bgr[i] << std::endl;
-        }
+        }*/
 
         csv_key.close();
+        /*
         mesh_bgr_key.close();
         point_bgr_key.close();
+        */
 
     }
 

@@ -48,10 +48,10 @@
         <param name="pitchdev" value="0.015" type="double"/>
         <param name="yawdev"   value="0.015" type="double" />
 
-        <param name="GroundtruthPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/sequence00_12_16_1200/groundtruth.csv" />
-        <param name= "OdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/sequence00_12_16_1200/odometry.csv" />
-        <param name="EstimatedPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/sequence00_12_16_1200/estimated.csv" />
-        <param name="BiasedOdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/sequence00_12_16_1200/biased_odom.csv" />
+        <param name="GroundtruthPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/groundtruth.csv" />
+        <param name= "OdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/odometry.csv" />
+        <param name="EstimatedPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/estimated.csv" />
+        <param name="BiasedOdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/biased_odom.csv" />
 
         <param name="PolygonDataPath" value="/home/amsl/Polygon_data/sequence00_12_05_1830/" />
         <param name="ReadPolygonChecker" value="true" type="bool" />

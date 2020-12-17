@@ -120,9 +120,11 @@ namespace semlocali{
             
             std::vector<geometry_msgs::Pose> agent_place;
 
+            /*
             std::vector<double> seg_image_bgr;
             std::vector<double> mesh_image_bgr;
             std::vector<double> point_image_bgr;
+            */
 
             int data_length = 0;
 
