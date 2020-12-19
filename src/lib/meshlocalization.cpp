@@ -29,19 +29,21 @@ namespace semlocali{
         
         Time start_im = ros::Time::now();
 
-        //cv_bridge::CvImagePtr seg_ptr=cv_bridge::toCvCopy(msg,sensor_msgs::image_encodings::BGR8);
-        cv_bridge::CvImagePtr seg_ptr=cv_bridge::toCvCopy(msg,sensor_msgs::image_encodings::RGB8);
+        cv_bridge::CvImagePtr seg_ptr;
 
-        cv::cvtColor( seg_ptr->image , segimage , cv::COLOR_RGB2BGRA );
+        try{
 
-        if(image_down_height != 1.0 && image_down_width != 1.0){
-            cv::resize(segimage, segimage , cv::Size() , image_down_width, image_down_height);
+            //cv_bridge::CvImagePtr seg_ptr=cv_bridge::toCvCopy(msg,sensor_msgs::image_encodings::BGR8);
+            seg_ptr=cv_bridge::toCvCopy(msg,sensor_msgs::image_encodings::RGB8);
+            cv::cvtColor( seg_ptr->image , segimage , cv::COLOR_RGB2BGRA );
+
+            if(image_down_height != 1.0 && image_down_width != 1.0){
+                cv::resize(segimage, segimage , cv::Size() , image_down_width, image_down_height);
+            }
         }
-
-        /*
-        std::cout << "Segimage type" << segimage.type() << std::endl;
-        std::cout << "Mapimage type" << mapimage.type() << std::endl;
-        */
+        catch(cv_bridge::Exception& e){
+            ROS_ERROR("cv_bridge exception: %s", e.what());
+        }
 
         Time end_im = ros::Time::now();
 
@@ -1154,7 +1156,7 @@ namespace semlocali{
         double diff_g = std::abs( seg_g - map_g );
         double diff_b = std::abs( seg_b - map_b );
 
-        if( diff_r < 30 && diff_g < 30 && diff_b < 30 ){
+        if( diff_r < 10 && diff_g < 10 && diff_b < 10 ){
             return 1.0;
         }
         
@@ -1167,7 +1169,7 @@ namespace semlocali{
         }
 
         if( (std::abs(seg_b - 142.0) < 5.0) && (std::abs(seg_g - 0.0) < 5.0) &&  (std::abs(seg_r -   0.0) < 5.0) ){//car
-            if( map_g < 10.0 && map_r < 10.0 && map_b > 10.0) return 5.0;
+            if( map_g < 10.0 && map_r < 10.0 && map_b > 10.0) return 10.0;
         }
 
         if( (std::abs(seg_b - 70.0) < 5.0) && (std::abs(seg_g - 70.0) < 5.0) &&  (std::abs(seg_r -   70.0) < 5.0) ){//building
@@ -1246,7 +1248,7 @@ namespace semlocali{
         //Normalize likelihood
         for(size_t i=0; i<likelihood.size(); i++){
             likelihood[i] = likelihood[i] / total_likelihood;
-            //std::cout << likelihood[i] << std::endl;
+            std::cout << likelihood[i] << std::endl;
         }
         
         std::cout << "Change camera Time :" << camera_time << "[s]" << std::endl;

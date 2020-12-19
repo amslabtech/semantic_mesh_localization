@@ -785,12 +785,12 @@ namespace semlocali{
         double diff_r = std::abs( seg_r - map_r );
         double diff_g = std::abs( seg_g - map_g );
         double diff_b = std::abs( seg_b - map_b );
-        if( diff_r < 30 && diff_g < 30 && diff_b < 30 ){
+        if( diff_r < 10 && diff_g < 10 && diff_b < 10 ){
             return 1.0;
         }
 
         if( (std::abs(seg_b - 128.0) < 5.0) && (std::abs(seg_g - 64.0) < 5.0) &&  (std::abs(seg_r - 128.0) < 5.0) ){//road
-            if( std::abs(map_r - map_b) < 10.0  && map_r/(map_g+1) < 4.0 && map_b/(map_g+1) < 4.0) return 1.0;
+            if( std::abs(map_r - map_b) < 10.0  && map_r/(map_g+1) < 4.0 && map_b/(map_g+1) < 4.0) return 0.7;
         }
 
         if( (std::abs(seg_b - 232.0) < 5.0) && (std::abs(seg_g - 35.0) < 5.0) &&  (std::abs(seg_r - 244.0) < 5.0) ){//sidewalk
@@ -803,13 +803,13 @@ namespace semlocali{
 
         if( (std::abs(seg_b - 70.0) < 5.0) && (std::abs(seg_g - 70.0) < 5.0) &&  (std::abs(seg_r - 70.0) < 5.0) ){//building
             if( std::abs(map_r - map_g) < 5.0 && std::abs(map_g - map_b) < 5.0 && std::abs(map_b - map_r) < 5.0){
-                return 1.0;
+                return 0.7;
             }
         }
 
         if( (std::abs(seg_b - 152.0) < 10.0) && (std::abs(seg_g - 251.0) < 10.0) &&  (std::abs(seg_r - 152.0) < 10.0) ){//terrain (shibahu)
             
-            if( std::abs(map_r-map_b) < 5.0 && map_g>map_b && map_g>map_r ) return 1.2;
+            if( std::abs(map_r-map_b) < 5.0 && map_g>map_b && map_g>map_r ) return 2.0;
 
         }
 
