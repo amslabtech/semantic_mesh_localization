@@ -654,6 +654,7 @@ namespace semlocali{
         */
 
         double likelihood = 0;
+        double pixel = 0;
 
         for( int y=0; y<verified_image.rows; y++){
 
@@ -705,10 +706,8 @@ namespace semlocali{
                 double seg_r_g = std::abs(seg_r - seg_g);
                 double seg_g_b = std::abs(seg_g - seg_b);
 
-                    /*
-                    if( map_b==0 && map_g==0 && map_r==0) continue;
-                    if( seg_b==0 && seg_g==0 && seg_r==0) continue;
-                    */
+                    
+                if( map_b==0 && map_g==0 && map_r==0) continue;
 
                 /*
                 double map_bgr = map_b * 1000.0 * 1000.0 + map_g * 1000.0 + map_r;
@@ -745,7 +744,7 @@ namespace semlocali{
                         ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
                     }
                     */
-                bool match_checker = cmp_pixel(seg_b,seg_g,seg_r,map_b,map_g,map_r);
+                double match_checker = cmp_pixel(seg_b,seg_g,seg_r,map_b,map_g,map_r);
 
                     /*
                     if(     (diff_b_r < 10.0 && diff_r_g < 10.0 && diff_g_b < 10.0) || 
@@ -757,10 +756,11 @@ namespace semlocali{
                     }
                     */
 
-                if( match_checker==true){
+                if( match_checker > 0){
                     ver_ptr[ x ] = cv::Vec4b( map_b, map_g, map_r, 0.0);
                     //ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
-                    likelihood += 1.0;
+                    likelihood += match_checker;
+                    pixel += 1.0;
                 }
             }
 
@@ -771,54 +771,55 @@ namespace semlocali{
             */
         }
 
+        pixels.push_back( pixel );
         likelihoods.push_back( likelihood );
 
         return verified_image;
     }
 
-    bool VerCalLike::cmp_pixel(double seg_b,double seg_g,double seg_r,double map_b,double map_g, double map_r){
+    double VerCalLike::cmp_pixel(double seg_b,double seg_g,double seg_r,double map_b,double map_g, double map_r){
         //
 
-        if(map_r==0 && map_g==0 && map_b==0) return false;
+        if(map_r==0 && map_g==0 && map_b==0) return 0.0;
 
         double diff_r = std::abs( seg_r - map_r );
         double diff_g = std::abs( seg_g - map_g );
         double diff_b = std::abs( seg_b - map_b );
         if( diff_r < 30 && diff_g < 30 && diff_b < 30 ){
-            return true;
+            return 1.0;
         }
 
         if( (std::abs(seg_b - 128.0) < 5.0) && (std::abs(seg_g - 64.0) < 5.0) &&  (std::abs(seg_r - 128.0) < 5.0) ){//road
-            if( std::abs(map_r - map_b) < 10.0  && map_r/(map_g+1) < 4.0 && map_b/(map_g+1) < 4.0) return true;
+            if( std::abs(map_r - map_b) < 10.0  && map_r/(map_g+1) < 4.0 && map_b/(map_g+1) < 4.0) return 1.0;
         }
 
         if( (std::abs(seg_b - 232.0) < 5.0) && (std::abs(seg_g - 35.0) < 5.0) &&  (std::abs(seg_r - 244.0) < 5.0) ){//sidewalk
-            if( std::abs(map_r - map_b) < 15.0  && map_r/map_g > 4.0 && map_b/map_g > 4.0) return true;
+            if( std::abs(map_r - map_b) < 15.0  && map_r/map_g > 4.0 && map_b/map_g > 4.0) return 1.5;
         }
 
         if( (std::abs(seg_b - 142.0) < 5.0) && (std::abs(seg_g - 0.0) < 5.0) &&  (std::abs(seg_r - 0.0) < 5.0) ){//car
-            if( map_g < 10.0 && map_r < 10.0 && map_b > 10.0) return true;
+            if( map_g < 10.0 && map_r < 10.0 && map_b > 10.0) return 10.0;
         }
 
         if( (std::abs(seg_b - 70.0) < 5.0) && (std::abs(seg_g - 70.0) < 5.0) &&  (std::abs(seg_r - 70.0) < 5.0) ){//building
             if( std::abs(map_r - map_g) < 5.0 && std::abs(map_g - map_b) < 5.0 && std::abs(map_b - map_r) < 5.0){
-                return true;
+                return 1.0;
             }
         }
 
         if( (std::abs(seg_b - 152.0) < 10.0) && (std::abs(seg_g - 251.0) < 10.0) &&  (std::abs(seg_r - 152.0) < 10.0) ){//terrain (shibahu)
             
-            if( std::abs(map_r-map_b) < 5.0 && map_g>map_b && map_g>map_r ) return true;
+            if( std::abs(map_r-map_b) < 5.0 && map_g>map_b && map_g>map_r ) return 1.2;
 
         }
 
-        return false;
+        return 0.0;
     }
 
     void VerCalLike::save_csv(){
 
         std::string csv_file_name = likelihood_csv_file_path + "likelihood.csv";
-        std::ofstream csv_key( csv_file_name );
+        //std::ofstream csv_key( csv_file_name );
 
         /*
         std::string mesh_bgr_file_name = likelihood_csv_file_path + "mesh_bgr.csv";
@@ -828,15 +829,22 @@ namespace semlocali{
         std::ofstream point_bgr_key( point_bgr_file_name );
         */
 
-        csv_key << "Mesh" << "," << "Point" << std::endl;
+        //csv_key << "Mesh" << "," << "Point" << std::endl;
 
         size_t like_size = likelihoods.size()/2;
 
         for( size_t i=0; i<cmp_times; i++){
             std::cout << "Image" << i << ": " << "Mesh Map: " << likelihoods[i] << " Point Map: " << likelihoods[like_size + i] << " Diff: " << std::abs(likelihoods[i]-likelihoods[i+like_size]) <<std::endl;
 
-            csv_key << likelihoods[i] << "," << likelihoods[i + like_size] << std::endl;
+            //csv_key << likelihoods[i] << "," << likelihoods[i + like_size] << std::endl;
         }
+
+        for( size_t i=0; i<cmp_times; i++){
+            std::cout << "Image" << i << ": " << "Mesh Map: " << pixels[i] << " Point Map: " << pixels[like_size + i] << " Diff: " << std::abs(pixels[i]-pixels[i+like_size]) <<std::endl;
+
+            //csv_key << pixels[i] << "," << pixels[i + like_size] << std::endl;
+        }
+
 
         /*
         for(size_t i=0; i<mesh_image_bgr.size(); i++){
@@ -847,7 +855,7 @@ namespace semlocali{
             point_bgr_key << point_image_bgr[i] << std::endl;
         }*/
 
-        csv_key.close();
+        //csv_key.close();
         /*
         mesh_bgr_key.close();
         point_bgr_key.close();

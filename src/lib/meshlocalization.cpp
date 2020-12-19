@@ -1111,15 +1111,19 @@ namespace semlocali{
                     map_b = map_bgr[0];
                     map_g = map_bgr[1];
                     map_r = map_bgr[2];
-                    
+
                     seg_b = seg_bgr[0];
                     seg_g = seg_bgr[1];
                     seg_r = seg_bgr[2];
                     
-                    bool corres_checker = cmp_pixel(seg_b,seg_g,seg_r,map_b,map_g,map_r);
+                    double corres_checker = cmp_pixel(seg_b,seg_g,seg_r,map_b,map_g,map_r);
 
-                    if(corres_checker==true){
-                        tmp_score = 1.0;
+                    if(map_b==0 && map_g==0 && map_r==0){
+                        corres_checker = 0.0;
+                    }
+
+                    if(corres_checker > 0.0){
+                        tmp_score = corres_checker;
                     }
 
                     score += tmp_score;
@@ -1145,38 +1149,38 @@ namespace semlocali{
         return score;
     }
 
-    bool MeshLocalization::cmp_pixel(double seg_b,double seg_g,double seg_r,double map_b,double map_g,double map_r){
+    double MeshLocalization::cmp_pixel(double seg_b,double seg_g,double seg_r,double map_b,double map_g,double map_r){
         double diff_r = std::abs( seg_r - map_r );
         double diff_g = std::abs( seg_g - map_g );
         double diff_b = std::abs( seg_b - map_b );
 
         if( diff_r < 30 && diff_g < 30 && diff_b < 30 ){
-            return true;
+            return 1.0;
         }
         
         if( (std::abs(seg_b - 128.0) < 5.0) && (std::abs(seg_g - 64.0) < 5.0) &&  (std::abs(seg_r -   128.0) < 5.0) ){//road
-            if( std::abs(map_r - map_b) < 10.0  && map_r/(map_g+1) < 4.0 && map_b/(map_g+1) < 4.0) return true;
+            if( std::abs(map_r - map_b) < 10.0  && map_r/(map_g+1) < 4.0 && map_b/(map_g+1) < 4.0) return 0.7;
         }
 
         if( (std::abs(seg_b - 232.0) < 5.0) && (std::abs(seg_g - 35.0) < 5.0) &&  (std::abs(seg_r -   244.0) < 5.0) ){//sidewalk
-            if( std::abs(map_r - map_b) < 15.0  && map_r/map_g > 4.0 && map_b/map_g > 4.0) return true;
+            if( std::abs(map_r - map_b) < 15.0  && map_r/map_g > 4.0 && map_b/map_g > 4.0) return 1.5;
         }
 
         if( (std::abs(seg_b - 142.0) < 5.0) && (std::abs(seg_g - 0.0) < 5.0) &&  (std::abs(seg_r -   0.0) < 5.0) ){//car
-            if( map_g < 10.0 && map_r < 10.0 && map_b > 10.0) return true;
+            if( map_g < 10.0 && map_r < 10.0 && map_b > 10.0) return 5.0;
         }
 
         if( (std::abs(seg_b - 70.0) < 5.0) && (std::abs(seg_g - 70.0) < 5.0) &&  (std::abs(seg_r -   70.0) < 5.0) ){//building
             if( std::abs(map_r - map_g) < 5.0 && std::abs(map_g - map_b) < 5.0 && std::abs(map_b -   map_r) < 5.0){
-                return true;
+                return 0.7;
             }
         }
 
         if( (std::abs(seg_b - 152.0) < 10.0) && (std::abs(seg_g - 251.0) < 10.0) &&  (std::abs(seg_r - 152.0) < 10.0) ){//terrain (shibahu)
 
-            if( std::abs(map_r-map_b) < 5.0 && map_g>map_b && map_g>map_r ) return true;
+            if( std::abs(map_r-map_b) < 5.0 && map_g>map_b && map_g>map_r ) return 2.0;
         }
-        return false;
+        return 0.0;
     }
 
 
@@ -1229,6 +1233,7 @@ namespace semlocali{
         for(size_t i=0; i<likelihood.size(); i++){
             likelihood[i] = get_likelihood( particle.poses[i] );
             total_likelihood += likelihood[i];
+            //std::cout << likelihood[i] << std::endl;
         }
 
         if(total_likelihood < 0.01){
@@ -1241,8 +1246,8 @@ namespace semlocali{
         //Normalize likelihood
         for(size_t i=0; i<likelihood.size(); i++){
             likelihood[i] = likelihood[i] / total_likelihood;
+            //std::cout << likelihood[i] << std::endl;
         }
-
         
         std::cout << "Change camera Time :" << camera_time << "[s]" << std::endl;
 

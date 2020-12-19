@@ -40,9 +40,9 @@
         <param name="imagedownwidth" value="1.0" type="double" />
         <param name="imagedownheight" value="1.0" type="double" />
 
-        <param name="xdev" value="0.20" type="double"/>
-        <param name="ydev" value="0.20" type="double"/>
-        <param name="zdev" value="0.13" type="double"/>
+        <param name="xdev" value="0.30" type="double"/>
+        <param name="ydev" value="0.30" type="double"/>
+        <param name="zdev" value="0.10" type="double"/>
 
         <param name="rolldev"  value="0.015" type="double"/>
         <param name="pitchdev" value="0.015" type="double"/>

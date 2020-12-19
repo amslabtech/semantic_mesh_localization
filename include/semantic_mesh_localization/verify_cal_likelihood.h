@@ -92,7 +92,7 @@ namespace semlocali{
 
             void save_csv();
 
-            bool cmp_pixel(double seg_b,double seg_g,double seg_r,double map_b,double map_g, double map_r);
+            double cmp_pixel(double seg_b,double seg_g,double seg_r,double map_b,double map_g, double map_r);
 
         private:
 
@@ -134,6 +134,7 @@ namespace semlocali{
             pcl::PointCloud<pcl::PointXYZRGB> cloud_tmp;
 
             std::vector<double> likelihoods; //upper half:mesh lower half:pointcloud
+            std::vector<double> pixels;
             size_t cmp_times = 0;
 
             pcl::PointCloud<pcl::PointXYZRGB> unlabeled;
