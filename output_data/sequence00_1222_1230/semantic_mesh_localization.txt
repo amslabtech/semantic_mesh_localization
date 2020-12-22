@@ -31,17 +31,17 @@
         <param name="SegImagePath" value="/home/amsl/Image_data/segimage/" />
         <param name="MapImagePath" value="/home/amsl/Image_data/mapimage/" />
 
-        <param name="particlenumber" value="100" type="int"/>
+        <param name="particlenumber" value="50" type="int"/>
 
         <!-- default image size is 1241(width) and 376(height) -->
-        <param name="imagewidth" value="124" type="int"/>
-        <param name="imageheight" value="38" type="int"/>
+        <param name="imagewidth" value="620" type="int"/>
+        <param name="imageheight" value="188" type="int"/>
 
-        <param name="imagedownwidth" value="0.1" type="double" />
-        <param name="imagedownheight" value="0.1" type="double" />
+        <param name="imagedownwidth" value="0.5" type="double" />
+        <param name="imagedownheight" value="0.5" type="double" />
 
-        <param name="xdev" value="0.30" type="double"/>
-        <param name="ydev" value="0.30" type="double"/>
+        <param name="xdev" value="0.20" type="double"/>
+        <param name="ydev" value="0.20" type="double"/>
         <param name="zdev" value="0.13" type="double"/>
 
         <param name="rolldev"  value="0.015" type="double"/>

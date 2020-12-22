@@ -1066,8 +1066,12 @@ namespace semlocali{
         cv::cvtColor( tmpimage , mapimage , cv::COLOR_RGBA2BGRA);
 
         //Kaiten
+        /*
         cv::flip(mapimage, mapimage, -1);
         cv::flip(mapimage, mapimage,  1);
+        */
+
+        cv::flip(mapimage,mapimage,0);
 
         //cv::imwrite("/home/amsl/image.jpg",mapimage);
 
@@ -1169,7 +1173,7 @@ namespace semlocali{
         }
 
         if( (std::abs(seg_b - 142.0) < 5.0) && (std::abs(seg_g - 0.0) < 5.0) &&  (std::abs(seg_r -   0.0) < 5.0) ){//car
-            if( map_g < 10.0 && map_r < 10.0 && map_b > 10.0) return 10.0;
+            if( map_g < 10.0 && map_r < 10.0 && map_b > 10.0) return 40.0;
         }
 
         if( (std::abs(seg_b - 70.0) < 5.0) && (std::abs(seg_g - 70.0) < 5.0) &&  (std::abs(seg_r -   70.0) < 5.0) ){//building

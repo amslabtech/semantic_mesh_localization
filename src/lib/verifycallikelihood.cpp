@@ -833,17 +833,25 @@ namespace semlocali{
 
         size_t like_size = likelihoods.size()/2;
 
+        std::cout << std::endl;
+        std::cout << "Likelihood" << std::endl;
+
         for( size_t i=0; i<cmp_times; i++){
             std::cout << "Image" << i << ": " << "Mesh Map: " << likelihoods[i] << " Point Map: " << likelihoods[like_size + i] << " Diff: " << std::abs(likelihoods[i]-likelihoods[i+like_size]) <<std::endl;
 
             //csv_key << likelihoods[i] << "," << likelihoods[i + like_size] << std::endl;
         }
 
+        std::cout << std::endl;
+        std::cout << "Pixel" << std::endl;
+
         for( size_t i=0; i<cmp_times; i++){
             std::cout << "Image" << i << ": " << "Mesh Map: " << pixels[i] << " Point Map: " << pixels[like_size + i] << " Diff: " << std::abs(pixels[i]-pixels[i+like_size]) <<std::endl;
 
             //csv_key << pixels[i] << "," << pixels[i + like_size] << std::endl;
         }
+
+        std::cout << std::endl;
 
 
         /*
