@@ -786,9 +786,9 @@ namespace semlocali{
 
     void MeshLocalization::wait_for_bag_data(){
 
-        ros::Rate message_rate(2.0);
+        ros::Rate message_rate(1.0);
         while(1){
-            ros::spinOnce();
+            //ros::spinOnce();
             if(first_odom_checker == true){
                 //最初の処理をここで行う
 
@@ -799,6 +799,7 @@ namespace semlocali{
             else{
                 std::cout << "PLEASE PLAY BAG FILE" << std::endl;
             }
+            ros::spinOnce();
             message_rate.sleep();
         }
     }
@@ -1242,6 +1243,24 @@ namespace semlocali{
             //std::cout << likelihood[i] << std::endl;
         }
 
+        if(minimum_likelihood_checker == true){
+            double minimum_likelihood = 100000000.0;
+
+            for(size_t i=0; i<likelihood.size(); i++){
+                if( likelihood[i] < minimum_likelihood ) minimum_likelihood = likelihood[i];
+            }
+
+            minimum_likelihood = minimum_likelihood - 0.00001;
+
+            double sub_total_likelihood = 0.0;
+            for( size_t i=0; i < likelihood.size(); i++){
+                likelihood[i] = likelihood[i] - minimum_likelihood;
+                sub_total_likelihood += likelihood[i];
+            }
+
+            total_likelihood = sub_total_likelihood;
+        }
+
         if(total_likelihood < 0.01){
             ROS_INFO("Invalid total likelihood");
             for(size_t i=0; i<likelihood.size(); i++){
@@ -1252,7 +1271,7 @@ namespace semlocali{
         //Normalize likelihood
         for(size_t i=0; i<likelihood.size(); i++){
             likelihood[i] = likelihood[i] / total_likelihood;
-            std::cout << likelihood[i] << std::endl;
+            //std::cout << likelihood[i] << std::endl;
         }
         
         std::cout << "Change camera Time :" << camera_time << "[s]" << std::endl;

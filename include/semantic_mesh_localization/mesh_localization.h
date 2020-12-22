@@ -159,6 +159,8 @@ namespace semlocali{
             std::string map_image_path = "/home/amsl/Image_data/mapimage/";
             int image_counter = 0;
 
+            bool minimum_likelihood_checker = true;
+
             tf::StampedTransform map_to_groundtruth;
 
             std::string polygon_data_path = "/home/amsl/Polygon_data/sequence00/";
