@@ -12,6 +12,7 @@ namespace bonnet {
  *
  * @param      nodeHandle  the ROS node handle.
  */
+
 netHandler::netHandler(ros::NodeHandle& nodeHandle)
     : node_handle_(nodeHandle), it_(nodeHandle) {
   // Try to read the necessary parameters
@@ -25,6 +26,9 @@ netHandler::netHandler(ros::NodeHandle& nodeHandle)
       it_.subscribe(img_subscriber_topic_, 1, &netHandler::imageCallback, this);*/
   img_subscriber_ =
       it_.subscribe("/semantickitti/camera_color_right/image_raw", 1, &netHandler::imageCallback, this);
+
+  sub_odom = nodeHandle.subscribe<nav_msgs::Odometry>("/odom_pose", 1, &netHandler::odometry_callback, this);
+  pub_odom = nodeHandle.advertise<nav_msgs::Odometry>("/odom_pose2",1);
 
 
   // Advertise our topics
@@ -79,6 +83,10 @@ bool netHandler::readParameters() {
       !node_handle_.getParam("backend", backend_))
     return false;
   return true;
+}
+
+void netHandler::odometry_callback(const nav_msgs::OdometryConstPtr& msg){
+    odom_data = *msg;
 }
 
 void netHandler::imageCallback(const sensor_msgs::ImageConstPtr& img_msg) {
@@ -141,6 +149,9 @@ void netHandler::imageCallback(const sensor_msgs::ImageConstPtr& img_msg) {
   sensor_msgs::ImagePtr bgr_msg =
       cv_bridge::CvImage(img_msg->header, "bgr8", cv_img_bgr).toImageMsg();
   bgr_publisher_.publish(bgr_msg);
+
+
+  pub_odom.publish(odom_data);
 }
 
 }  // namespace chatter        

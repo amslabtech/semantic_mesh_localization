@@ -8,6 +8,8 @@
 // Network
 #include <semantic_mesh_localization/bonnet.hpp>
 
+#include<nav_msgs/Odometry.h>
+
 namespace bonnet {
 
 /*!
@@ -49,6 +51,8 @@ class netHandler {
    */
   void imageCallback(const sensor_msgs::ImageConstPtr& img_msg);
 
+  void odometry_callback(const nav_msgs::OdometryConstPtr& msg);
+
   //! ROS node handle.
   ros::NodeHandle& node_handle_;
 
@@ -59,6 +63,10 @@ class netHandler {
   image_transport::Publisher mask_publisher_;
   image_transport::Publisher color_mask_publisher_;
   image_transport::Publisher alpha_blend_publisher_;
+
+  ros::Subscriber sub_odom;
+  ros::Publisher pub_odom;
+  nav_msgs::Odometry odom_data;
 
   //! ROS topic names to subscribe to.
   std::string img_subscriber_topic_;

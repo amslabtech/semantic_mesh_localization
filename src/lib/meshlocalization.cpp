@@ -7,9 +7,12 @@ namespace semlocali{
 
             image_sub = it_.subscribe
                 ("/bonnet/color_mask" , 1, &MeshLocalization::segmented_image_callback, this);
-
+/*
             sub_odometry = node.subscribe<nav_msgs::Odometry>
                 ("/odom_pose", 1, &MeshLocalization::odometry_callback, this);
+*/
+            sub_odometry = node.subscribe<nav_msgs::Odometry>
+                ("/odom_pose2", 1, &MeshLocalization::odometry_callback, this);
 
             pub_pose = node.advertise<geometry_msgs::PoseStamped>("/estimated_pose", 1);
             pub_particle = node.advertise<geometry_msgs::PoseArray>("/particle", 1);
@@ -788,7 +791,7 @@ namespace semlocali{
 
         ros::Rate message_rate(1.0);
         while(1){
-            //ros::spinOnce();
+            ros::spinOnce();
             if(first_odom_checker == true){
                 //最初の処理をここで行う
 
@@ -799,7 +802,7 @@ namespace semlocali{
             else{
                 std::cout << "PLEASE PLAY BAG FILE" << std::endl;
             }
-            ros::spinOnce();
+            //ros::spinOnce();
             message_rate.sleep();
         }
     }
@@ -1358,15 +1361,13 @@ namespace semlocali{
         step_width = acc / double( particle.poses.size() );
         
         //一様分布の中から値を抽出する
-        
-        choose_init = ( (double)rand() / ((double)RAND_MAX + 1) ) * acc;
+        //choose_init = ( (double)rand() / ((double)RAND_MAX + 1) ) * acc;
 
-        /*
-        std::random_device rnd;
-        std::mt19937 mt( rnd() );
-        std::uniform_int_distribution<> rand_weight( 0.0, acc);
-        choose_init = rand_weight( mt );
-        */
+        std::random_device uni_seed_gen;
+        std::default_random_engine uni_engine(uni_seed_gen());
+        std::uniform_real_distribution<double> uni_dist(0.0,step_width);
+
+        choose_init = uni_dist(uni_engine);
 
         int index = 0;
         double t = choose_init;
