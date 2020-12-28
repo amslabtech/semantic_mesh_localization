@@ -17,7 +17,7 @@ option(TRT_AVAIL "TensorRT available" OFF)
 
 
 ## Use C++11
-add_definitions(-std=c++11 -Wfatal-errors)
+#add_definitions(-std=c++11 -Wfatal-errors)
 
 # check flags
 message("Build type: ${CMAKE_BUILD_TYPE}")

@@ -2,9 +2,9 @@
     <!-- Launch ROS Node for net handler with all the desired parameters-->
     <node pkg="semantic_mesh_localization" type="bonnet_node" name="bonnet_node" output="screen">
         <!-- Topics -->
-        <rosparam command="load" file="$(find bonnet_run)/config/topic_cfg.yaml" />
+        <rosparam command="load" file="$(find semantic_mesh_localization)/config/topic_cfg.yaml" />
         <!-- CNN stuff -->
-        <rosparam command="load" file="$(find bonnet_run)/config/cnn_cfg.yaml" />
+        <rosparam command="load" file="$(find semantic_mesh_localization)/config/cnn_cfg.yaml" />
     </node>
 
 
