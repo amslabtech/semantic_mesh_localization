@@ -48,6 +48,8 @@
         <param name="pitchdev" value="0.015" type="double"/>
         <param name="yawdev"   value="0.015" type="double" />
 
+        <param name="AverageNumber" value="5.0" type="double" />
+
         <param name="GroundtruthPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/groundtruth.csv" />
         <param name= "OdometryPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/odometry.csv" />
         <param name="EstimatedPath" value="/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/estimated.csv" />

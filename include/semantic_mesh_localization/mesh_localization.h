@@ -81,6 +81,8 @@ namespace semlocali{
 
             geometry_msgs::PoseStamped max_likelihood_approach();
 
+            geometry_msgs::PoseStamped average_likelihood_approach();
+
             void resampling_particle();
 
             void publish_result();
@@ -201,6 +203,8 @@ namespace semlocali{
 
             Time start_mot;
             Time end_mot;
+
+            double average_number = 5.0;
 
     };
 

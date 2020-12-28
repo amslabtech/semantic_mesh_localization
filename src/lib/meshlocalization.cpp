@@ -737,6 +737,16 @@ namespace semlocali{
             }
         }
 
+        if( privateNode.getParam("AverageNumber", dparam) ){
+            if(dparam <=1.0){
+                ROS_ERROR("Invalid AverageNumber parameter");
+                return false;
+            }
+            else{
+                average_number = dparam;
+            }
+        }
+
         std::cout << "Mesh map setup is done..." << std::endl;
         std::cout << "Building mesh map....." << std::endl;
 
@@ -1177,7 +1187,7 @@ namespace semlocali{
         }
 
         if( (std::abs(seg_b - 142.0) < 5.0) && (std::abs(seg_g - 0.0) < 5.0) &&  (std::abs(seg_r -   0.0) < 5.0) ){//car
-            if( map_g < 10.0 && map_r < 10.0 && map_b > 10.0) return 40.0;
+            if( map_g < 10.0 && map_r < 10.0 && map_b > 10.0) return 4.0;
         }
 
         if( (std::abs(seg_b - 70.0) < 5.0) && (std::abs(seg_g - 70.0) < 5.0) &&  (std::abs(seg_r -   70.0) < 5.0) ){//building
@@ -1291,10 +1301,10 @@ namespace semlocali{
     }
 
     geometry_msgs::PoseStamped MeshLocalization::max_likelihood_approach(){
-        geometry_msgs::PoseStamped estimated_pose;
+        geometry_msgs::PoseStamped _pose;
 
-        estimated_pose.header.frame_id = "map";
-        estimated_pose.header.stamp = odom_data.header.stamp;
+        _pose.header.frame_id = "map";
+        _pose.header.stamp = odom_data.header.stamp;
 
         double tmp_likelihood = -0.1;
         for(size_t i=0; i<particle.poses.size(); i++){
@@ -1302,8 +1312,8 @@ namespace semlocali{
             if( likelihood[i] > tmp_likelihood ){
                 tmp_likelihood = likelihood[i];
 
-                estimated_pose.pose.position = particle.poses[i].position;
-                estimated_pose.pose.orientation = particle.poses[i].orientation;
+                _pose.pose.position = particle.poses[i].position;
+                _pose.pose.orientation = particle.poses[i].orientation;
             }
         }
 
@@ -1312,12 +1322,80 @@ namespace semlocali{
         std::cout << estimated_pose << std::endl;
         */
 
-        return estimated_pose;
+        return _pose;
+    }
+
+    geometry_msgs::PoseStamped MeshLocalization::average_likelihood_approach(){
+        geometry_msgs::PoseStamped _pose;
+        _pose.header.frame_id = "map";
+        _pose.header.stamp = odom_data.header.stamp;
+
+        geometry_msgs::PoseArray sorted_pose = particle;
+        std::vector<double> sorted_likelihood = likelihood;
+
+        double tmp_sorted_likelihood;
+        geometry_msgs::Pose tmp_sorted_pose;
+
+        bool sorted_checker = false;
+
+        while(!sorted_checker){
+            int sorting_count = 0;
+            
+            for(size_t i=0; i<sorted_likelihood.size()-1; i++){
+                if(sorted_likelihood[i] < sorted_likelihood[i+1]){
+                    sorting_count += 1;
+
+                    tmp_sorted_likelihood = sorted_likelihood[i];
+                    tmp_sorted_pose = sorted_pose.poses[i];
+
+                    sorted_likelihood[i] = sorted_likelihood[i+1];
+                    sorted_pose.poses[i] = sorted_pose.poses[i+1];
+
+                    sorted_likelihood[i+1] = tmp_sorted_likelihood;
+                    sorted_pose.poses[i+1] = tmp_sorted_pose;
+                }
+            }
+
+            if(sorting_count == 0) sorted_checker = true;
+        }
+
+        /*
+        std::cout << "Sorted likelihood" << std::endl;
+        for(size_t i=0; i<sorted_likelihood.size(); i++){
+            std::cout << sorted_likelihood[i] << std::endl;
+        }
+        */
+
+        _pose.pose.orientation = sorted_pose.poses[0].orientation;
+
+        double ave_x = 0.0;
+        double ave_y = 0.0;
+        double ave_z = 0.0;
+
+        int sorted_index = int(average_number);
+
+        for(int i=0; i<sorted_index; i++){
+            ave_x += sorted_pose.poses[i].position.x;
+            ave_y += sorted_pose.poses[i].position.y;
+            ave_z += sorted_pose.poses[i].position.z;
+        }
+
+        ave_x = ave_x/average_number;
+        ave_y = ave_y/average_number;
+        ave_z = ave_z/average_number;
+
+        _pose.pose.position.x = ave_x;
+        _pose.pose.position.y = ave_y;
+        _pose.pose.position.z = ave_z;
+
+
+        return _pose;
     }
 
     void MeshLocalization::estimate_current_pose(){
         //最も尤度の高いパーティクルを現在位置として推定する
-        estimated_pose = max_likelihood_approach();
+        //estimated_pose = max_likelihood_approach();
+        estimated_pose = average_likelihood_approach();
 
         //TF broadcast
         car_state.header.stamp = odom_data.header.stamp;
