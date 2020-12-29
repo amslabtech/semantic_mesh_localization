@@ -4,7 +4,7 @@
         <!--PointCloud localization config parameter -->
         <param name="PointSize" value="2.0" type="double" />
         <param name="BuildPointCloudMap" value="true" type="bool" />
-        <param name="filepath" value="/home/amsl/PCD_data/sequence05/" />
+        <param name="filepath" value="/home/amsl/PCD_data/sequence00_12_05_1830/" />
         <param name="filename" value="semantic_mesh_loam" />
         <param name="filetype" value="ascii" />
 
@@ -32,8 +32,8 @@
         <param name="particlenumber" value="100" type="int"/>
 
         <!-- default image size is 1241(width) and 376(height) -->
-        <param name="imagewidth" value="1226" type="int"/>
-        <param name="imageheight" value="370" type="int"/>
+        <param name="imagewidth" value="1241" type="int"/>
+        <param name="imageheight" value="376" type="int"/>
 
         <param name="imagedownwidth" value="1.0" type="double" />
         <param name="imagedownheight" value="1.0" type="double" />

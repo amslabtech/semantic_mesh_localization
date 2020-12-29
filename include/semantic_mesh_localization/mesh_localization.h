@@ -102,6 +102,7 @@ namespace semlocali{
             ros::Subscriber sub_odometry;
             ros::Publisher pub_particle;
             ros::Publisher pub_pose;
+            ros::Publisher ground_truth_pub;
 
             ros::Publisher pub_biased_odometry;
             nav_msgs::Odometry biased_odom;

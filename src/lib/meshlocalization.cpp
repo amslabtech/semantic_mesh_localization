@@ -17,6 +17,7 @@ namespace semlocali{
             pub_pose = node.advertise<geometry_msgs::PoseStamped>("/estimated_pose", 1);
             pub_particle = node.advertise<geometry_msgs::PoseArray>("/particle", 1);
             pub_biased_odometry = node.advertise<nav_msgs::Odometry>("biased_odom", 1);
+            ground_truth_pub = node.advertise<nav_msgs::Odometry>("/ground_truth_odom",1);
 
             estimated_pose.header.frame_id = "map";
             particle.header.frame_id = "map";
@@ -799,6 +800,8 @@ namespace semlocali{
 
     void MeshLocalization::wait_for_bag_data(){
 
+        ros::Duration(50.0).sleep(); //Wiat for 1 minute due to loading CNN parameter
+
         ros::Rate message_rate(1.0);
         while(1){
             ros::spinOnce();
@@ -1509,6 +1512,7 @@ namespace semlocali{
         pub_pose.publish(estimated_pose);
         pub_particle.publish(particle);
         pub_biased_odometry.publish(biased_odom);
+        ground_truth_pub.publish(odom_data);
     }
 
     void MeshLocalization::publish_as_csv(std::ofstream& groundtruth_csv, std::ofstream& odometry_csv, std::ofstream& estimated_csv, std::ofstream& biased_odom_csv){

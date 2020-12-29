@@ -136,6 +136,8 @@ namespace semlocali{
         }
         */
 
+        ros::Duration(50.0).sleep();
+
         wait_for_bag_data();
         particle_filter_for_point_cloud_map();
 
