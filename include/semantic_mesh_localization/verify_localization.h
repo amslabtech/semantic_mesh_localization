@@ -24,6 +24,16 @@ namespace semlocali{
 
             void spin();
 
+            void load_csv_file();
+
+            std::vector<std::string> split_v( std::string& input, char delimiter);
+
+            void calc_difference();
+
+            void take_statistics();
+
+            void publish_as_csv();
+
         private:
             std::string data_path = "/home/amsl/";
 
