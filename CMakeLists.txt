@@ -202,7 +202,14 @@ target_link_libraries(bonnet_node
     #bonnet
 )
 
-
+add_executable(verify_localization src/verify_localization_node.cpp)
+target_link_libraries(verify_localization
+    ${catkin_LIBRARIES}
+    ${PCL_LIBRARIES}
+    ${VTL_LIBRARIES}
+    ${OpenCV_LIBRARIES}
+    semlocali
+    )
 
 
 #############

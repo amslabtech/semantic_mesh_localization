@@ -51,6 +51,7 @@ add_library(
     meshlocalization.cpp
     pointlocalization.cpp
     verifycallikelihood.cpp
+    verifylocalization.cpp
 
     bonnet
     ${bonnet_under_SOURCES}
