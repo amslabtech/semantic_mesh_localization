@@ -322,7 +322,7 @@ namespace semlocali{
         ang_publisher << "x = reordercats(x,{'< 1.0[deg]','< 5.0[deg]','< 10.0[deg]','< 15.0[deg]','< 20.0[deg]','< 25.0[deg]','< 30.0[deg]','30.0[deg] <'});" << std::endl;
         ang_publisher << "hold on" << std::endl;
         ang_publisher << "ylabel('percentage')" << std::endl;
-        ang_publisher << "xlabel('distance from ground truth')" << std::endl;
+        ang_publisher << "xlabel('angle from ground truth')" << std::endl;
         ang_publisher << "ylim([0 1])" << std::endl;
         ang_publisher << "bar(x,y)" << std::endl;
         ang_publisher << "legend({'estimated pose','biased odometry'},'Location','northwest')" << std::endl;
