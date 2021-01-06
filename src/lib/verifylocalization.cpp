@@ -296,7 +296,9 @@ namespace semlocali{
         mat_publisher << "x = categorical({'< 0.5m','< 1.0m','< 1.5m','< 2.0m','< 2.5m','< 3.0m','< 3.5m','< 4.0m','4.0m <'});" << std::endl;
         mat_publisher << "x = reordercats(x,{'< 0.5m','< 1.0m','< 1.5m','< 2.0m','< 2.5m','< 3.0m','< 3.5m','< 4.0m','4.0m <'});" << std::endl;
         mat_publisher << "hold on" << std::endl;
-        mat_publisher << "ylabel('Percentage')" << std::endl;
+        mat_publisher << "ylabel('percentage')" << std::endl;
+        mat_publisher << "xlabel('distance from ground truth')" << std::endl;
+        mat_publisher << "ylim([0 1])" << std::endl;
         mat_publisher << "bar(x,y)" << std::endl;
         mat_publisher << "legend({'estimated pose','biased odometry'},'Location','northwest')" << std::endl;
         mat_publisher << "hold off" << std::endl;
@@ -316,10 +318,12 @@ namespace semlocali{
             << est.ratio_RPY_u30 << " " << bio.ratio_RPY_u30 << "; "
             << est.ratio_RPY_o30 << " " << bio.ratio_RPY_o30 << "]" << std::endl;
 
-        ang_publisher << "x = categorical({'< 1.0[deg]','< 5.0[deg]','< 10.0[deg]','< 15.0[deg]','< 15.0[deg]','< 20.0[deg]','< 25.0[deg]','< 30.0[deg]','30.0[deg] <'});" << std::endl;
-        ang_publisher << "x = reordercats(x,{'< 1.0[deg]','< 5.0[deg]','< 10.0[deg]','< 15.0[deg]','<   15.0[deg]','< 20.0[deg]','< 25.0[deg]','< 30.0[deg]','30.0[deg] <'});" << std::endl;
+        ang_publisher << "x = categorical({'< 1.0[deg]','< 5.0[deg]','< 10.0[deg]','< 15.0[deg]','< 20.0[deg]','< 25.0[deg]','< 30.0[deg]','30.0[deg] <'});" << std::endl;
+        ang_publisher << "x = reordercats(x,{'< 1.0[deg]','< 5.0[deg]','< 10.0[deg]','< 15.0[deg]','< 20.0[deg]','< 25.0[deg]','< 30.0[deg]','30.0[deg] <'});" << std::endl;
         ang_publisher << "hold on" << std::endl;
-        ang_publisher << "ylabel('Percentage')" << std::endl;
+        ang_publisher << "ylabel('percentage')" << std::endl;
+        ang_publisher << "xlabel('distance from ground truth')" << std::endl;
+        ang_publisher << "ylim([0 1])" << std::endl;
         ang_publisher << "bar(x,y)" << std::endl;
         ang_publisher << "legend({'estimated pose','biased odometry'},'Location','northwest')" << std::endl;
         ang_publisher << "hold off" << std::endl;
