@@ -278,10 +278,67 @@ namespace semlocali{
        csv_publisher.close();
     }
 
+    void VerLocali::publish_MATLAB_command(diff_stat est, diff_stat bio, std::string file_name){
+        std::string file_path_XYZ = data_path + file_name +"_XYZ"+".txt";
+        std::ofstream mat_publisher(file_path_XYZ);
+
+        mat_publisher << "y=[" 
+            << est.ratio_XYZ_u05 << " " << bio.ratio_XYZ_u05 << "; "
+            << est.ratio_XYZ_u10 << " " << bio.ratio_XYZ_u10 << "; "
+            << est.ratio_XYZ_u15 << " " << bio.ratio_XYZ_u15 << "; "
+            << est.ratio_XYZ_u20 << " " << bio.ratio_XYZ_u20 << "; "
+            << est.ratio_XYZ_u25 << " " << bio.ratio_XYZ_u25 << "; "
+            << est.ratio_XYZ_u30 << " " << bio.ratio_XYZ_u30 << "; "
+            << est.ratio_XYZ_u35 << " " << bio.ratio_XYZ_u35 << "; "
+            << est.ratio_XYZ_u40 << " " << bio.ratio_XYZ_u40 << "; "
+            << est.ratio_XYZ_o40 << " " << bio.ratio_XYZ_o40 << "]" << std::endl;
+
+        mat_publisher << "x = categorical({'< 0.5m','< 1.0m','< 1.5m','< 2.0m','< 2.5m','< 3.0m','< 3.5m','< 4.0m','4.0m <'});" << std::endl;
+        mat_publisher << "x = reordercats(x,{'< 0.5m','< 1.0m','< 1.5m','< 2.0m','< 2.5m','< 3.0m','< 3.5m','< 4.0m','4.0m <'});" << std::endl;
+        mat_publisher << "hold on" << std::endl;
+        mat_publisher << "ylabel('Percentage')" << std::endl;
+        mat_publisher << "bar(x,y)" << std::endl;
+        mat_publisher << "legend({'estimated pose','biased odometry'},'Location','northwest')" << std::endl;
+        mat_publisher << "hold off" << std::endl;
+        mat_publisher.close();
+
+
+        std::string file_path_RPY = data_path + file_name + "_RPY" + ".txt";
+        std::ofstream ang_publisher(file_path_RPY);
+
+        ang_publisher << "y=["
+            << est.ratio_RPY_u01 << " " << bio.ratio_RPY_u01 << "; "
+            << est.ratio_RPY_u05 << " " << bio.ratio_RPY_u05 << "; "
+            << est.ratio_RPY_u10 << " " << bio.ratio_RPY_u10 << "; "
+            << est.ratio_RPY_u15 << " " << bio.ratio_RPY_u15 << "; "
+            << est.ratio_RPY_u20 << " " << bio.ratio_RPY_u20 << "; "
+            << est.ratio_RPY_u25 << " " << bio.ratio_RPY_u25 << "; "
+            << est.ratio_RPY_u30 << " " << bio.ratio_RPY_u30 << "; "
+            << est.ratio_RPY_o30 << " " << bio.ratio_RPY_o30 << "]" << std::endl;
+
+        ang_publisher << "x = categorical({'< 1.0[deg]','< 5.0[deg]','< 10.0[deg]','< 15.0[deg]','< 15.0[deg]','< 20.0[deg]','< 25.0[deg]','< 30.0[deg]','30.0[deg] <'});" << std::endl;
+        ang_publisher << "x = reordercats(x,{'< 1.0[deg]','< 5.0[deg]','< 10.0[deg]','< 15.0[deg]','<   15.0[deg]','< 20.0[deg]','< 25.0[deg]','< 30.0[deg]','30.0[deg] <'});" << std::endl;
+        ang_publisher << "hold on" << std::endl;
+        ang_publisher << "ylabel('Percentage')" << std::endl;
+        ang_publisher << "bar(x,y)" << std::endl;
+        ang_publisher << "legend({'estimated pose','biased odometry'},'Location','northwest')" << std::endl;
+        ang_publisher << "hold off" << std::endl;
+
+        ang_publisher.close();
+
+
+
+    }
+
+
+
+
     void VerLocali::publish_as_csv(){
         
         publish_result(est_to_gt_stat, "estimated_pose_to_ground_truth");
         publish_result(bio_to_gt_stat, "biased_odom_to_ground_truth");
+
+        publish_MATLAB_command(est_to_gt_stat, bio_to_gt_stat, "MATLAB_command");
         
     }
 

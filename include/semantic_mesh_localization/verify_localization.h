@@ -38,6 +38,8 @@ namespace semlocali{
 
             void publish_as_csv();
 
+            void publish_MATLAB_command(diff_stat est, diff_stat bio, std::string file_name);
+
             void publish_result(diff_stat stat, std::string file_name);
 
         private:
