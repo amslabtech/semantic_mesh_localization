@@ -151,6 +151,7 @@ namespace semlocali{
         std::ofstream odometry_csv(odometry_path);
         std::ofstream estimated_csv(estimated_path);
         std::ofstream biased_odom_csv(biased_odom_path);
+        //std::ofstream place_data_csv(place_csv_path);
 
         while( ros::ok() ){
 
@@ -196,9 +197,9 @@ namespace semlocali{
                 //std::cout << "Pub CSV Time :" << end_csv.toSec() - start_csv.toSec() <<"[s]"<<std  ::endl;
             }
             
-            if(save_image_checker == true){
+            if((save_image_checker == true) && ( loop_counter%save_place_counter==0) ){
             
-                save_image();
+                save_image(  /*place_data_csv*/   );
                 std::cout << "Save segmented image as png file" << std::endl;
             
             }

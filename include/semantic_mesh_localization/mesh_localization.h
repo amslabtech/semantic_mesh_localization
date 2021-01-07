@@ -89,7 +89,7 @@ namespace semlocali{
 
             void publish_as_csv(std::ofstream& groundtruth_csv, std::ofstream& odometry_csv, std::ofstream& estimated_csv, std::ofstream& biased_odom_csv);
 
-            void save_image();
+            void save_image(  /*std::ofstream& place_data_csv*/  );
 
         public:
 
@@ -158,9 +158,15 @@ namespace semlocali{
             std::string biased_odom_path = "/home/amsl/catkin_ws/src/semantic_mesh_localization/output_data/biased_odom.csv";
 
             bool save_image_checker = false;
-            std::string seg_image_path = "/home/amsl/Image_data/segimage/";
-            std::string map_image_path = "/home/amsl/Image_data/mapimage/";
+            std::string seg_image_path = "/home/amsl/semantic_mesh_localization_data/sequence00/segimage/";
+            std::string map_image_path = "/home/amsl/semantic_mesh_localization_data/sequence00/mapimage/";
             int image_counter = 0;
+
+            bool save_place_checker = false;
+            std::string place_csv_path = "/home/amsl/semantic_mesh_localization_data/sequence00/place_data.csv";
+            int save_place_counter = 13;
+            int loop_counter = 0;
+
 
             bool minimum_likelihood_checker = true;
 

@@ -11,6 +11,11 @@
 
 
     <node pkg="semantic_mesh_localization" type="mesh_localization" name="mesh_localization" output="screen">
+
+        <param name="SavePlaceChecker" value="true" type="bool" />
+        <param name="PlaceCSVPath" value="/home/amsl/semantic_mesh_localization_data/sequence00/place_data.csv" />
+        <param name="SavePlaceCounter" value="13" type="int" />
+
         
         <param name="AddBiasChecker" value="true" type="bool" />
         <param name="StepPebblesChecker" value="false" type="bool" />
@@ -27,15 +32,15 @@
 
         <param name="PublishCSVChecker" value="true" type="bool" />
 
-        <param name="SaveImageChecker" value="false" type="bool" />
-        <param name="SegImagePath" value="/home/amsl/Image_data/segimage/" />
-        <param name="MapImagePath" value="/home/amsl/Image_data/mapimage/" />
+        <param name="SaveImageChecker" value="true" type="bool" />
+        <param name="SegImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00/segimage/" />
+        <param name="MapImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00/mapimage/" />
 
         <param name="particlenumber" value="100" type="int"/>
 
         <!-- default image size is 1241(width) and 376(height) -->
-        <param name="imagewidth" value="306" type="int"/>
-        <param name="imageheight" value="92" type="int"/>
+        <param name="imagewidth" value="310" type="int"/>
+        <param name="imageheight" value="94" type="int"/>
 
         <param name="imagedownwidth" value="0.25" type="double" />
         <param name="imagedownheight" value="0.25" type="double" />

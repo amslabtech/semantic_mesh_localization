@@ -411,6 +411,36 @@ namespace semlocali{
         bool bparam;
         std::string sparam;
 
+        if( privateNode.getParam("SavePlaceChecker", bparam)){
+            if( bparam==true || bparam==false ){
+                save_place_checker = bparam;
+            }
+            else{
+                ROS_ERROR("Invalid SavePlaceChecker Parameter");
+                return false;
+            }
+        }
+
+        if( privateNode.getParam("PlaceCSVPath" , sparam)){
+            if( sparam.length() < 1){
+                ROS_ERROR("Invalid PlaceCSVPath");
+                return false;
+            }
+            else{
+                place_csv_path = sparam;
+            }
+        }
+
+        if( privateNode.getParam("SavePlaceCounter", iparam)){
+            if( iparam < 2 ){
+                ROS_ERROR("Invalid SavePlaceCounter value");
+                return false;
+            }
+            else{
+                save_place_counter = iparam;
+            }
+        }
+
         if( privateNode.getParam("AddBiasChecker", bparam) ){
             if( bparam==true || bparam==false ){
                 add_bias_checker = bparam;
@@ -844,6 +874,8 @@ namespace semlocali{
         std::ofstream estimated_csv(estimated_path);
         std::ofstream biased_odom_csv(biased_odom_path);
 
+//        std::ofstream place_data_csv(place_csv_path);
+
         while( ros::ok() ){
 
             Time start_time_pf = ros::Time::now();
@@ -889,8 +921,8 @@ namespace semlocali{
                 //std::cout << "Pub CSV Time :" << end_csv.toSec() - start_csv.toSec() <<"[s]"<<std::endl;
             }
 
-            if(save_image_checker == true){
-                save_image();
+            if(save_image_checker == true /*&& ( loop_counter%save_place_counter==0 ) */ ){
+                save_image(/*place_data_csv*/);
                 std::cout << "Save segmented image as png file" << std::endl;
             }
 
@@ -906,12 +938,14 @@ namespace semlocali{
             std::cout << std::endl;
 
             loop_rate.sleep();
+            loop_counter += 1;
         }
 
         groundtruth_csv.close();
         odometry_csv.close();
         estimated_csv.close();
         biased_odom_csv.close();
+        //place_data_csv.close();
 
     }
 
@@ -1572,10 +1606,22 @@ namespace semlocali{
 
     }
 
-    void MeshLocalization::save_image(){
+    void MeshLocalization::save_image( /*std::ofstream& place_data_csv*/ ){
 
         std::string file_number = std::to_string(image_counter);
         std::string file_path = seg_image_path + "image" + file_number + ".jpg";
+
+/*
+        place_data_csv << file_number << ","
+            << odom_data.header.stamp << ","
+            << odom_data.pose.pose.position.x << ","
+            << odom_data.pose.pose.position.y << ","
+            << odom_data.pose.pose.position.z << "," 
+            << odom_data.pose.pose.orientation.x << ","
+            << odom_data.pose.pose.orientation.y << ","
+            << odom_data.pose.pose.orientation.z << ","
+            << odom_data.pose.pose.orientation.w << std::endl;
+*/
 
         cv::imwrite( file_path , segimage );
 
