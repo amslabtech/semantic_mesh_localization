@@ -52,6 +52,7 @@ add_library(
     pointlocalization.cpp
     verifycallikelihood.cpp
     verifylocalization.cpp
+    verifyrobustchange.cpp
 
     bonnet
     ${bonnet_under_SOURCES}

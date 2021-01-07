@@ -190,7 +190,7 @@ namespace semlocali{
 
     void VerCalLike::load_place_data(){
         
-        std::string csv_path = place_data_path + "odometry.csv";
+        std::string csv_path = place_data_path + "place_data.csv";
         std::ifstream ifs_csv_file( csv_path );
 
         std::string line;
@@ -200,13 +200,13 @@ namespace semlocali{
 
             std::vector<std::string> strvec = split_v( line, ',');
 
-            pose_tmp.position.x = std::stod( strvec[1] );
-            pose_tmp.position.y = std::stod( strvec[2] );
-            pose_tmp.position.z = std::stod( strvec[3] );
-            pose_tmp.orientation.x = std::stod( strvec[4] );
-            pose_tmp.orientation.y = std::stod( strvec[5] );
-            pose_tmp.orientation.z = std::stod( strvec[6] );
-            pose_tmp.orientation.w = std::stod( strvec[7] );
+            pose_tmp.position.x = std::stod( strvec[2] );
+            pose_tmp.position.y = std::stod( strvec[3] );
+            pose_tmp.position.z = std::stod( strvec[4] );
+            pose_tmp.orientation.x = std::stod( strvec[5] );
+            pose_tmp.orientation.y = std::stod( strvec[6] );
+            pose_tmp.orientation.z = std::stod( strvec[7] );
+            pose_tmp.orientation.w = std::stod( strvec[8] );
 
             agent_place.push_back( pose_tmp );
 
@@ -611,7 +611,7 @@ namespace semlocali{
         
         int compare_counter = 0;
 
-        cmp_times = segmented_image.size() - 1;
+        cmp_times = segmented_image.size();
 
         for( int i=0; i<cmp_times; i++){
             cv::Mat cmp_image = compare_image( segmented_image[i], image_row[ i ] , type);
@@ -758,8 +758,8 @@ namespace semlocali{
                     */
 
                 if( match_checker > 0){
-                    ver_ptr[ x ] = cv::Vec4b( map_b, map_g, map_r, 0.0);
-                    //ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
+                    //ver_ptr[ x ] = cv::Vec4b( map_b, map_g, map_r, 0.0);
+                    ver_ptr[ x ] = cv::Vec4b( 255.0, 255.0, 255.0, 0);
                     likelihood += match_checker;
                     pixel += 1.0;
                 }

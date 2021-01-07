@@ -211,6 +211,14 @@ target_link_libraries(verify_localization
     semlocali
     )
 
+add_executable(verify_robust_change src/verify_robust_change_node.cpp)
+target_link_libraries(verify_robust_change
+    ${catkin_LIBRARIES}
+    ${PCL_LIBRARIES}
+    ${VTL_LIBRARIES}
+    ${OpenCV_LIBRARIES}
+    semlocali
+    )
 
 #############
 ## Install ##

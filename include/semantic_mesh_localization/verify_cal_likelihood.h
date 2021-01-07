@@ -94,18 +94,18 @@ namespace semlocali{
 
             double cmp_pixel(double seg_b,double seg_g,double seg_r,double map_b,double map_g, double map_r);
 
-        private:
+        public:
 
             pcl::visualization::PCLVisualizer point_viewer;
             pcl::visualization::PCLVisualizer mesh_viewer;
 
-            std::string place_data_path = "/home/amsl/semantic_mesh_localization_data/sequence00_init/place/";
+            std::string place_data_path = "/home/amsl/semantic_mesh_localization_data/sequence00/";
             std::string image_data_path = "/home/amsl/semantic_mesh_localization_data/sequence00_init/segimage/";
-            std::string mesh_map_image_path = "/home/amsl/semantic_mesh_localization_data/sequence00_init/mesh_map_image/";
-            std::string point_map_image_path = "/home/amsl/semantic_mesh_localization_data/sequence00_init/point_map_image/";
-            std::string valued_mesh_map_image_path ="/home/amsl/semantic_mesh_localization/sequence00_init/valued_mesh_map_image/";
-            std::string valued_point_map_image_path ="/home/amsl/semantic_mesh_localization/sequence00_init/valued_point_map_image/";
-            std::string likelihood_csv_file_path = "/home/amsl/semantic_mesh_localization/sequence00_init/";
+            std::string mesh_map_image_path = "/home/amsl/semantic_mesh_localization_data/sequence00/mesh_map_image/";
+            std::string point_map_image_path = "/home/amsl/semantic_mesh_localization_data/sequence00/point_map_image/";
+            std::string valued_mesh_map_image_path ="/home/amsl/semantic_mesh_localization/sequence00/valued_mesh_map_image/";
+            std::string valued_point_map_image_path ="/home/amsl/semantic_mesh_localization/sequence00/valued_point_map_image/";
+            std::string likelihood_csv_file_path = "/home/amsl/semantic_mesh_localization/sequence00/";
 
             std::string pcd_path = "/home/amsl/PCD_data/sequence00_12_05_1830/";
             std::string pcd_name = "semantic_mesh_loam_ascii";
