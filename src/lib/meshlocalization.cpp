@@ -232,6 +232,27 @@ namespace semlocali{
         tmp_p += odom_trans.dpitch;
         tmp_y += odom_trans.dyaw;
 
+        if( tmp_r > PI ){
+            tmp_r = (tmp_r - PI) -PI;
+        }
+        else if( tmp_r < PI ){
+            tmp_r = PI - std::abs( tmp_r - PI );
+        }
+
+        if( tmp_p > PI ){
+            tmp_p = (tmp_p - PI) -PI;
+        }
+        else if( tmp_p < PI ){
+            tmp_p = PI - std::abs( tmp_p - PI );
+        }
+
+        if( tmp_y > PI ){
+            tmp_r = (tmp_r - PI) -PI;
+        }
+        else if( tmp_y < PI ){
+            tmp_r = PI - std::abs( tmp_r - PI );
+        }
+
         tf::Quaternion quat_li = tf::createQuaternionFromRPY( tmp_r, tmp_p, tmp_y);
         geometry_msgs::Quaternion qwe_quat;
         quaternionTFToMsg( quat_li, qwe_quat);

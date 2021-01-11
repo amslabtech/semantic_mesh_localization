@@ -16,6 +16,9 @@ namespace semlocali{
 
             void spin_robust();
 
+            void process_robust();
+
+
 
 
 

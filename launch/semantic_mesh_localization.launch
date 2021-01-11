@@ -12,7 +12,7 @@
 
     <node pkg="semantic_mesh_localization" type="mesh_localization" name="mesh_localization" output="screen">
 
-        <param name="SavePlaceChecker" value="true" type="bool" />
+        <param name="SavePlaceChecker" value="false" type="bool" />
         <param name="PlaceCSVPath" value="/home/amsl/semantic_mesh_localization_data/sequence00/place_data.csv" />
         <param name="SavePlaceCounter" value="13" type="int" />
 

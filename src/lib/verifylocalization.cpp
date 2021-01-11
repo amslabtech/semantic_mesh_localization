@@ -140,6 +140,14 @@ namespace semlocali{
 
             diff.angle = std::acos(in_pro) * 180.0 / PI;
 
+            if( diff.angle > 170.0 ){
+                diff.angle = 180.0 - diff.angle;
+            }
+
+            if( !(diff.angle > 0.0 && diff.angle < 180.0) ){
+                diff.angle = 0.0;
+            }
+
             diff_vector.push_back(diff);
         }
         /*
@@ -220,6 +228,7 @@ namespace semlocali{
             }
             else{
                 stat_data.time_RPY_o30 += 1;
+                std::cout << diff_data[i].angle << std::endl;
             }
         }
 
