@@ -32,18 +32,19 @@
 
         <param name="PublishCSVChecker" value="true" type="bool" />
 
-        <param name="SaveImageChecker" value="true" type="bool" />
+        <param name="SaveImageChecker" value="false" type="bool" />
         <param name="SegImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00/segimage/" />
         <param name="MapImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00/mapimage/" />
+        <param name="BGRImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00/bgrimage/" />
 
         <param name="particlenumber" value="100" type="int"/>
 
         <!-- default image size is 1241(width) and 376(height) -->
-        <param name="imagewidth" value="310" type="int"/>
-        <param name="imageheight" value="94" type="int"/>
+        <param name="imagewidth" value="1241" type="int"/>
+        <param name="imageheight" value="376" type="int"/>
 
-        <param name="imagedownwidth" value="0.25" type="double" />
-        <param name="imagedownheight" value="0.25" type="double" />
+        <param name="imagedownwidth" value="1.0" type="double" />
+        <param name="imagedownheight" value="1.0" type="double" />
 
         <param name="xdev" value="0.30" type="double"/>
         <param name="ydev" value="0.30" type="double"/>

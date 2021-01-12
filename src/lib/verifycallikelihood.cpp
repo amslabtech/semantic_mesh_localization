@@ -32,6 +32,16 @@ namespace semlocali{
             }
         }
 
+        if( privateNode.getParam("BGRImageDataPath", sparam)){
+            if( sparam.length() < 1){
+                ROS_ERROR("Invalid file path");
+                return false;
+            }
+            else{
+                bgr_image_data_path = sparam;
+            }
+        }
+
         if( privateNode.getParam("MeshMapImagePath", sparam)){
             if( sparam.length() < 1){
                 ROS_ERROR("Invalid file path");
@@ -59,6 +69,16 @@ namespace semlocali{
             }
             else{
                 valued_mesh_map_image_path = sparam;
+            }
+        }
+
+        if( privateNode.getParam("IntegratedImagePath", sparam) ){
+            if( sparam.length() < 1 ){
+                ROS_ERROR("Invalid file path");
+                return false;
+            }
+            else{
+                integrated_image_path = sparam;
             }
         }
 
@@ -140,6 +160,9 @@ namespace semlocali{
         std::cout << "Loading segmented image data" << std::endl;
         load_seg_image();
 
+        std::cout << "Loading bgr image data" << std::endl;
+        load_bgr_image();
+
         std::cout << "Config Viewer" << std::endl;
         config_viewer_parameter( point_viewer);
         config_viewer_parameter( mesh_viewer);
@@ -161,6 +184,9 @@ namespace semlocali{
 
         std::cout << "Save likelihood as csv file" << std::endl;
         save_csv();
+
+        std::cout << "Create integrated image" << std::endl;
+        create_integrated_image();
 
         /*
         std::cout << "Viewer" << std::endl;
@@ -215,6 +241,32 @@ namespace semlocali{
         data_length = agent_place.size();
 
         std::cout << "Loading place data has done" << std::endl;
+    }
+
+    void VerCalLike::load_bgr_image(){
+
+        int counter = 0;
+
+        for( int i=0; i < data_length; i++){
+
+            std::string pic_number = std::to_string(counter);
+            std::string bgr_image_path = bgr_image_data_path + "bgrimage" + pic_number + ".jpg";
+            cv::Mat image_tmp = cv::imread(bgr_image_path);
+            cv::Mat tmp_image(image_tmp.size().height, image_tmp.size().width, CV_8UC4);
+            cv::cvtColor(image_tmp,tmp_image, CV_BGR2BGRA);
+            bgr_image.push_back( tmp_image );
+
+            //Get image size
+            image_width = tmp_image.size().width;
+            image_height = tmp_image.size().height;
+        }
+
+        /*
+        std::cout << "Width " << image_width << std::endl;
+        std::cout << "height " << image_height << std::endl;
+        */
+
+        std::cout << "Loading BGR Image has done" << std::endl;
     }
 
     void VerCalLike::load_seg_image(){
@@ -870,6 +922,25 @@ namespace semlocali{
         point_bgr_key.close();
         */
 
+    }
+
+    void VerCalLike::create_integrated_image(){
+        
+        for(int i=0; i<seg_image.size(); i++){
+            std::string integrated_counter = std::to_string(i);
+            std::string integrated_file_path = integrated_image_path + "integrated_image" + integrated_counter + ".jpg";
+
+            cv::Mat upper_cv;
+            cv::hconcat( bgr_image[i] , seg_image[i] , upper_cv);
+
+            cv::Mat lower_cv;
+            cv::hconcat( mesh_map_image[i] , point_map_image[i] , lower_cv);
+
+            cv::Mat integrated_cv;
+            cv::vconcat( upper_cv , lower_cv , integrated_cv );
+
+            cv::imwrite( integrated_file_path , integrated_cv );
+        }
     }
 
 

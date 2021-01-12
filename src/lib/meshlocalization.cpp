@@ -7,7 +7,11 @@ namespace semlocali{
 
             image_sub = it_.subscribe
                 ("/bonnet/color_mask" , 1, &MeshLocalization::segmented_image_callback, this);
-/*
+
+            bgr_sub = it_.subscribe
+                ("/bonnet/bgr" , 1 , &MeshLocalization::bgr_image_callback, this);
+
+            /*
             sub_odometry = node.subscribe<nav_msgs::Odometry>
                 ("/odom_pose", 1, &MeshLocalization::odometry_callback, this);
 */
@@ -29,9 +33,28 @@ namespace semlocali{
 
     MeshLocalization::~MeshLocalization(){}
 
+    void MeshLocalization::bgr_image_callback(const sensor_msgs::ImageConstPtr& msg){
+
+        cv_bridge::CvImagePtr bgr_ptr;
+
+        try{
+
+            //cv_bridge::CvImagePtr seg_ptr=cv_bridge::toCvCopy(msg,sensor_msgs::image_encodings::BGR8);
+            bgr_ptr=cv_bridge::toCvCopy(msg,sensor_msgs::image_encodings::RGB8);
+            cv::cvtColor( bgr_ptr->image , camera_image , cv::COLOR_RGB2BGRA );
+
+            if(image_down_height != 1.0 && image_down_width != 1.0){
+                cv::resize(camera_image, camera_image , cv::Size() , image_down_width, image_down_height);
+            }
+        }
+        catch(cv_bridge::Exception& e){
+            ROS_ERROR("cv_bridge exception: %s", e.what());
+        }
+
+        std::cout << "catch camera image data" << std::endl;
+    }
+
     void MeshLocalization::segmented_image_callback(const sensor_msgs::ImageConstPtr& msg){
-        
-        Time start_im = ros::Time::now();
 
         cv_bridge::CvImagePtr seg_ptr;
 
@@ -49,11 +72,7 @@ namespace semlocali{
             ROS_ERROR("cv_bridge exception: %s", e.what());
         }
 
-        Time end_im = ros::Time::now();
-
-        //std::cout << "Image convert and resize time :" << end_im.toSec() - start_im.toSec() <<"[s]" << std::endl;
-
-        std::cout << "catch odom data" << std::endl;
+        std::cout << "catch segmented image data" << std::endl;
     }
 
     double MeshLocalization::add_bias_XY(double dt, int random_value){
@@ -672,6 +691,16 @@ namespace semlocali{
             }
         }
 
+        if(privateNode.getParam("BGRImagePath", sparam)){
+            if(sparam.length() < 1){
+                ROS_ERROR("Invalid CameraImagePath");
+                return false;
+            }
+            else{
+                bgr_image_path = sparam;
+            }
+        }
+
         if( privateNode.getParam("imageheight", iparam) ){
             if(iparam < 1){
                 ROS_ERROR("Invalid Image height parameter");
@@ -895,7 +924,7 @@ namespace semlocali{
         std::ofstream estimated_csv(estimated_path);
         std::ofstream biased_odom_csv(biased_odom_path);
 
-//        std::ofstream place_data_csv(place_csv_path);
+        //std::ofstream place_data_csv(place_csv_path);
 
         while( ros::ok() ){
 
@@ -942,7 +971,7 @@ namespace semlocali{
                 //std::cout << "Pub CSV Time :" << end_csv.toSec() - start_csv.toSec() <<"[s]"<<std::endl;
             }
 
-            if(save_image_checker == true /*&& ( loop_counter%save_place_counter==0 ) */ ){
+            if(save_image_checker == true && ( loop_counter%save_place_counter==0 ) ){
                 save_image(/*place_data_csv*/);
                 std::cout << "Save segmented image as png file" << std::endl;
             }
@@ -1632,7 +1661,9 @@ namespace semlocali{
         std::string file_number = std::to_string(image_counter);
         std::string file_path = seg_image_path + "image" + file_number + ".jpg";
 
-/*
+        std::string bgr_path = bgr_image_path + "bgrimage" + file_number + ".jpg";
+
+        /*
         place_data_csv << file_number << ","
             << odom_data.header.stamp << ","
             << odom_data.pose.pose.position.x << ","
@@ -1642,9 +1673,10 @@ namespace semlocali{
             << odom_data.pose.pose.orientation.y << ","
             << odom_data.pose.pose.orientation.z << ","
             << odom_data.pose.pose.orientation.w << std::endl;
-*/
+        */
 
         cv::imwrite( file_path , segimage );
+        cv::imwrite( bgr_path  , camera_image );
 
         image_counter += 1;
     }

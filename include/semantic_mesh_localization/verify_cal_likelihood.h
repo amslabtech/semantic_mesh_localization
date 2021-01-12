@@ -28,6 +28,7 @@
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/core/core.hpp>
 #include <image_transport/image_transport.h>
 #include <image_transport/image_transport.h>
 #include"pcl/features/normal_3d_omp.h"
@@ -59,6 +60,8 @@ namespace semlocali{
             void process();
 
             void load_place_data();
+
+            void load_bgr_image();
 
             std::vector<std::string> split_v( std::string& input, char delimiter);
 
@@ -94,6 +97,8 @@ namespace semlocali{
 
             double cmp_pixel(double seg_b,double seg_g,double seg_r,double map_b,double map_g, double map_r);
 
+            void create_integrated_image();
+
         public:
 
             pcl::visualization::PCLVisualizer point_viewer;
@@ -101,11 +106,13 @@ namespace semlocali{
 
             std::string place_data_path = "/home/amsl/semantic_mesh_localization_data/sequence00/";
             std::string image_data_path = "/home/amsl/semantic_mesh_localization_data/sequence00_init/segimage/";
-            std::string mesh_map_image_path = "/home/amsl/semantic_mesh_localization_data/sequence00/mesh_map_image/";
+            std::string bgr_image_data_path = "/home/amsl/semantic_mesh_localization_data/sequence00_init/bgrimage/";
+           std::string mesh_map_image_path = "/home/amsl/semantic_mesh_localization_data/sequence00/mesh_map_image/";
             std::string point_map_image_path = "/home/amsl/semantic_mesh_localization_data/sequence00/point_map_image/";
             std::string valued_mesh_map_image_path ="/home/amsl/semantic_mesh_localization/sequence00/valued_mesh_map_image/";
             std::string valued_point_map_image_path ="/home/amsl/semantic_mesh_localization/sequence00/valued_point_map_image/";
-            std::string likelihood_csv_file_path = "/home/amsl/semantic_mesh_localization/sequence00/";
+             std::string integrated_image_path ="/home/amsl/semantic_mesh_localization/sequence00/integrated_image/";
+           std::string likelihood_csv_file_path = "/home/amsl/semantic_mesh_localization/sequence00/";
 
             std::string pcd_path = "/home/amsl/PCD_data/sequence00_12_05_1830/";
             std::string pcd_name = "semantic_mesh_loam_ascii";
@@ -115,6 +122,7 @@ namespace semlocali{
             std::string polygon_file_name_base = "polygon_mesh_";
 
             std::vector<cv::Mat> seg_image;
+            std::vector<cv::Mat> bgr_image;
             std::vector<cv::Mat> mesh_map_image;
             std::vector<cv::Mat> point_map_image;
             

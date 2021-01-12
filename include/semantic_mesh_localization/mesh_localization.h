@@ -27,6 +27,8 @@ namespace semlocali{
 
             void segmented_image_callback(const sensor_msgs::ImageConstPtr& msg);
 
+            void bgr_image_callback(const sensor_msgs::ImageConstPtr& msg);
+
             void odometry_callback(const nav_msgs::OdometryConstPtr& msg);
 
             void add_bias_to_odometry(pos_trans& odom_trans);
@@ -99,6 +101,9 @@ namespace semlocali{
             image_transport::ImageTransport it_;
             image_transport::Subscriber image_sub;
 
+            image_transport::Subscriber bgr_sub;
+            cv::Mat camera_image;
+
             ros::Subscriber sub_odometry;
             ros::Publisher pub_particle;
             ros::Publisher pub_pose;
@@ -160,6 +165,7 @@ namespace semlocali{
             bool save_image_checker = false;
             std::string seg_image_path = "/home/amsl/semantic_mesh_localization_data/sequence00/segimage/";
             std::string map_image_path = "/home/amsl/semantic_mesh_localization_data/sequence00/mapimage/";
+            std::string bgr_image_path = "/home/amsl/semantic_mesh_localization_data/sequence00/bgrimage/";
             int image_counter = 0;
 
             bool save_place_checker = false;

@@ -4,11 +4,13 @@
         
         <param name="PlaceDataPath" value="/home/amsl/semantic_mesh_localization_data/sequence00/" />
         <param name="ImageDataPath" value="/home/amsl/semantic_mesh_localization_data/sequence00/segimage/" />
-        <param name="MeshMapImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00/mesh_map_image/" />
+        <param name="BGRImageDataPath" value="/home/amsl/semantic_mesh_localization_data/sequence00/bgrimage/" />
+       <param name="MeshMapImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00/mesh_map_image/" />
         <param name="PointMapImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00/point_map_image/" />
         <param name="ValuedMeshMapImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00/valued_mesh_map_image/" />
         <param name="ValuedPointMapImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00/valued_point_map_image/" />
-        <param name="CSVPath" value="/home/amsl/semantic_mesh_localization_data/sequence00/" />
+         <param name="IntegratedImagePath" value="/home/amsl/semantic_mesh_localization_data/sequence00/integrated_image/" />
+       <param name="CSVPath" value="/home/amsl/semantic_mesh_localization_data/sequence00/" />
         <param name="PCDPath" value="/home/amsl/PCD_data/sequence00_12_05_1830/" />
         <param name="PCDName" value="semantic_mesh_loam_ascii" />
         

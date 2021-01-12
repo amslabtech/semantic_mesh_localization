@@ -218,6 +218,7 @@ namespace semlocali{
         groundtruth_csv.close();
         odometry_csv.close();
         estimated_csv.close();
+        //place_data_csv.close();
     }
 
     void PointLocalization::update_likelihood_for_pc_map(){
