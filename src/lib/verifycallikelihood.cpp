@@ -259,6 +259,8 @@ namespace semlocali{
             //Get image size
             image_width = tmp_image.size().width;
             image_height = tmp_image.size().height;
+
+            counter += 1;
         }
 
         /*
@@ -285,6 +287,8 @@ namespace semlocali{
             //Get image size
             image_width = tmp_image.size().width;
             image_height = tmp_image.size().height;
+
+            counter += 1;
         }
 
         /*
