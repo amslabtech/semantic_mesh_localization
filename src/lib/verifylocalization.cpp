@@ -234,24 +234,24 @@ namespace semlocali{
 
         double t = double(stat_data.scantimes);
 
-        stat_data.ratio_XYZ_u05 = double(stat_data.time_XYZ_u05)/t;
-        stat_data.ratio_XYZ_u10 = double(stat_data.time_XYZ_u10)/t;
-        stat_data.ratio_XYZ_u15 = double(stat_data.time_XYZ_u15)/t;
-        stat_data.ratio_XYZ_u20 = double(stat_data.time_XYZ_u20)/t;
-        stat_data.ratio_XYZ_u25 = double(stat_data.time_XYZ_u25)/t;
-        stat_data.ratio_XYZ_u30 = double(stat_data.time_XYZ_u30)/t;
-        stat_data.ratio_XYZ_u35 = double(stat_data.time_XYZ_u35)/t;
-        stat_data.ratio_XYZ_u40 = double(stat_data.time_XYZ_u40)/t;
-        stat_data.ratio_XYZ_o40 = double(stat_data.time_XYZ_o40)/t;
+        stat_data.ratio_XYZ_u05 = double(stat_data.time_XYZ_u05)/t*100.0;
+        stat_data.ratio_XYZ_u10 = double(stat_data.time_XYZ_u10)/t*100.0;
+        stat_data.ratio_XYZ_u15 = double(stat_data.time_XYZ_u15)/t*100.0;
+        stat_data.ratio_XYZ_u20 = double(stat_data.time_XYZ_u20)/t*100.0;
+        stat_data.ratio_XYZ_u25 = double(stat_data.time_XYZ_u25)/t*100.0;
+        stat_data.ratio_XYZ_u30 = double(stat_data.time_XYZ_u30)/t*100.0;
+        stat_data.ratio_XYZ_u35 = double(stat_data.time_XYZ_u35)/t*100.0;
+        stat_data.ratio_XYZ_u40 = double(stat_data.time_XYZ_u40)/t*100.0;
+        stat_data.ratio_XYZ_o40 = double(stat_data.time_XYZ_o40)/t*100.0;
 
-        stat_data.ratio_RPY_u01 = double(stat_data.time_RPY_u01)/t;
-        stat_data.ratio_RPY_u05 = double(stat_data.time_RPY_u05)/t;
-        stat_data.ratio_RPY_u10 = double(stat_data.time_RPY_u10)/t;
-        stat_data.ratio_RPY_u15 = double(stat_data.time_RPY_u15)/t;
-        stat_data.ratio_RPY_u20 = double(stat_data.time_RPY_u20)/t;
-        stat_data.ratio_RPY_u25 = double(stat_data.time_RPY_u25)/t;
-        stat_data.ratio_RPY_u30 = double(stat_data.time_RPY_u30)/t;
-        stat_data.ratio_RPY_o30 = double(stat_data.time_RPY_o30)/t;
+        stat_data.ratio_RPY_u01 = double(stat_data.time_RPY_u01)/t*100.0;
+        stat_data.ratio_RPY_u05 = double(stat_data.time_RPY_u05)/t*100.0;
+        stat_data.ratio_RPY_u10 = double(stat_data.time_RPY_u10)/t*100.0;
+        stat_data.ratio_RPY_u15 = double(stat_data.time_RPY_u15)/t*100.0;
+        stat_data.ratio_RPY_u20 = double(stat_data.time_RPY_u20)/t*100.0;
+        stat_data.ratio_RPY_u25 = double(stat_data.time_RPY_u25)/t*100.0;
+        stat_data.ratio_RPY_u30 = double(stat_data.time_RPY_u30)/t*100.0;
+        stat_data.ratio_RPY_o30 = double(stat_data.time_RPY_o30)/t*100.0;
     }
 
     void VerLocali::take_statistics(){
@@ -307,7 +307,7 @@ namespace semlocali{
         mat_publisher << "hold on" << std::endl;
         mat_publisher << "ylabel('percentage')" << std::endl;
         mat_publisher << "xlabel('distance from ground truth')" << std::endl;
-        mat_publisher << "ylim([0 1])" << std::endl;
+        mat_publisher << "ylim([0 100])" << std::endl;
         mat_publisher << "bar(x,y)" << std::endl;
         mat_publisher << "legend({'estimated pose','biased odometry'},'Location','northwest')" << std::endl;
         mat_publisher << "hold off" << std::endl;
@@ -332,7 +332,7 @@ namespace semlocali{
         ang_publisher << "hold on" << std::endl;
         ang_publisher << "ylabel('percentage')" << std::endl;
         ang_publisher << "xlabel('angle from ground truth')" << std::endl;
-        ang_publisher << "ylim([0 1])" << std::endl;
+        ang_publisher << "ylim([0 100])" << std::endl;
         ang_publisher << "bar(x,y)" << std::endl;
         ang_publisher << "legend({'estimated pose','biased odometry'},'Location','northwest')" << std::endl;
         ang_publisher << "hold off" << std::endl;
