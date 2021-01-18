@@ -391,16 +391,16 @@ namespace semlocali{
     void MeshLocalization::load_PLY(pcl::visualization::PCLVisualizer& viewer){
         
         load_semantic_polygon( viewer,     "road", 128,  64, 128);
-        //load_semantic_polygon( viewer, "sidewalk", 232,  35, 244);
+        load_semantic_polygon( viewer, "sidewalk", 232,  35, 244);
         load_semantic_polygon( viewer, "building",  70,  70,  70);
-        //load_semantic_polygon( viewer,     "wall", 156, 102, 102);
-        //load_semantic_polygon( viewer,    "fence", 153, 153, 190);
-        //load_semantic_polygon( viewer,     "pole", 153, 153, 153);
-        //load_semantic_polygon( viewer,"trafficsign", 0, 220, 220);
-        //load_semantic_polygon( viewer, "vegetation",35, 142, 107);
+        load_semantic_polygon( viewer,     "wall", 156, 102, 102);
+        load_semantic_polygon( viewer,    "fence", 153, 153, 190);
+        load_semantic_polygon( viewer,     "pole", 153, 153, 153);
+        load_semantic_polygon( viewer,"trafficsign", 0, 220, 220);
+        load_semantic_polygon( viewer, "vegetation",35, 142, 107);
         load_semantic_polygon( viewer,  "terrain", 152, 251, 152);
         
-        //load_semantic_polygon( viewer,      "car", 142,   0,   0);
+        load_semantic_polygon( viewer,      "car", 142,   0,   0);
         
         //load_semantic_polygon( viewer,    "truck",  70,   0,   0);
         //load_semantic_polygon( viewer,      "bus", 100,  60,   0);
@@ -885,7 +885,7 @@ namespace semlocali{
 
         ros::Duration(50.0).sleep(); //Wiat for 1 minute due to loading CNN parameter
 
-        ros::Rate message_rate(2.0);
+        ros::Rate message_rate(3.0);
         while(1){
             ros::spinOnce();
             if(first_odom_checker == true){
