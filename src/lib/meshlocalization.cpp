@@ -399,7 +399,9 @@ namespace semlocali{
         //load_semantic_polygon( viewer,"trafficsign", 0, 220, 220);
         //load_semantic_polygon( viewer, "vegetation",35, 142, 107);
         load_semantic_polygon( viewer,  "terrain", 152, 251, 152);
-        load_semantic_polygon( viewer,      "car", 142,   0,   0);
+        
+        //load_semantic_polygon( viewer,      "car", 142,   0,   0);
+        
         //load_semantic_polygon( viewer,    "truck",  70,   0,   0);
         //load_semantic_polygon( viewer,      "bus", 100,  60,   0);
         //load_semantic_polygon( viewer,"motorcycle",230,   0,   0);
@@ -883,7 +885,7 @@ namespace semlocali{
 
         ros::Duration(50.0).sleep(); //Wiat for 1 minute due to loading CNN parameter
 
-        ros::Rate message_rate(1.0);
+        ros::Rate message_rate(2.0);
         while(1){
             ros::spinOnce();
             if(first_odom_checker == true){
@@ -941,7 +943,6 @@ namespace semlocali{
             //end_time_pf = ros::Time::now();
             //std::cout << "Motion update  "<< end_time_pf.toSec() - start_time_pf.toSec() << std::endl;
 
- 
             std::cout << "Update likelihood" << std::endl;
             update_likelihood();//Observe and create posterior distribution
             //end_time_pf = ros::Time::now();
