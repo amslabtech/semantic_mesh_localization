@@ -15,6 +15,8 @@ Panels:
         - /Odometry2
         - /Odometry2/Shape1
         - /Image4
+        - /Odometry3
+        - /Odometry3/Shape1
       Splitter Ratio: 0.5
     Tree Height: 309
   - Class: rviz/Selection
@@ -35,7 +37,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: Image
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -66,6 +68,24 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        camera_color_left:
+          Value: true
+        camera_color_right:
+          Value: true
+        camera_gray_left:
+          Value: true
+        camera_gray_right:
+          Value: true
+        estimated_pose:
+          Value: true
+        ground_truth:
+          Value: true
+        map:
+          Value: true
+        vehicle:
+          Value: true
+        velodyne:
+          Value: true
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -73,7 +93,22 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        {}
+        map:
+          estimated_pose:
+            {}
+          ground_truth:
+            {}
+          vehicle:
+            camera_color_left:
+              {}
+            camera_color_right:
+              {}
+            camera_gray_left:
+              {}
+            camera_gray_right:
+              {}
+            velodyne:
+              {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -134,7 +169,7 @@ Visualization Manager:
       Unreliable: false
       Value: true
     - Class: rviz/Image
-      Enabled: true
+      Enabled: false
       Image Topic: /bonnet/color_mask
       Max Value: 1
       Median window: 5
@@ -144,7 +179,7 @@ Visualization Manager:
       Queue Size: 2
       Transport Hint: raw
       Unreliable: false
-      Value: true
+      Value: false
     - Angle Tolerance: 0.10000000149011612
       Class: rviz/Odometry
       Covariance:
@@ -246,7 +281,7 @@ Visualization Manager:
       Unreliable: false
       Value: true
     - Class: rviz/Image
-      Enabled: false
+      Enabled: true
       Image Topic: /bonnet/bgr
       Max Value: 1
       Median window: 5
@@ -256,7 +291,42 @@ Visualization Manager:
       Queue Size: 2
       Transport Hint: raw
       Unreliable: false
-      Value: false
+      Value: true
+    - Angle Tolerance: 0.10000000149011612
+      Class: rviz/Odometry
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Color Style: Unique
+          Frame: Local
+          Offset: 1
+          Scale: 1
+          Value: true
+        Position:
+          Alpha: 0.30000001192092896
+          Color: 204; 51; 204
+          Scale: 1
+          Value: true
+        Value: true
+      Enabled: true
+      Keep: 100
+      Name: Odometry
+      Position Tolerance: 0.10000000149011612
+      Queue Size: 10
+      Shape:
+        Alpha: 1
+        Axes Length: 1
+        Axes Radius: 0.10000000149011612
+        Color: 173; 127; 168
+        Head Length: 5
+        Head Radius: 5
+        Shaft Length: 5
+        Shaft Radius: 5
+        Value: Arrow
+      Topic: /save_place
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -285,7 +355,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 24.759632110595703
+      Distance: 802.6964721679688
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -293,17 +363,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 136.16554260253906
+        Y: 4.265397071838379
+        Z: -0.015187257900834084
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7853981852531433
+      Pitch: 1.4547964334487915
       Target Frame: <Fixed Frame>
-      Yaw: 0.7853981852531433
+      Yaw: 1.4653980731964111
     Saved: ~
 Window Geometry:
   Displays:
@@ -323,5 +393,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1399
-  X: 521
-  Y: 27
+  X: 474
+  Y: 78

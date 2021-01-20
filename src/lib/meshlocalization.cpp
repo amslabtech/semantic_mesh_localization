@@ -23,6 +23,8 @@ namespace semlocali{
             pub_biased_odometry = node.advertise<nav_msgs::Odometry>("biased_odom", 1);
             ground_truth_pub = node.advertise<nav_msgs::Odometry>("/ground_truth_odom",1);
 
+            save_place_ros_publisher = node.advertise<nav_msgs::Odometry>("/save_place",1);
+
             estimated_pose.header.frame_id = "map";
             particle.header.frame_id = "map";
 
@@ -1675,6 +1677,11 @@ namespace semlocali{
             << odom_data.pose.pose.orientation.z << ","
             << odom_data.pose.pose.orientation.w << std::endl;
         */
+
+
+        save_place_odom = odom_data;
+        save_place_ros_publisher.publish(save_place_odom);
+
 
         cv::imwrite( file_path , segimage );
         cv::imwrite( bgr_path  , camera_image );

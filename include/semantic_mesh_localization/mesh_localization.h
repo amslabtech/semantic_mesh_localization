@@ -172,6 +172,8 @@ namespace semlocali{
             std::string place_csv_path = "/home/amsl/semantic_mesh_localization_data/sequence00/place_data.csv";
             int save_place_counter = 13;
             int loop_counter = 0;
+            nav_msgs::Odometry save_place_odom;
+            ros::Publisher save_place_ros_publisher;
 
 
             bool minimum_likelihood_checker = true;
