@@ -2,7 +2,7 @@
   
     <node pkg="semantic_mesh_localization" type="verify_localization" name="verify_localization" output="screen" >
 
-        <param name="DataPath" value="/home/amsl/semantic_mesh_localization_data/output_data_full_class/sequence08/" />
+        <param name="DataPath" value="/home/amsl/semantic_mesh_localization_data/output_data_point_01_23/sequence08/" />
 
     </node>
 </launch>               
